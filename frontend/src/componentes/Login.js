@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../estilos/login.css";
 import { loginUsuario } from "./api";
 
-function Login({ onCrearUsuario }) {
+function Login({ onCrearUsuario, onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,8 +13,9 @@ function Login({ onCrearUsuario }) {
     setError("");
     setSuccess("");
     try {
-      await loginUsuario(username, password);
+      const res = await loginUsuario(username, password);
       setSuccess("¡Login correcto!");
+      if (onLogin && res.user) onLogin(res.user);
     } catch (err) {
       if (err.message === "Usuario o contraseña incorrectos") {
         setError("No se encuentra ese usuario");

@@ -47,6 +47,32 @@ app.post("/api/auth/register", async (req, res) => {
   }
 });
 
+// Login local
+app.post("/api/auth/login-local", async (req, res) => {
+  console.log("[LOGIN] Body recibido:", req.body);
+  const { username, password } = req.body;
+  if (!username || !password) {
+    console.log("[LOGIN] Faltan campos");
+    return res.status(400).json({ message: "Usuario y contraseña requeridos" });
+  }
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      console.log("[LOGIN] Usuario no encontrado");
+      return res.status(404).json({ message: "No se encuentra ese usuario" });
+    }
+    if (user.password !== password) {
+      console.log("[LOGIN] Contraseña incorrecta");
+      return res.status(401).json({ message: "Contraseña incorrecta" });
+    }
+    console.log("[LOGIN] Login correcto para usuario:", username);
+    res.json({ message: "Login correcto", user });
+  } catch (err) {
+    console.log("[LOGIN] ERROR:", err);
+    res.status(500).json({ message: "Error en login", error: err.message });
+  }
+});
+
 // Proxy login
 app.post("/api/auth/login", async (req, res) => {
   try {

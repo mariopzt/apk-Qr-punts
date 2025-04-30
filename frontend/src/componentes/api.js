@@ -1,6 +1,6 @@
 // API helpers para login y registro
 export async function loginUsuario(username, password) {
-  const res = await fetch("http://localhost:5000/api/auth/login", {
+  const res = await fetch("http://localhost:5000/api/auth/login-local", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })

@@ -2,22 +2,48 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import axios from "axios";
+import mongoose from "mongoose";
 dotenv.config();
 
 const app = express();
+
+// Conexión a MongoDB Atlas
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log("Conectado a MongoDB Atlas correctamente");
+}).catch((err) => {
+  console.error("Error conectando a MongoDB Atlas:", err.message);
+});
 app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 const API_BASE = process.env.MONGODB_URI; // Usamos el nombre de variable original para compatibilidad
 
-// Proxy registro
+// Registro local en MongoDB Atlas
+import User from "./models/User.js";
+
 app.post("/api/auth/register", async (req, res) => {
+  console.log("[REGISTRO] Body recibido:", req.body);
+  const { username, password, email } = req.body;
+  if (!username || !password || !email) {
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
+  }
   try {
-    const response = await axios.post(`${API_BASE}/api/auth/register`, req.body);
-    res.status(response.status).json(response.data);
+    const existe = await User.findOne({ username });
+    if (existe) {
+      return res.status(409).json({ message: "El usuario ya existe" });
+    }
+    const qrCode = `${username}_${Date.now()}`;
+    const nuevo = new User({ username, password, email, qrCode });
+    await nuevo.save();
+    console.log("[REGISTRO] Usuario guardado correctamente:", username);
+    res.status(201).json({ message: "Usuario agregado" });
   } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { message: "Error en registro" });
+    console.log("[REGISTRO] ERROR local:", err);
+    res.status(500).json({ message: "Error al registrar usuario", error: err.message });
   }
 });
 

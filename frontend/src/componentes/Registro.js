@@ -27,7 +27,7 @@ function Registro({ onVolver }) {
       if (err.message.includes("existe")) {
         setError("El usuario ya existe");
       } else {
-        setError(err.message);
+        setError("Error al registrar: " + (err.message || JSON.stringify(err)));
       }
     }
   };

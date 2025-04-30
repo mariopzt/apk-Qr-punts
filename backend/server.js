@@ -99,7 +99,7 @@ app.get("/", (req, res) => {
   res.send("API funcionando como proxy a la API externa");
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor proxy corriendo en puerto ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor proxy corriendo en puerto ${PORT} (accesible en red local)`);
   console.log(`Conectado a Atlas (API externa)`);
 });

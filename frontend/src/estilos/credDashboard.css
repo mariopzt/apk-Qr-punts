@@ -1,0 +1,84 @@
+body, .cred-bg {
+  background: #111116;
+  color: #fff;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  min-height: 100vh;
+}
+.cred-container {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0 8px 32px 8px;
+}
+.cred-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 12px 0;
+}
+.cred-title {
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #e5e5e5;
+}
+.cred-back, .cred-menu {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.cred-ring-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.cred-history {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0 18px 0;
+}
+.cred-history-item {
+  padding: 4px 16px;
+  border-radius: 14px;
+  font-size: 1rem;
+  color: #181818;
+  font-weight: 500;
+  opacity: 0.92;
+}
+.cred-tasks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.cred-task-card {
+  background: #191923;
+  border-radius: 14px;
+  padding: 14px 10px 14px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.cred-task-icon {
+  font-size: 2rem;
+  margin-right: 2px;
+}
+.cred-task-info {
+  flex: 1;
+}
+.cred-task-title {
+  font-size: 1.03rem;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.cred-task-progress {
+  font-size: 0.98rem;
+  color: #bcbcbc;
+}
+.cred-task-points {
+  font-size: 0.95rem;
+  color: #ffd54f;
+  font-weight: 500;
+}

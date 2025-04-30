@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Login from "./componentes/Login";
 import Registro from "./componentes/Registro";
-import Cuerpo from "./componentes/Cuerpo";
+import CuerpoNuevo from "./componentes/CuerpoNuevo";
 
 function App() {
   const [vista, setVista] = useState("login");
@@ -14,7 +14,7 @@ function App() {
     return <Registro onVolver={() => setVista("login")} />;
   }
   if (vista === "cuerpo" && usuario) {
-    return <Cuerpo usuario={usuario} />;
+    return <CuerpoNuevo usuario={usuario} />;
   }
   return null;
 }

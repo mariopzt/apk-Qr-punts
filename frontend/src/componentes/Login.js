@@ -1,11 +1,31 @@
 import React, { useState } from "react";
+import "../estilos/login.css";
+import { loginUsuario } from "./api";
 
-function Login() {
+function Login({ onCrearUsuario }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    try {
+      await loginUsuario(username, password);
+      setSuccess("¡Login correcto!");
+    } catch (err) {
+      if (err.message === "Usuario o contraseña incorrectos") {
+        setError("No se encuentra ese usuario");
+      } else {
+        setError(err.message);
+      }
+    }
+  };
+
   return (
-    <div style={{ maxWidth: 350, margin: "auto", marginTop: 80, padding: 20, border: "1px solid #ccc", borderRadius: 8 }}>
+    <form className="login-container" onSubmit={handleLogin}>
       <h2>Login</h2>
       <div>
         <label>
@@ -31,8 +51,15 @@ function Login() {
           />
         </label>
       </div>
+      {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
+      {success && <div style={{ color: 'green', marginBottom: 8 }}>{success}</div>}
       <button style={{ width: "100%", padding: 8, marginTop: 12 }}>Entrar</button>
-    </div>
+      <div style={{ textAlign: 'center', marginTop: 18 }}>
+        <a href="#" style={{ color: '#1e90ff', textDecoration: 'underline', fontSize: '1rem' }} onClick={e => { e.preventDefault(); onCrearUsuario(); }}>
+          Crear usuario
+        </a>
+      </div>
+    </form>
   );
 }
 

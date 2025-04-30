@@ -1,16 +1,35 @@
 import React, { useState } from "react";
 import "../estilos/login.css";
+import { registrarUsuario } from "./api";
 
 function Registro({ onVolver }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí iría la llamada a la API de registro
-    setMensaje("Usuario registrado (simulado)");
+    setMensaje("");
+    setError("");
+    if (!username || !password || !email) {
+      setError("Todos los campos son obligatorios");
+      return;
+    }
+    try {
+      await registrarUsuario(username, password, email);
+      setMensaje("Usuario agregado");
+      setUsername("");
+      setPassword("");
+      setEmail("");
+    } catch (err) {
+      if (err.message.includes("existe")) {
+        setError("El usuario ya existe");
+      } else {
+        setError(err.message);
+      }
+    }
   };
 
   return (
@@ -52,6 +71,7 @@ function Registro({ onVolver }) {
           />
         </label>
       </div>
+      {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
       {mensaje && <div style={{ color: 'green', marginBottom: 8 }}>{mensaje}</div>}
       <button style={{ width: "100%", padding: 8, marginTop: 12 }}>Registrar</button>
       <div style={{ textAlign: 'center', marginTop: 18 }}>

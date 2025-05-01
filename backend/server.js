@@ -8,10 +8,7 @@ dotenv.config();
 const app = express();
 
 // Conexión a MongoDB Atlas
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
+mongoose.connect(process.env.MONGODB_URI).then(() => {
   console.log("Conectado a MongoDB Atlas correctamente");
 }).catch((err) => {
   console.error("Error conectando a MongoDB Atlas:", err.message);
@@ -58,12 +55,12 @@ app.post("/api/auth/login-local", async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      console.log("[LOGIN] Usuario no encontrado");
+      console.log("[LOGIN] Usuario no encontrado para:", username);
       return res.status(404).json({ message: "No se encuentra ese usuario" });
     }
     if (user.password !== password) {
-      console.log("[LOGIN] Contraseña incorrecta");
-      return res.status(401).json({ message: "Contraseña incorrecta" });
+      console.log("[LOGIN] Contraseña incorrecta para usuario:", username);
+      return res.status(401).json({ message: "Usuario o contraseña incorrectos" });
     }
     console.log("[LOGIN] Login correcto para usuario:", username);
     res.json({ message: "Login correcto", user });

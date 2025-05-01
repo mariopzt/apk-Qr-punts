@@ -1,0 +1,88 @@
+.qrscan-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qrscan-overlay {
+  position: relative;
+  width: 100vw;
+  max-width: 420px;
+  padding: 0 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.qrscan-title {
+  color: #fff;
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.qrscan-subtitle {
+  color: #e6e6e6;
+  font-size: 1.08rem;
+  text-align: center;
+  margin-bottom: 32px;
+}
+.qrscan-frame {
+  margin: 0 auto;
+  width: 260px;
+  height: 260px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 32px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.qrscan-reader {
+  width: 100%;
+  height: 100%;
+}
+.qrscan-close {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  background: rgba(0,0,0,0.22);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 2;
+}
+.qrscan-actions {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  margin-top: 36px;
+}
+.qrscan-btn {
+  flex: 1;
+  margin: 0 8px;
+  padding: 13px 0;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.13rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.qrscan-btn-main {
+  background: #fff;
+  color: #111;
+}
+.qrscan-btn-alt {
+  background: #f6f6f6;
+  color: #333;
+}

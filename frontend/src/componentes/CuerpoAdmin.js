@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import "../estilos/cuerpoNuevo.css";
-
-
+import "../estilos/qrscan.css";
 
 function CuerpoAdmin({ usuario }) {
   const [qrResult, setQrResult] = useState("");
@@ -16,7 +15,15 @@ function CuerpoAdmin({ usuario }) {
     Html5Qrcode.getCameras().then(devices => {
       setCameras(devices);
       if (devices.length > 0) {
-        setCameraId(devices[0].id);
+        // Buscar cámara trasera por label
+        const backCam = devices.find(cam =>
+          cam.label && cam.label.toLowerCase().includes('back')
+        );
+        if (backCam) {
+          setCameraId(backCam.id);
+        } else {
+          setCameraId(devices[0].id);
+        }
       } else {
         setError("No se encontraron cámaras");
       }
@@ -44,24 +51,20 @@ function CuerpoAdmin({ usuario }) {
   }, [cameraId]);
 
   return (
-    <div className="cuerpo-nuevo-bg">
-      <div className="cuerpo-nuevo-container">
-        <h2>Panel de Admin</h2>
-        {cameras.length > 1 && (
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ color: '#fff' }}>Selecciona cámara: </label>
-            <select value={cameraId || ""} onChange={e => { setQrResult(""); setError(""); setCameraId(e.target.value); }}>
-              {cameras.map(cam => (
-                <option key={cam.id} value={cam.id}>{cam.label || cam.id}</option>
-              ))}
-            </select>
-          </div>
-        )}
-        <div style={{ margin: '24px 0' }}>
-          <div id="qr-reader" ref={qrRef} style={{ width: 300, margin: '0 auto' }} />
+    <div className="qrscan-bg">
+      <div className="qrscan-overlay">
+        <button className="qrscan-close" onClick={() => window.history.back()}>✕</button>
+        <div className="qrscan-title">Scan QR Code</div>
+        <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
+        <div className="qrscan-frame">
+          <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
         </div>
-        <div style={{ color: '#fff', fontSize: 18, marginTop: 18 }}>
+        <div style={{ color: '#fff', fontSize: 18, marginTop: 18, textAlign: 'center' }}>
           {error ? error : (qrResult ? <>QR leído: <b>{qrResult}</b></> : "Escanea un código QR")}
+        </div>
+        <div className="qrscan-actions">
+          <button className="qrscan-btn qrscan-btn-main">Scan code</button>
+          <button className="qrscan-btn qrscan-btn-alt">Enter code</button>
         </div>
       </div>
     </div>

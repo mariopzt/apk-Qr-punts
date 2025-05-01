@@ -1,7 +1,9 @@
 // API helpers para login y registro
 // Cambia la IP por la de tu PC en la red local
+const API_URL = process.env.REACT_APP_API_URL;
+
 export async function loginUsuario(username, password) {
-  const res = await fetch("http://192.168.1.144:5000/api/auth/login-local", {
+  const res = await fetch(`${API_URL}/api/auth/login-local`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
@@ -14,7 +16,7 @@ export async function loginUsuario(username, password) {
 }
 
 export async function registrarUsuario(username, password, email) {
-  const res = await fetch("http://192.168.1.144:5000/api/auth/register", {
+  const res = await fetch(`${API_URL}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password, email })

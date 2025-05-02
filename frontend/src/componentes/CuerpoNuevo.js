@@ -94,14 +94,14 @@ function CuerpoNuevo({ usuario, setUsuario }) {
           </div>
         </div>
 
-        {showQr && (
+        {showQr ? (
           <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowQr(false); }}>
             <div className="qr-modal">
               <button className="qr-modal-close" onClick={() => setShowQr(false)}>✕</button>
               <QrCodeBox value={usuario.qrCode} size={220} />
             </div>
           </div>
-        )}
+        ) : null}
       </div>
       </div>
     </div>

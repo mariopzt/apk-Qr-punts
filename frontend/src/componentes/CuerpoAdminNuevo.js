@@ -4,6 +4,8 @@ import "../estilos/cuerpoNuevo.css";
 import "../estilos/qrscan.css";
 import "../estilos/cuerpoAdminNuevo.css";
 
+import { sumarPuntoUsuario } from "./api";
+
 function CuerpoAdminNuevo({ usuario }) {
   const [showQr, setShowQr] = useState(false);
   const [qrResult, setQrResult] = useState("");
@@ -56,7 +58,7 @@ function CuerpoAdminNuevo({ usuario }) {
             scannerRef.current.start(
               { deviceId: { exact: backCam.id } },
               { fps: 10, qrbox: 250 },
-              (decodedText) => {
+              async (decodedText) => {
                 // Evita lecturas dobles rápidas
                 const now = Date.now();
                 if (decodedText !== lastScan || now - lastScanTime > 2000) {
@@ -64,13 +66,20 @@ function CuerpoAdminNuevo({ usuario }) {
                   lastScanTime = now;
                   console.log('[QR] QR leído:', decodedText);
                   setQrResult(decodedText);
-                  // Resalta el frame visualmente
-                  const frame = document.querySelector('.qrscan-frame');
-                  if (frame) {
-                    frame.style.boxShadow = '0 0 0 4px #4caf50, 0 2px 16px rgba(0,0,0,0.13)';
-                    setTimeout(() => {
-                      frame.style.boxShadow = '';
-                    }, 800);
+                  // Sumar punto vía API
+                  try {
+                    await sumarPuntoUsuario(decodedText);
+                    // Feedback visual
+                    const frame = document.querySelector('.qrscan-frame');
+                    if (frame) {
+                      frame.style.boxShadow = '0 0 0 4px #4caf50, 0 2px 16px rgba(0,0,0,0.13)';
+                      setTimeout(() => {
+                        frame.style.boxShadow = '';
+                      }, 800);
+                    }
+                    // Opcional: mostrar mensaje de éxito (puedes usar setQrResult o setError para feedback)
+                  } catch (err) {
+                    setError("Error al sumar punto: " + (err.message || err));
                   }
                 }
               },

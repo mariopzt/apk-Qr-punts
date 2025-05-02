@@ -27,3 +27,18 @@ export async function registrarUsuario(username, password, email) {
   }
   return await res.json();
 }
+
+// Suma un punto al usuario identificado por el QR escaneado
+export async function sumarPuntoUsuario(qrCode) {
+  const res = await fetch(`${API_URL}/api/puntos/sumar`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ qrCode })
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || "Error al sumar punto");
+  }
+  return await res.json();
+}
+

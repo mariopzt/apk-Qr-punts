@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Login from "./componentes/Login";
 import Registro from "./componentes/Registro";
-import CuerpoNuevo from "./componentes/CuerpoNuevoDebug";
-import CuerpoAdminNuevo from "./componentes/CuerpoAdminNuevo";
+import CuerpoNuevo from "./componentes/CuerpoNuevo";
+import CuerpoAdminNuevo from "./componentes/CuerpoAdminNuevo"; // Único admin
 
 function App() {
   const [vista, setVista] = useState("login");

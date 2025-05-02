@@ -25,11 +25,12 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     };
     window.addEventListener('qr-punto-sumado', handler);
     return () => window.removeEventListener('qr-punto-sumado', handler);
-  }, [usuario.qrCode, showQr]);
+  }, [usuario.qrCode]);
 
   // Elimina cualquier otra llamada a setShowQr(true) fuera del botón
 
 
+  console.log('[DEBUG] Render principal CuerpoNuevo, showQr:', showQr);
   return (
     <div className="cuerpo-nuevo-bg">
       <div className="cuerpo-nuevo-container">
@@ -85,14 +86,14 @@ function CuerpoNuevo({ usuario, setUsuario }) {
           </div>
         </div>
 
-        {showQr ? (
+        {(() => { console.log('[DEBUG] Render modal QR, showQr:', showQr); return showQr ? (
           <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowQr(false); }}>
             <div className="qr-modal">
               <button className="qr-modal-close" onClick={() => setShowQr(false)}>✕</button>
               <QrCodeBox value={usuario.qrCode} size={220} />
             </div>
           </div>
-        ) : null}
+        ) : null })()}
       </div>
       </div>
     </div>

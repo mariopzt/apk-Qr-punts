@@ -2,8 +2,28 @@ import React, { useState } from "react";
 import QrCodeBox from "./QrCodeBox";
 import "../estilos/cuerpoNuevo.css";
 
-function CuerpoNuevo({ usuario }) {
+import { useEffect } from "react";
+import { getUsuarioByQrCode } from "./api";
+
+function CuerpoNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
+
+  // Refrescar usuario automáticamente cada 5 segundos
+  useEffect(() => {
+    if (!usuario?.qrCode) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await getUsuarioByQrCode(usuario.qrCode);
+        if (res && res.user) {
+          const { password, username, ...userSafe } = res.user;
+          setUsuario(userSafe);
+        }
+      } catch (e) {
+        // Ignorar errores de refresco
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [usuario?.qrCode, setUsuario]);
   return (
     <div className="cuerpo-nuevo-bg">
       <div className="cuerpo-nuevo-container">

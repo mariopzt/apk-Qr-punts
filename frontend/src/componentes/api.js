@@ -29,6 +29,15 @@ export async function registrarUsuario(username, password, email) {
 }
 
 // Suma un punto al usuario identificado por el QR escaneado
+export async function getUsuarioByQrCode(qrCode) {
+  const res = await fetch(`${API_URL}/api/usuario/qr/${encodeURIComponent(qrCode)}`);
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || "Error al obtener usuario");
+  }
+  return await res.json();
+}
+
 export async function sumarPuntoUsuario(qrCode) {
   const res = await fetch(`${API_URL}/api/puntos/sumar`, {
     method: "POST",

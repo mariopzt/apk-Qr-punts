@@ -70,9 +70,11 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                   try {
                     // Sumar punto vía API y obtener usuario actualizado
                     const res = await sumarPuntoUsuario(decodedText);
-                    // Si la API responde con el usuario actualizado, refrescar
-                    if (res && res.user) {
+                    // Si el admin escanea SU PROPIO QR, actualizar usuario y cerrar modal
+                    if (usuario.qrCode === decodedText && res && res.user) {
                       setUsuario(res.user);
+                      setQrResult(''); // Limpia el resultado
+                      setShowQr(false); // Cierra el modal
                     }
                     // Feedback visual
                     const frame = document.querySelector('.qrscan-frame');

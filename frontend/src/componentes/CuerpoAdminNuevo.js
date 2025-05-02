@@ -37,15 +37,23 @@ function CuerpoAdminNuevo({ usuario }) {
         }
         if (isMounted && qrRef.current) {
           scannerRef.current = new Html5Qrcode(qrRef.current.id);
+          console.log('[QR] Iniciando lector QR con cámara', backCam);
           scannerRef.current.start(
             { deviceId: { exact: backCam.id } },
             { fps: 10, qrbox: 250 },
             (decodedText) => {
+              console.log('[QR] QR leído:', decodedText);
               setQrResult(decodedText);
               scannerRef.current.stop();
             },
-            (err) => {}
-          ).catch((err) => setError("Error al iniciar cámara: " + err));
+            (err) => {
+              // Puedes loguear errores de escaneo aquí si lo deseas
+              // console.log('[QR] Error escaneando:', err);
+            }
+          ).catch((err) => {
+            setError("Error al iniciar cámara: " + err);
+            console.error('[QR] Error al iniciar cámara:', err);
+          });
         }
       } catch (err) {
         setError('Error buscando cámaras: ' + err);
@@ -119,8 +127,8 @@ function CuerpoAdminNuevo({ usuario }) {
               <div className="qrscan-frame">
                 <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
               </div>
-              <div style={{ color: '#fff', fontSize: 18, marginTop: 18, textAlign: 'center' }}>
-                {error ? error : (qrResult ? <>QR leído: <b>{qrResult}</b></> : "Escanea un código QR")}
+              <div style={{ color: error ? '#ff5252' : (qrResult ? '#4caf50' : '#fff'), fontSize: 18, marginTop: 18, textAlign: 'center', fontWeight: error ? 700 : 400 }}>
+                {error ? <>Error: {error}</> : (qrResult ? <>QR leído: <b>{qrResult}</b></> : "Escanea un código QR")}
               </div>
               <div className="qrscan-actions-bar">
                 <button className="qrscan-bar-btn qrscan-bar-btn-main" onClick={() => setShowQr(false)}>Cerrar</button>

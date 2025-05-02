@@ -20,29 +20,11 @@ function CuerpoNuevo({ usuario, setUsuario }) {
         const { password, username, ...userSafe } = res.user;
         setUsuario(userSafe);
       }
+      setMensaje("¡Punto sumado!");
+      setShowQr(false); // Cierra el modal QR automáticamente
+      setTimeout(() => setMensaje(""), 2000);
     } catch (e) {}
-    setMensaje("¡Punto sumado!");
-    setShowQr(false); // Cierra el modal QR automáticamente
-    setTimeout(() => setMensaje(""), 2000);
-  };
-
-  // Refrescar usuario automáticamente cada 5 segundos
-  useEffect(() => {
-    if (!usuario?.qrCode) return;
-    const interval = setInterval(async () => {
-      try {
-        const res = await getUsuarioByQrCode(usuario.qrCode);
-        if (res && res.user) {
-          const { password, username, ...userSafe } = res.user;
-          setUsuario(userSafe);
-        }
-      } catch (e) {}
-    }, 5000);
-    // Escuchar evento global de punto sumado
-    // Elimina el refresco automático y el handler
-    // Solo deja la UI original y el cierre de QR tras sumar punto
-    return () => {};
-  }, []);
+  }
 
   return (
     <div className="cuerpo-nuevo-bg">

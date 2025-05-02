@@ -59,6 +59,25 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
               <span className="coin">🪙</span> {usuario.points ?? 0}
             </div>
           </div>
+
+          {/* Sección boosters-list: Historial y Nivel de usuario */}
+          <div className="section-title">Tu Espacio</div>
+          <div className="boosters-list">
+            <div className="booster-item ">
+              <div className="booster-icon">🤖</div>
+              <div>
+                <div className="booster-title">Historial</div>
+                <div className="booster-sub silver">Pedidos y descuentos</div>
+              </div>
+            </div>
+            <div className="booster-item">
+              <div className="booster-icon">🖐️</div>
+              <div>
+                <div className="booster-title">Nivel de usuario</div>
+                <div className="booster-sub"> <span className="coin">🪙</span> • 0 lvl</div>
+              </div>
+            </div>
+          </div>
           <div className="boosters-list">
             <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
               <div className="booster-icon">📱</div>

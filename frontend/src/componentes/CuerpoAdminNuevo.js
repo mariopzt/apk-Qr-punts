@@ -7,8 +7,8 @@ import "../estilos/cuerpoAdminNuevo.css";
 function CuerpoAdminNuevo({ usuario }) {
   const [showQr, setShowQr] = useState(false);
   const [qrResult, setQrResult] = useState("");
-  const [cameras, setCameras] = useState([]);
-  const [cameraId, setCameraId] = useState(null);
+  // Eliminado: cámaras y cameraId ya no son necesarios
+
   const [error, setError] = useState("");
   const qrRef = useRef(null);
   const scannerRef = useRef(null);
@@ -27,24 +27,51 @@ function CuerpoAdminNuevo({ usuario }) {
   }, [showQr]);
 
   useEffect(() => {
-    if (!showQr || !qrRef.current || !cameraId) return;
-    scannerRef.current = new Html5Qrcode(qrRef.current.id);
-    scannerRef.current.start(
-      cameraId,
-      { fps: 10, qrbox: 250 },
-      (decodedText) => {
-        setQrResult(decodedText);
-        scannerRef.current.stop();
-      },
-      (err) => {}
-    ).catch((err) => setError("Error al iniciar cámara: " + err));
+    if (!showQr || !qrRef.current) return;
+    let isMounted = true;
+    (async () => {
+      try {
+        const devices = await Html5Qrcode.getCameras();
+        const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
+        let backCam = devices.find(cam => {
+          if (!cam.label) return false;
+          const label = cam.label.toLowerCase();
+          return backLabels.some(word => label.includes(word));
+        });
+        // Fallback: si no hay trasera pero hay solo una cámara, úsala
+        if (!backCam && devices.length === 1) {
+          backCam = devices[0];
+        }
+        if (!backCam) {
+          setError('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
+          setShowQr(false);
+          return;
+        }
+        if (isMounted && qrRef.current) {
+          scannerRef.current = new Html5Qrcode(qrRef.current.id);
+          scannerRef.current.start(
+            { deviceId: { exact: backCam.id } },
+            { fps: 10, qrbox: 250 },
+            (decodedText) => {
+              setQrResult(decodedText);
+              scannerRef.current.stop();
+            },
+            (err) => {}
+          ).catch((err) => setError("Error al iniciar cámara: " + err));
+        }
+      } catch (err) {
+        setError('Error buscando cámaras: ' + err);
+        setShowQr(false);
+      }
+    })();
     return () => {
+      isMounted = false;
       if (scannerRef.current && scannerRef.current.getState() === 2) {
         scannerRef.current.stop().catch(() => {});
       }
     };
     // eslint-disable-next-line
-  }, [showQr, cameraId]);
+  }, [showQr]);
 
   return (
     <div className="admin-bg">

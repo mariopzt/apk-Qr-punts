@@ -63,7 +63,7 @@ function CuerpoNuevo({ usuario }) {
             <div className="qr-modal">
               <button className="qr-modal-close" onClick={() => setShowQr(false)}>✕</button>
               <QrCodeBox value={usuario.qrCode} size={220} />
-              <div style={{ marginTop: 12, color: '#fff', fontSize: 15 }}>{usuario.qrCode}</div>
+
             </div>
           </div>
         )}

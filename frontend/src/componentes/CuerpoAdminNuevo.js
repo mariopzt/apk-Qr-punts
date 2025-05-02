@@ -59,7 +59,7 @@ function CuerpoAdminNuevo({ usuario }) {
               (decodedText) => {
                 // Evita lecturas dobles rápidas
                 const now = Date.now();
-                if (decodedText !== lastScan || now - lastScanTime > 1500) {
+                if (decodedText !== lastScan || now - lastScanTime > 2000) {
                   lastScan = decodedText;
                   lastScanTime = now;
                   console.log('[QR] QR leído:', decodedText);

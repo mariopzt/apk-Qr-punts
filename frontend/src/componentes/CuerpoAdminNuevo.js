@@ -56,7 +56,25 @@ function CuerpoAdminNuevo({ usuario }) {
         </div>
         {/* GRID DE ACCIONES */}
         <div className="admin-grid">
-          <div className="admin-card" onClick={() => setShowQr(true)}>
+          <div className="admin-card" onClick={async () => {
+            // Buscar cámaras antes de abrir el lector
+            try {
+              const devices = await Html5Qrcode.getCameras();
+              const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
+              const backCam = devices.find(cam => {
+                if (!cam.label) return false;
+                const label = cam.label.toLowerCase();
+                return backLabels.some(word => label.includes(word));
+              });
+              if (backCam) {
+                setShowQr(true);
+              } else {
+                alert('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
+              }
+            } catch (e) {
+              alert('Error buscando cámaras: ' + e);
+            }
+          }}>
             <div className="admin-card-icon">📷</div>
             <div className="admin-card-title">Lector QR</div>
             <div className="admin-card-desc">Escanea códigos</div>

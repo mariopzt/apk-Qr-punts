@@ -39,9 +39,25 @@ function CuerpoNuevo({ usuario, setUsuario }) {
       } catch (e) {}
     }, 5000);
     // Escuchar evento global de punto sumado
-    const handler = (e) => {
+    let esperandoPunto = false;
+    const handler = async (e) => {
       if (e.detail && e.detail.qrCode === usuario.qrCode) {
-        handlePuntoSumado();
+        esperandoPunto = true;
+        try {
+          const res = await getUsuarioByQrCode(usuario.qrCode);
+          if (res && res.user) {
+            const { password, username, ...userSafe } = res.user;
+            // Solo si subió el punto
+            if ((userSafe.points ?? 0) > (usuario.points ?? 0)) {
+              setUsuario(userSafe);
+              setMensaje("¡Punto sumado!");
+              setShowQr(false);
+              setTimeout(() => setMensaje(""), 2000);
+            } else {
+              setUsuario(userSafe); // Refresca igual
+            }
+          }
+        } catch (e) {}
       }
     };
     window.addEventListener('qr-punto-sumado', handler);

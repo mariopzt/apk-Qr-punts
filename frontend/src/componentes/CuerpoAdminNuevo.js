@@ -89,6 +89,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                     }
                   } catch (err) {
                     setError("Error al sumar punto: " + (err.message || err));
+                    console.error("Error al sumar punto:", err);
                   }
                 }
               },

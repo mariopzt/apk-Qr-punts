@@ -6,28 +6,28 @@ import { useEffect } from "react";
 import { getUsuarioByQrCode } from "./api";
 
 import { useRef } from "react";
+import { socket } from "../socket";
 
 function CuerpoNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const lastPoints = useRef(usuario.points ?? 0);
 
-  // Solo abrir QR modal desde el botón, y cerrar al recibir el evento
-
+  // Socket.io: unirse a la sala del qrCode y escuchar 'punto-sumado'
   React.useEffect(() => {
-    const handler = (e) => {
-      console.log('[DEBUG] Evento qr-punto-sumado recibido:', e.detail, 'QR usuario:', usuario.qrCode, 'showQr:', showQr);
-      if (e.detail && e.detail.qrCode === usuario.qrCode) {
-        setShowQr(false);
-        setMensaje("¡Punto sumado!");
-        setTimeout(() => setMensaje(""), 2000);
-      }
+    if (!usuario?.qrCode) return;
+    if (!socket.connected) socket.connect();
+    socket.emit('join', usuario.qrCode);
+    const handler = () => {
+      setShowQr(false);
+      setMensaje("¡Punto sumado!");
+      setTimeout(() => setMensaje(""), 2000);
     };
-    window.addEventListener('qr-punto-sumado', handler);
-    return () => window.removeEventListener('qr-punto-sumado', handler);
+    socket.on('punto-sumado', handler);
+    return () => {
+      socket.off('punto-sumado', handler);
+    };
   }, [usuario.qrCode]);
-
-  // Elimina cualquier otra llamada a setShowQr(true) fuera del botón
 
 
   console.log('[DEBUG] Render principal CuerpoNuevo, showQr:', showQr);

@@ -6,6 +6,8 @@ import mongoose from "mongoose";
 dotenv.config();
 
 const app = express();
+import http from 'http';
+import { initSocket, notifyPuntoSumado } from './socket.js';
 
 // Conexión a MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI).then(() => {
@@ -117,8 +119,9 @@ app.post("/api/puntos/sumar", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado para ese QR" });
     }
-    user.points = (user.points || 0) + 1;
+    user.points = (user.points ?? 0) + 1;
     await user.save();
+    notifyPuntoSumado(qrCode);
     const { password, ...userSafe } = user.toObject();
     res.json({ ok: true, user: userSafe });
   } catch (err) {
@@ -130,7 +133,9 @@ app.get("/", (req, res) => {
   res.send("API funcionando como proxy a la API externa");
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor proxy corriendo en puerto ${PORT} (accesible en red local)`);
+const server = http.createServer(app);
+initSocket(server);
+server.listen(PORT, () => {
+  console.log(`Servidor backend escuchando en puerto ${PORT}`);
   console.log(`Conectado a Atlas (API externa)`);
 });

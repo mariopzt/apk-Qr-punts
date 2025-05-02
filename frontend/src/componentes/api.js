@@ -44,10 +44,16 @@ export async function sumarPuntoUsuario(qrCode) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ qrCode })
   });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.message || "Error al sumar punto");
+  let data = {};
+  try {
+    data = await res.clone().json();
+  } catch (e) {
+    data = {};
   }
-  return await res.json();
+  if (!res.ok) {
+    console.error("Respuesta error sumar punto:", res.status, data);
+    throw new Error(data.message || `Error HTTP ${res.status}`);
+  }
+  return data;
 }
 

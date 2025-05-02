@@ -88,7 +88,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                       setShowQr(false); // Cierra el modal
                     }
                   } catch (err) {
-                    setError("Error al sumar punto: " + (err.message || err));
+                    setError("Error al sumar punto: " + (err.message || err) + (err && err.stack ? ('\n' + err.stack) : ''));
                     console.error("Error al sumar punto:", err);
                   }
                 }

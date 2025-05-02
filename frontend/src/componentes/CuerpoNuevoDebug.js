@@ -62,15 +62,15 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
 
           {/* Sección boosters-list: Historial y Nivel de usuario */}
           <div className="section-title">Tu Espacio</div>
-          <div className="boosters-list">
-            <div className="booster-item ">
+          <div className="boosters-row">
+            <div className="booster-card">
               <div className="booster-icon">🤖</div>
               <div>
                 <div className="booster-title">Historial</div>
                 <div className="booster-sub silver">Pedidos y descuentos</div>
               </div>
             </div>
-            <div className="booster-item">
+            <div className="booster-card">
               <div className="booster-icon">🖐️</div>
               <div>
                 <div className="booster-title">Nivel de usuario</div>
@@ -98,7 +98,6 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
               </div>
             </div>
           )}
-          <pre style={{background:'#222',color:'#fff',padding:8,marginTop:16,fontSize:12,maxHeight:120,overflow:'auto'}}>{debug}</pre>
         </div>
       </div>
     </div>

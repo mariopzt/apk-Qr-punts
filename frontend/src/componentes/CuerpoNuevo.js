@@ -5,8 +5,21 @@ import "../estilos/cuerpoNuevo.css";
 import { useEffect } from "react";
 import { getUsuarioByQrCode } from "./api";
 
+import { useRef } from "react";
+
 function CuerpoNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
+  const [mensaje, setMensaje] = useState("");
+  const lastPoints = useRef(usuario.points ?? 0);
+
+  // Mostrar mensaje cuando suben los puntos
+  useEffect(() => {
+    if ((usuario.points ?? 0) > lastPoints.current) {
+      setMensaje("¡Punto sumado!");
+      setTimeout(() => setMensaje(""), 2000);
+    }
+    lastPoints.current = usuario.points ?? 0;
+  }, [usuario.points]);
 
   // Refrescar usuario automáticamente cada 5 segundos
   useEffect(() => {
@@ -69,14 +82,22 @@ function CuerpoNuevo({ usuario, setUsuario }) {
         </div>
 
         <div className="boosters-list">
-          <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
-            <div className="booster-icon">📱</div>
-            <div>
-              <div className="booster-title">Mostrar tu QR</div>
-              <div className="booster-sub">Toca para ver tu código QR</div>
+          {/* Solo mostrar el QR si el usuario tiene 0 puntos */}
+          {(usuario.points ?? 0) === 0 && (
+            <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
+              <div className="booster-icon">📱</div>
+              <div>
+                <div className="booster-title">Mostrar tu QR</div>
+                <div className="booster-sub">Toca para ver tu código QR</div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
+
+        {/* Mensaje de punto sumado */}
+        {mensaje && (
+          <div style={{ textAlign: 'center', marginTop: 16, color: '#4caf50', fontWeight: 600, fontSize: 18 }}>{mensaje}</div>
+        )}
 
         {showQr && (
           <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowQr(false); }}>

@@ -13,18 +13,6 @@ function CuerpoAdminNuevo({ usuario }) {
   const qrRef = useRef(null);
   const scannerRef = useRef(null);
 
-  useEffect(() => {
-    if (!showQr) return;
-    Html5Qrcode.getCameras().then(devices => {
-      setCameras(devices);
-      if (devices.length > 0) {
-        const backCam = devices.find(cam => cam.label && cam.label.toLowerCase().includes('back'));
-        setCameraId(backCam ? backCam.id : devices[0].id);
-      } else {
-        setError("No se encontraron cámaras");
-      }
-    }).catch(err => setError("Error buscando cámaras: " + err));
-  }, [showQr]);
 
   useEffect(() => {
     if (!showQr || !qrRef.current) return;

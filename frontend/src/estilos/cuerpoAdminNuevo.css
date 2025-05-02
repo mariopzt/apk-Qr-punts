@@ -49,6 +49,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 18px;
 }
+
 .admin-card {
   background: #191923;
   border-radius: 18px;
@@ -67,7 +68,24 @@
 .admin-card.disabled {
   opacity: 0.7;
   cursor: default;
+  min-height: 130px;
+  font-size: 1.18rem;
+  padding-top: 32px;
+  padding-bottom: 32px;
 }
+
+.admin-card.disabled .admin-card-title {
+  font-size: 1.23rem;
+}
+
+.admin-card.disabled .admin-card-icon {
+  font-size: 38px;
+}
+
+.admin-card.disabled .admin-card-desc {
+  font-size: 1.05rem;
+}
+
 .admin-card-icon {
   font-size: 30px;
   margin-bottom: 8px;

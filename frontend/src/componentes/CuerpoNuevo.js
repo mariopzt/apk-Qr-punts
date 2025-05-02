@@ -12,21 +12,8 @@ function CuerpoNuevo({ usuario, setUsuario }) {
   const [mensaje, setMensaje] = useState("");
   const lastPoints = useRef(usuario.points ?? 0);
 
-  // Mostrar mensaje cuando suben los puntos y cerrar el modal QR
-  const handlePuntoSumado = async () => {
-    try {
-      const res = await getUsuarioByQrCode(usuario.qrCode);
-      if (res && res.user) {
-        const { password, username, ...userSafe } = res.user;
-        setUsuario(userSafe);
-      }
-      setMensaje("¡Punto sumado!");
-      setShowQr(false); // Cierra el modal QR automáticamente
-      setTimeout(() => setMensaje(""), 2000);
-    } catch (e) {}
-  }
+  // Solo abrir QR modal desde el botón, y cerrar al recibir el evento
 
-  // Cierra el QR modal al recibir el evento de punto sumado (cuando escanean)
   React.useEffect(() => {
     const handler = (e) => {
       if (e.detail && e.detail.qrCode === usuario.qrCode) {
@@ -38,6 +25,9 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     window.addEventListener('qr-punto-sumado', handler);
     return () => window.removeEventListener('qr-punto-sumado', handler);
   }, [usuario.qrCode]);
+
+  // Elimina cualquier otra llamada a setShowQr(true) fuera del botón
+
 
   return (
     <div className="cuerpo-nuevo-bg">

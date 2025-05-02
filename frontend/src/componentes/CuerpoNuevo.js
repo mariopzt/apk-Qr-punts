@@ -13,24 +13,43 @@ function CuerpoNuevo({ usuario, setUsuario }) {
   const lastPoints = useRef(usuario.points ?? 0);
 
   // Mostrar mensaje cuando suben los puntos y cerrar el modal QR
+  const handlePuntoSumado = async () => {
+    try {
+      const res = await getUsuarioByQrCode(usuario.qrCode);
+      if (res && res.user) {
+        const { password, username, ...userSafe } = res.user;
+        setUsuario(userSafe);
+      }
+    } catch (e) {}
+    setMensaje("¡Punto sumado!");
+    setShowQr(false); // Cierra el modal QR automáticamente
+    setTimeout(() => setMensaje(""), 2000);
+  };
+
+  // Refrescar usuario automáticamente cada 5 segundos
   useEffect(() => {
-    if ((usuario.points ?? 0) > lastPoints.current) {
-      // Refresca inmediatamente los datos del usuario
-      (async () => {
-        try {
-          const res = await getUsuarioByQrCode(usuario.qrCode);
-          if (res && res.user) {
-            const { password, username, ...userSafe } = res.user;
-            setUsuario(userSafe);
-          }
-        } catch (e) {}
-      })();
-      setMensaje("¡Punto sumado!");
-      setShowQr(false); // Cierra el modal QR automáticamente
-      setTimeout(() => setMensaje(""), 2000);
-    }
-    lastPoints.current = usuario.points ?? 0;
-  }, [usuario.points]);
+    if (!usuario?.qrCode) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await getUsuarioByQrCode(usuario.qrCode);
+        if (res && res.user) {
+          const { password, username, ...userSafe } = res.user;
+          setUsuario(userSafe);
+        }
+      } catch (e) {}
+    }, 5000);
+    // Escuchar evento global de punto sumado
+    const handler = (e) => {
+      if (e.detail && e.detail.qrCode === usuario.qrCode) {
+        handlePuntoSumado();
+      }
+    };
+    window.addEventListener('qr-punto-sumado', handler);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('qr-punto-sumado', handler);
+    };
+  }, [usuario?.qrCode, setUsuario]);
 
   // Refrescar usuario automáticamente cada 5 segundos
   useEffect(() => {

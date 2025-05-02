@@ -15,6 +15,16 @@ function CuerpoNuevo({ usuario, setUsuario }) {
   // Mostrar mensaje cuando suben los puntos y cerrar el modal QR
   useEffect(() => {
     if ((usuario.points ?? 0) > lastPoints.current) {
+      // Refresca inmediatamente los datos del usuario
+      (async () => {
+        try {
+          const res = await getUsuarioByQrCode(usuario.qrCode);
+          if (res && res.user) {
+            const { password, username, ...userSafe } = res.user;
+            setUsuario(userSafe);
+          }
+        } catch (e) {}
+      })();
       setMensaje("¡Punto sumado!");
       setShowQr(false); // Cierra el modal QR automáticamente
       setTimeout(() => setMensaje(""), 2000);

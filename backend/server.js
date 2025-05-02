@@ -92,6 +92,26 @@ app.get("/api/user/me", async (req, res) => {
   }
 });
 
+// Sumar punto a usuario por QR
+app.post("/api/puntos/sumar", async (req, res) => {
+  const { qrCode } = req.body;
+  if (!qrCode) {
+    return res.status(400).json({ message: "Falta el código QR" });
+  }
+  try {
+    const user = await User.findOne({ qrCode });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado para ese QR" });
+    }
+    user.points = (user.points || 0) + 1;
+    await user.save();
+    const { password, ...userSafe } = user.toObject();
+    res.json({ ok: true, user: userSafe });
+  } catch (err) {
+    res.status(500).json({ message: "Error al sumar punto", error: err.message });
+  }
+});
+
 app.get("/", (req, res) => {
   res.send("API funcionando como proxy a la API externa");
 });

@@ -7,67 +7,81 @@ import "../estilos/cuerpoAdminNuevo.css";
 function CuerpoAdminNuevo({ usuario }) {
   const [showQr, setShowQr] = useState(false);
   const [qrResult, setQrResult] = useState("");
-  // Eliminado: cámaras y cameraId ya no son necesarios
-
   const [error, setError] = useState("");
   const qrRef = useRef(null);
   const scannerRef = useRef(null);
 
-
+  // Limpiar resultado y error al abrir/cerrar modal
   useEffect(() => {
-    if (!showQr || !qrRef.current) return;
-    let isMounted = true;
-    (async () => {
-      try {
-        const devices = await Html5Qrcode.getCameras();
-        const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
-        let backCam = devices.find(cam => {
-          if (!cam.label) return false;
-          const label = cam.label.toLowerCase();
-          return backLabels.some(word => label.includes(word));
-        });
-        // Fallback: si no hay trasera pero hay solo una cámara, úsala
-        if (!backCam && devices.length === 1) {
-          backCam = devices[0];
-        }
-        if (!backCam) {
-          setError('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
-          setShowQr(false);
-          return;
-        }
-        if (isMounted && qrRef.current) {
-          scannerRef.current = new Html5Qrcode(qrRef.current.id);
-          console.log('[QR] Iniciando lector QR con cámara', backCam);
-          scannerRef.current.start(
-            { deviceId: { exact: backCam.id } },
-            { fps: 10, qrbox: 250 },
-            (decodedText) => {
-              console.log('[QR] QR leído:', decodedText);
-              setQrResult(decodedText);
-              scannerRef.current.stop();
-            },
-            (err) => {
-              // Puedes loguear errores de escaneo aquí si lo deseas
-              // console.log('[QR] Error escaneando:', err);
-            }
-          ).catch((err) => {
-            setError("Error al iniciar cámara: " + err);
-            console.error('[QR] Error al iniciar cámara:', err);
-          });
-        }
-      } catch (err) {
-        setError('Error buscando cámaras: ' + err);
-        setShowQr(false);
-      }
-    })();
-    return () => {
-      isMounted = false;
-      if (scannerRef.current && scannerRef.current.getState() === 2) {
-        scannerRef.current.stop().catch(() => {});
-      }
-    };
-    // eslint-disable-next-line
+    if (showQr) {
+      setQrResult("");
+      setError("");
+    }
   }, [showQr]);
+
+
+  // Nuevo useEffect: inicializa el scanner solo cuando showQr y qrRef.current están listos
+  useEffect(() => {
+    if (!showQr) return;
+    // Espera un tick para asegurar que el div está en el DOM
+    const timer = setTimeout(() => {
+      if (!qrRef.current) {
+        setError('No se encontró el contenedor del lector QR.');
+        console.error('[QR] No se encontró el contenedor del lector QR.');
+        return;
+      }
+      let isMounted = true;
+      (async () => {
+        try {
+          const devices = await Html5Qrcode.getCameras();
+          const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
+          let backCam = devices.find(cam => {
+            if (!cam.label) return false;
+            const label = cam.label.toLowerCase();
+            return backLabels.some(word => label.includes(word));
+          });
+          if (!backCam && devices.length === 1) {
+            backCam = devices[0];
+          }
+          if (!backCam) {
+            setError('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
+            setShowQr(false);
+            return;
+          }
+          if (isMounted && qrRef.current) {
+            scannerRef.current = new Html5Qrcode(qrRef.current.id);
+            console.log('[QR] Iniciando lector QR con cámara', backCam);
+            scannerRef.current.start(
+              { deviceId: { exact: backCam.id } },
+              { fps: 10, qrbox: 250 },
+              (decodedText) => {
+                console.log('[QR] QR leído:', decodedText);
+                setQrResult(decodedText);
+                scannerRef.current.stop();
+              },
+              (err) => {}
+            ).catch((err) => {
+              setError("Error al iniciar cámara: " + err);
+              console.error('[QR] Error al iniciar cámara:', err);
+            });
+          }
+        } catch (err) {
+          setError('Error buscando cámaras: ' + err);
+          setShowQr(false);
+        }
+      })();
+      // Limpieza al cerrar
+      return () => {
+        isMounted = false;
+        if (scannerRef.current && scannerRef.current.getState() === 2) {
+          scannerRef.current.stop().catch(() => {});
+        }
+      };
+    }, 0);
+    // Limpieza del timeout
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line
+  }, [showQr, qrRef]);
 
   return (
     <div className="admin-bg">

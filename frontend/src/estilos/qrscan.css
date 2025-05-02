@@ -61,28 +61,42 @@
   cursor: pointer;
   z-index: 2;
 }
-.qrscan-actions {
+.qrscan-actions-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  background: rgba(240,240,240,0.98);
   display: flex;
-  width: 100%;
-  justify-content: space-around;
-  margin-top: 36px;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 36px 16px 36px;
+  border-radius: 28px;
+  max-width: 420px;
+  min-width: 270px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  z-index: 10001;
 }
-.qrscan-btn {
-  flex: 1;
-  margin: 0 8px;
-  padding: 13px 0;
+
+.qrscan-bar-btn {
+  min-width: 120px;
+  padding: 12px 0;
   border: none;
-  border-radius: 14px;
+  border-radius: 11px;
   font-size: 1.13rem;
-  font-weight: 600;
+  font-weight: 500;
+  margin: 0 3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   cursor: pointer;
-  transition: background 0.18s;
+  transition: background 0.18s, color 0.18s;
 }
-.qrscan-btn-main {
+
+.qrscan-bar-btn-main {
   background: #fff;
-  color: #111;
+  color: #222;
 }
-.qrscan-btn-alt {
-  background: #f6f6f6;
-  color: #333;
+.qrscan-bar-btn-alt {
+  background: #f3f3f3;
+  color: #888;
 }

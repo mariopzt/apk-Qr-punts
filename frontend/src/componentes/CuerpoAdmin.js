@@ -62,9 +62,9 @@ function CuerpoAdmin({ usuario }) {
         <div style={{ color: '#fff', fontSize: 18, marginTop: 18, textAlign: 'center' }}>
           {error ? error : (qrResult ? <>QR leído: <b>{qrResult}</b></> : "Escanea un código QR")}
         </div>
-        <div className="qrscan-actions">
-          <button className="qrscan-btn qrscan-btn-main">Scan code</button>
-          <button className="qrscan-btn qrscan-btn-alt">Enter code</button>
+        <div className="qrscan-actions-bar">
+          <button className="qrscan-bar-btn qrscan-bar-btn-main">Scan code</button>
+          <button className="qrscan-bar-btn qrscan-bar-btn-alt">Enter code</button>
         </div>
       </div>
     </div>

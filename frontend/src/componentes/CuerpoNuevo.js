@@ -67,22 +67,6 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     };
   }, [usuario?.qrCode, setUsuario]);
 
-  // Refrescar usuario automáticamente cada 5 segundos
-  useEffect(() => {
-    if (!usuario?.qrCode) return;
-    const interval = setInterval(async () => {
-      try {
-        const res = await getUsuarioByQrCode(usuario.qrCode);
-        if (res && res.user) {
-          const { password, username, ...userSafe } = res.user;
-          setUsuario(userSafe);
-        }
-      } catch (e) {
-        // Ignorar errores de refresco
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [usuario?.qrCode, setUsuario]);
   return (
     <div className="cuerpo-nuevo-bg">
       <div className="cuerpo-nuevo-container">
@@ -142,13 +126,11 @@ function CuerpoNuevo({ usuario, setUsuario }) {
         {mensaje && (
           <div style={{ textAlign: 'center', marginTop: 16, color: '#4caf50', fontWeight: 600, fontSize: 18 }}>{mensaje}</div>
         )}
-
         {showQr && (
           <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowQr(false); }}>
             <div className="qr-modal">
               <button className="qr-modal-close" onClick={() => setShowQr(false)}>✕</button>
               <QrCodeBox value={usuario.qrCode} size={220} />
-
             </div>
           </div>
         )}

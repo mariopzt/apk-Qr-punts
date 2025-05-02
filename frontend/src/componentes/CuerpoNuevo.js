@@ -39,33 +39,10 @@ function CuerpoNuevo({ usuario, setUsuario }) {
       } catch (e) {}
     }, 5000);
     // Escuchar evento global de punto sumado
-    let esperandoPunto = false;
-    const handler = async (e) => {
-      if (e.detail && e.detail.qrCode === usuario.qrCode) {
-        esperandoPunto = true;
-        try {
-          const res = await getUsuarioByQrCode(usuario.qrCode);
-          if (res && res.user) {
-            const { password, username, ...userSafe } = res.user;
-            // Solo si subió el punto
-            if ((userSafe.points ?? 0) > (usuario.points ?? 0)) {
-              setUsuario(userSafe);
-              setMensaje("¡Punto sumado!");
-              setShowQr(false);
-              setTimeout(() => setMensaje(""), 2000);
-            } else {
-              setUsuario(userSafe); // Refresca igual
-            }
-          }
-        } catch (e) {}
-      }
-    };
-    window.addEventListener('qr-punto-sumado', handler);
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('qr-punto-sumado', handler);
-    };
-  }, [usuario?.qrCode, setUsuario]);
+    // Elimina el refresco automático y el handler
+    // Solo deja la UI original y el cierre de QR tras sumar punto
+    return () => {};
+  }, []);
 
   return (
     <div className="cuerpo-nuevo-bg">
@@ -122,10 +99,6 @@ function CuerpoNuevo({ usuario, setUsuario }) {
           </div>
         </div>
 
-        {/* Mensaje de punto sumado */}
-        {mensaje && (
-          <div style={{ textAlign: 'center', marginTop: 16, color: '#4caf50', fontWeight: 600, fontSize: 18 }}>{mensaje}</div>
-        )}
         {showQr && (
           <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowQr(false); }}>
             <div className="qr-modal">

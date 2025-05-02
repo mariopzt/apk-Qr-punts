@@ -16,9 +16,9 @@ function App() {
   }
   if (vista === "cuerpo" && usuario) {
     if (usuario.tipo === "root") {
-      return <CuerpoAdminNuevo usuario={usuario} />;
+      return <CuerpoAdminNuevo usuario={usuario} setUsuario={setUsuario} />;
     }
-    return <CuerpoNuevo usuario={usuario} />;
+    return <CuerpoNuevo usuario={usuario} setUsuario={setUsuario} />;
   }
   return null;
 }

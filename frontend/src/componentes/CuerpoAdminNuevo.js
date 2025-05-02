@@ -6,7 +6,7 @@ import "../estilos/cuerpoAdminNuevo.css";
 
 import { sumarPuntoUsuario } from "./api";
 
-function CuerpoAdminNuevo({ usuario }) {
+function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
   const [qrResult, setQrResult] = useState("");
   const [error, setError] = useState("");
@@ -68,7 +68,12 @@ function CuerpoAdminNuevo({ usuario }) {
                   setQrResult(decodedText);
                   // Sumar punto vía API
                   try {
-                    await sumarPuntoUsuario(decodedText);
+                    // Sumar punto vía API y obtener usuario actualizado
+                    const res = await sumarPuntoUsuario(decodedText);
+                    // Si la API responde con el usuario actualizado, refrescar
+                    if (res && res.user) {
+                      setUsuario(res.user);
+                    }
                     // Feedback visual
                     const frame = document.querySelector('.qrscan-frame');
                     if (frame) {
@@ -77,7 +82,11 @@ function CuerpoAdminNuevo({ usuario }) {
                         frame.style.boxShadow = '';
                       }, 800);
                     }
-                    // Opcional: mostrar mensaje de éxito (puedes usar setQrResult o setError para feedback)
+                    // Si el usuario escaneado es el mismo, ocultar QR
+                    if (usuario.qrCode === decodedText) {
+                      setQrResult(''); // Limpia el resultado
+                      setShowQr(false); // Cierra el modal
+                    }
                   } catch (err) {
                     setError("Error al sumar punto: " + (err.message || err));
                   }

@@ -12,10 +12,11 @@ function CuerpoNuevo({ usuario, setUsuario }) {
   const [mensaje, setMensaje] = useState("");
   const lastPoints = useRef(usuario.points ?? 0);
 
-  // Mostrar mensaje cuando suben los puntos
+  // Mostrar mensaje cuando suben los puntos y cerrar el modal QR
   useEffect(() => {
     if ((usuario.points ?? 0) > lastPoints.current) {
       setMensaje("¡Punto sumado!");
+      setShowQr(false); // Cierra el modal QR automáticamente
       setTimeout(() => setMensaje(""), 2000);
     }
     lastPoints.current = usuario.points ?? 0;
@@ -82,16 +83,14 @@ function CuerpoNuevo({ usuario, setUsuario }) {
         </div>
 
         <div className="boosters-list">
-          {/* Solo mostrar el QR si el usuario tiene 0 puntos */}
-          {(usuario.points ?? 0) === 0 && (
-            <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
-              <div className="booster-icon">📱</div>
-              <div>
-                <div className="booster-title">Mostrar tu QR</div>
-                <div className="booster-sub">Toca para ver tu código QR</div>
-              </div>
+          {/* Mostrar SIEMPRE el botón para ver el QR, aunque el usuario tenga puntos */}
+          <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
+            <div className="booster-icon">📱</div>
+            <div>
+              <div className="booster-title">Mostrar tu QR</div>
+              <div className="booster-sub">Toca para ver tu código QR</div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Mensaje de punto sumado */}

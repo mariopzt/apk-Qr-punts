@@ -16,6 +16,7 @@ function CuerpoNuevo({ usuario, setUsuario }) {
 
   React.useEffect(() => {
     const handler = (e) => {
+      console.log('[DEBUG] Evento qr-punto-sumado recibido:', e.detail, 'QR usuario:', usuario.qrCode, 'showQr:', showQr);
       if (e.detail && e.detail.qrCode === usuario.qrCode) {
         setShowQr(false);
         setMensaje("¡Punto sumado!");
@@ -24,7 +25,7 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     };
     window.addEventListener('qr-punto-sumado', handler);
     return () => window.removeEventListener('qr-punto-sumado', handler);
-  }, [usuario.qrCode]);
+  }, [usuario.qrCode, showQr]);
 
   // Elimina cualquier otra llamada a setShowQr(true) fuera del botón
 
@@ -75,7 +76,7 @@ function CuerpoNuevo({ usuario, setUsuario }) {
 
         <div className="boosters-list">
           {/* Mostrar SIEMPRE el botón para ver el QR, aunque el usuario tenga puntos */}
-          <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
+          <div className="booster-item qr-booster" onClick={() => { console.log('[DEBUG] Botón QR pulsado'); setShowQr(true); }} style={{ cursor: 'pointer' }}>
             <div className="booster-icon">📱</div>
             <div>
               <div className="booster-title">Mostrar tu QR</div>

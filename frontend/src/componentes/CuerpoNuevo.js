@@ -26,6 +26,19 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     } catch (e) {}
   }
 
+  // Cierra el QR modal al recibir el evento de punto sumado (cuando escanean)
+  React.useEffect(() => {
+    const handler = (e) => {
+      if (e.detail && e.detail.qrCode === usuario.qrCode) {
+        setShowQr(false);
+        setMensaje("¡Punto sumado!");
+        setTimeout(() => setMensaje(""), 2000);
+      }
+    };
+    window.addEventListener('qr-punto-sumado', handler);
+    return () => window.removeEventListener('qr-punto-sumado', handler);
+  }, [usuario.qrCode]);
+
   return (
     <div className="cuerpo-nuevo-bg">
       <div className="cuerpo-nuevo-container">

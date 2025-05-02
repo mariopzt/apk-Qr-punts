@@ -51,13 +51,28 @@ function CuerpoAdminNuevo({ usuario }) {
           if (isMounted && qrRef.current) {
             scannerRef.current = new Html5Qrcode(qrRef.current.id);
             console.log('[QR] Iniciando lector QR con cámara', backCam);
+            let lastScan = '';
+            let lastScanTime = 0;
             scannerRef.current.start(
               { deviceId: { exact: backCam.id } },
               { fps: 10, qrbox: 250 },
               (decodedText) => {
-                console.log('[QR] QR leído:', decodedText);
-                setQrResult(decodedText);
-                scannerRef.current.stop();
+                // Evita lecturas dobles rápidas
+                const now = Date.now();
+                if (decodedText !== lastScan || now - lastScanTime > 1500) {
+                  lastScan = decodedText;
+                  lastScanTime = now;
+                  console.log('[QR] QR leído:', decodedText);
+                  setQrResult(decodedText);
+                  // Resalta el frame visualmente
+                  const frame = document.querySelector('.qrscan-frame');
+                  if (frame) {
+                    frame.style.boxShadow = '0 0 0 4px #4caf50, 0 2px 16px rgba(0,0,0,0.13)';
+                    setTimeout(() => {
+                      frame.style.boxShadow = '';
+                    }, 800);
+                  }
+                }
               },
               (err) => {}
             ).catch((err) => {

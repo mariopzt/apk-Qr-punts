@@ -92,6 +92,20 @@ app.get("/api/user/me", async (req, res) => {
   }
 });
 
+// Obtener usuario por QR
+app.get("/api/usuario/qr/:qrCode", async (req, res) => {
+  try {
+    const user = await User.findOne({ qrCode: req.params.qrCode });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado para ese QR" });
+    }
+    const { password, ...userSafe } = user.toObject();
+    res.json({ ok: true, user: userSafe });
+  } catch (err) {
+    res.status(500).json({ message: "Error al buscar usuario por QR", error: err.message });
+  }
+});
+
 // Sumar punto a usuario por QR
 app.post("/api/puntos/sumar", async (req, res) => {
   const { qrCode } = req.body;

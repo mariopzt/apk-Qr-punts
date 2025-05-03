@@ -30,17 +30,10 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
   // Conexión socket: unirse a la sala del usuario y escuchar 'punto-sumado'
   useEffect(() => {
     if (!usuario?.qrCode) return;
-    if (!socket.connected) {
-      socket.connect();
-      setDebug(d => d + `\n[SOCKET] Conectando...`);
-      console.log('[SOCKET] Intentando conectar...');
-    }
+    if (!socket.connected) socket.connect();
     socket.emit("join", usuario.qrCode);
-    setDebug(d => d + `\n[SOCKET] Emitiendo join a sala: ${usuario.qrCode}`);
-    console.log('[SOCKET] Emitiendo join a sala:', usuario.qrCode);
     const handler = async () => {
       setDebug(d => d + `\n[SOCKET] Recibido punto-sumado para QR: ${usuario.qrCode}`);
-      console.log('[SOCKET] Recibido punto-sumado para QR:', usuario.qrCode);
       try {
         const res = await getUsuarioByQrCode(usuario.qrCode);
         setDebug(d => d + `\n[SOCKET] Nuevo points: ${res?.user?.points}`);

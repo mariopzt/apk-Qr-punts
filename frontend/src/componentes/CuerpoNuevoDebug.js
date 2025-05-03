@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import QrCodeBox from "./QrCodeBox";
+import { socket } from "../socket";
 import "../estilos/cuerpoNuevo.css";
 import { getUsuarioByQrCode } from "./api";
 
@@ -26,27 +27,30 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
     return () => clearInterval(interval);
   }, [usuario?.qrCode, setUsuario]);
 
-  // Evento global QR punto sumado
+  // Conexión socket: unirse a la sala del usuario y escuchar 'punto-sumado'
   useEffect(() => {
-    const handler = async (e) => {
-      if (e.detail && e.detail.qrCode === usuario.qrCode) {
-        setDebug(d => d + `\n[EVENT] Recibido punto para QR: ${usuario.qrCode}`);
-        try {
-          const res = await getUsuarioByQrCode(usuario.qrCode);
-          setDebug(d => d + `\n[EVENT] Nuevo points: ${res?.user?.points}`);
-          if (res && res.user && (res.user.points ?? 0) > (usuario.points ?? 0)) {
-            setUsuario({ ...usuario, ...res.user });
-            setMensaje("¡Punto sumado!");
-            setShowQr(false);
-            setTimeout(() => setMensaje(""), 2000);
-          }
-        } catch (e) {
-          setDebug(d => d + `\n[EVENT] error: ${e}`);
+    if (!usuario?.qrCode) return;
+    if (!socket.connected) socket.connect();
+    socket.emit("join", usuario.qrCode);
+    const handler = async () => {
+      setDebug(d => d + `\n[SOCKET] Recibido punto-sumado para QR: ${usuario.qrCode}`);
+      try {
+        const res = await getUsuarioByQrCode(usuario.qrCode);
+        setDebug(d => d + `\n[SOCKET] Nuevo points: ${res?.user?.points}`);
+        if (res && res.user) {
+          setUsuario({ ...usuario, ...res.user });
+          setMensaje("¡Punto sumado!");
+          setShowQr(false);
+          setTimeout(() => setMensaje(""), 2000);
         }
+      } catch (e) {
+        setDebug(d => d + `\n[SOCKET] error: ${e}`);
       }
     };
-    window.addEventListener('qr-punto-sumado', handler);
-    return () => window.removeEventListener('qr-punto-sumado', handler);
+    socket.on("punto-sumado", handler);
+    return () => {
+      socket.off("punto-sumado", handler);
+    };
   }, [usuario, setUsuario]);
 
   return (
@@ -74,7 +78,7 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
               <div className="booster-icon">🖐️</div>
               <div>
                 <div className="booster-title">Nivel de usuario</div>
-                <div className="booster-sub"> <span className="coin">🪙</span> • 0 lvl</div>
+                <div className="booster-sub"> <span className="coin">🪙</span> • {Math.floor((usuario.points ?? 0) / 10)} lvl</div>
               </div>
             </div>
           </div>

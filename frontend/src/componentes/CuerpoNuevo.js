@@ -27,10 +27,15 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     return () => {
       socket.off('punto-sumado', handler);
     };
+<<<<<<< HEAD
   }, [usuario.qrCode]);
+=======
+    window.addEventListener('qr-punto-sumado', handler);
+    return () => window.removeEventListener('qr-punto-sumado', handler);
+  }, [usuario.qrCode, showQr]);
+>>>>>>> parent of b05ab88 (errrrr)
 
 
-  console.log('[DEBUG] Render principal CuerpoNuevo, showQr:', showQr);
   return (
     <div className="cuerpo-nuevo-bg">
       <div className="cuerpo-nuevo-container">
@@ -86,14 +91,14 @@ function CuerpoNuevo({ usuario, setUsuario }) {
           </div>
         </div>
 
-        {(() => { console.log('[DEBUG] Render modal QR, showQr:', showQr); return showQr ? (
+        {showQr ? (
           <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowQr(false); }}>
             <div className="qr-modal">
               <button className="qr-modal-close" onClick={() => setShowQr(false)}>✕</button>
               <QrCodeBox value={usuario.qrCode} size={220} />
             </div>
           </div>
-        ) : null })()}
+        ) : null}
       </div>
       </div>
     </div>

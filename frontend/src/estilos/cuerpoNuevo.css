@@ -8,8 +8,103 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
 }
+
+
+@media (max-height: 700px) {
+  .cuerpo-nuevo-container {
+    padding: 10px 3px;
+    max-width: 320px;
+    border-radius: 12px;
+  }
+  .balance-section {
+    padding: 12px 0 14px 0;
+    margin-bottom: 16px;
+  }
+  .balance-label {
+    font-size: 1.1rem;
+  }
+  .balance-amount {
+    font-size: 2.1rem;
+  }
+  .section-title {
+    font-size: 1rem;
+    margin: 10px 0 7px 0;
+  }
+  .booster-title {
+    font-size: 0.93rem;
+  }
+  .booster-sub {
+    font-size: 0.87rem;
+  }
+  .booster-icon {
+    font-size: 1.1rem;
+  }
+  .booster-item {
+    padding: 7px 8px;
+    gap: 7px;
+    margin-bottom: 7px;
+  }
+  .booster-card {
+    padding: 7px 0 7px 0;
+  }
+}
+
+.cuerpo-nuevo-container {
+  padding: 22px 8px;
+  max-width: 340px;
+  width: 100%;
+  margin: 0 auto;
+  background: rgba(24, 24, 34, 0.98);
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  min-height: 0;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.cuerpo-nuevo-container::-webkit-scrollbar {
+  display: none;
+}
+
+
+.balance-section {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 16px 0 18px 0;
+}
+.balance-label {
+  font-size: 1.2rem;
+}
+.balance-amount {
+  font-size: 2.5rem;
+}
+.section-title {
+  font-size: 1.08rem;
+  margin: 14px 0 8px 0;
+}
+.booster-title {
+  font-size: 1rem;
+}
+.booster-sub {
+  font-size: 0.93rem;
+}
+.booster-icon {
+  font-size: 1.25rem;
+}
+.booster-item {
+  gap: 9px;
+  padding: 9px 12px;
+  margin-bottom: 8px;
+}
+.booster-card {
+  padding: 12px 0 8px 0;
+}
+
 .cuerpo-nuevo-container {
   padding: 32px 18px;
   max-width: 400px;
@@ -88,6 +183,38 @@
 .boosters-list {
   margin-top: 8px;
 }
+.boosters-list-row {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+@media (max-height: 700px) {
+  .boosters-list-row {
+    gap: 2px;
+    margin-top: 4px;
+  }
+  .booster-item {
+    padding: 5px 4px;
+    font-size: 0.92rem;
+  }
+  .booster-title {
+    font-size: 0.87rem;
+  }
+  .booster-sub {
+    font-size: 0.8rem;
+  }
+  .booster-icon {
+    font-size: 1rem;
+  }
+}
+
+.nivel-abajo {
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+}
+
 .booster-item {
   cursor: pointer;
   display: flex;

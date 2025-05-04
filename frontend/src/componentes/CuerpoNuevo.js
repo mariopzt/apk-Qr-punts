@@ -60,13 +60,43 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
     <div className="cuerpo-nuevo-bg">
       <div className="cuerpo-nuevo-container">
         <div className="cuerpo-nuevo-inner">
-          <div className="balance-section">
-            <div className="balance-label">Tu balance</div>
-            <div className="balance-amount">
-              <span className="coin">🪙</span> {usuario.points ?? 0}
+          <div className="row-balance-historial">
+            <div className="balance-section">
+              <div className="balance-label">Tu balance</div>
+              <div className="balance-amount">
+                <span className="coin">🪙</span> {usuario.points ?? 0}
+              </div>
+              <a className="boost-link" href="#">Como funciona?</a>
             </div>
-            <a className="boost-link" href="#">Como funciona?</a>
+           
           </div>
+          <div className="section-title">Tu Espacio</div>
+          <div className="boosters-list-row">
+            <div className="booster-item" style={{flex: 1, marginRight: 4}}>
+              <div className="booster-icon">🤖</div>
+              <div>
+                <div className="booster-title">Historial</div>
+                <div className="booster-sub silver">Pedidos y descuentos</div>
+              </div>
+            </div>
+            <div className="booster-item" style={{flex: 1, marginLeft: 4}}>
+              <div className="booster-icon">🖐️</div>
+              <div>
+                <div className="booster-title">Nivel de usuario</div>
+                <div className="booster-sub"> <span className="coin">🪙</span> • 0 lvl</div>
+              </div>
+            </div>
+          </div>
+              <div className="boosters-list">
+            <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
+              <div className="booster-icon">📱</div>
+              <div>
+                <div className="booster-title">Mostrar tu QR</div>
+                <div className="booster-sub">Toca para ver tu código QR</div>
+              </div>
+            </div>
+          </div>
+
 
           <div className="section-title">Descubre fertas!</div>
           <div className="boosters-row">
@@ -82,35 +112,8 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
             </div>
           </div>
 
-          <div className="section-title">Tu Espacio</div>
-          <div className="boosters-list">
-            <div className="booster-item ">
-              <div className="booster-icon">🤖</div>
-              <div>
-                <div className="booster-title">Historial</div>
-                <div className="booster-sub silver">Pedidos y descuentos</div>
-              </div>
-            </div>
-            <div className="booster-item">
-              <div className="booster-icon">🖐️</div>
-              <div>
-                <div className="booster-title">Nivel de usuario</div>
-                <div className="booster-sub"> <span className="coin">🪙</span> • 0 lvl</div>
-              </div>
-            </div>
-          </div>
 
-          <div className="boosters-list">
-            {/* Mostrar SIEMPRE el botón para ver el QR, aunque el usuario tenga puntos */}
-            <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
-              <div className="booster-icon">📱</div>
-              <div>
-                <div className="booster-title">Mostrar tu QR</div>
-                <div className="booster-sub">Toca para ver tu código QR</div>
-              </div>
-            </div>
-          </div>
-
+      
           {mensaje && (
             <div style={{ textAlign: 'center', marginTop: 16, color: '#4caf50', fontWeight: 600, fontSize: 18 }}>{mensaje}</div>
           )}

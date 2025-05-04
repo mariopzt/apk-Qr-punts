@@ -31,7 +31,7 @@ function Login({ onCrearUsuario, onLogin, onForgotPassword }) {
       <div className="circle circle1"></div>
       <div className="circle circle2"></div>
       <form className="login-container dark" onSubmit={handleLogin}>
-        <h2 className="login-title">Iniciar.</h2>
+        <h2 className="login-title">Iniciar Sesión</h2>
         <button type="button" className="social-btn google">
           <span className="icon-g">G</span> Continua con Google
         </button>

@@ -16,6 +16,89 @@ html, body {
   position: relative;
   overflow: hidden;
 }
+
+@media (max-height: 700px) {
+  .login-container.dark {
+    padding: 18px 8px 14px 8px;
+  }
+  .login-title {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+  .social-btn {
+    padding: 7px 0;
+    font-size: 0.95rem;
+  }
+  .login-input {
+    padding: 8px 10px;
+    font-size: 0.95rem;
+    margin: 6px 0 10px 0;
+  }
+  .login-btn {
+    padding: 8px;
+    font-size: 1rem;
+    margin-top: 8px;
+  }
+  .login-links {
+    font-size: 0.93rem;
+    margin-top: 10px;
+  }
+  .circle1 {
+    width: 120px;
+    height: 120px;
+    top: -40px;
+    left: -40px;
+  }
+  .circle2 {
+    width: 60px;
+    height: 60px;
+    top: 20px;
+    right: 20px;
+  }
+}
+
+.login-container.dark {
+  max-width: 330px;
+  min-width: 220px;
+  padding: 24px 10px 14px 10px;
+  border-radius: 13px;
+}
+.login-title {
+  font-size: 1.45rem;
+  margin-bottom: 18px;
+}
+.social-btn {
+  padding: 8px 0;
+  font-size: 1rem;
+}
+.login-input {
+  width: 88%;
+  padding: 9px 10px;
+  font-size: 1rem;
+  margin: 8px 0 10px 0;
+}
+.login-btn {
+  padding: 9px;
+  font-size: 1.05rem;
+  margin-top: 11px;
+}
+.login-links {
+  font-size: 0.97rem;
+  margin-top: 12px;
+}
+.circle1 {
+  width: 150px;
+  height: 150px;
+  top: -60px;
+  left: -60px;
+}
+.circle2 {
+  width: 80px;
+  height: 80px;
+  top: 30px;
+  right: 30px;
+}
+
 .circle {
   position: absolute;
   border-radius: 50%;

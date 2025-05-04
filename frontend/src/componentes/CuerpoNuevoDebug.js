@@ -53,6 +53,13 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
     };
   }, [usuario, setUsuario]);
 
+  // Efecto: si el mensaje es '¡Punto sumado!', fuerza showQr a false
+  useEffect(() => {
+    if (mensaje === "¡Punto sumado!") {
+      setShowQr(false);
+    }
+  }, [mensaje]);
+
   return (
     <div className="cuerpo-nuevo-bg">
       <div className="cuerpo-nuevo-container">
@@ -102,6 +109,10 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
               </div>
             </div>
           )}
+
+          {/* Efecto para cerrar el modal QR cuando el mensaje es '¡Punto sumado!' */}
+          {/* Esto fuerza el cierre aunque el render esté retrasado */}
+          
         </div>
       </div>
     </div>

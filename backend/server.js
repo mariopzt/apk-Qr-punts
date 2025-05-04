@@ -45,7 +45,7 @@ app.post("/api/auth/register", async (req, res) => {
       return res.status(409).json({ message: "El usuario ya existe" });
     }
     const qrCode = `${username}_${Date.now()}`;
-    const nuevo = new User({ username, password, email, qrCode });
+    const nuevo = new User({ username, password, email, qrCode, totalPoints: 0 });
     await nuevo.save();
     console.log("[REGISTRO] Usuario guardado correctamente:", username);
     res.status(201).json({ message: "Usuario agregado" });
@@ -129,6 +129,7 @@ app.post("/api/puntos/sumar", async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado para ese QR" });
     }
     user.points = (user.points ?? 0) + 1;
+    user.totalPoints = (user.totalPoints ?? 0) + 1;
     await user.save();
     notifyPuntoSumado(qrCode);
     const { password, ...userSafe } = user.toObject();

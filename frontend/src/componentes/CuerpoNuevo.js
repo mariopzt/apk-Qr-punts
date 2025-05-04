@@ -8,7 +8,19 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
   console.log('[RENDER] usuario recibido por props:', usuario);
   const [showQr, setShowQr] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [nivel, setNivel] = useState(0);
   const lastPoints = useRef(usuario.points ?? 0);
+  const lastLevel = useRef(0);
+
+  // Cada vez que los puntos suban y superen el múltiplo de 15 anterior, aumenta el nivel
+  useEffect(() => {
+    const puntos = usuario.totalPoints ?? 0;  
+    const nextLevel = Math.floor(puntos / 15);
+    if (nextLevel > lastLevel.current) {
+      setNivel(nextLevel);
+      lastLevel.current = nextLevel;
+    }
+  }, [usuario.totalPoints]);
 
   useEffect(() => {
     if (!usuario?.qrCode) return;
@@ -64,7 +76,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
             <div className="balance-section">
               <div className="balance-label">Tu balance</div>
               <div className="balance-amount">
-                <span className="coin">🪙</span> {usuario.points ?? 0}
+                <span className="coin">🪙</span> {usuario.totalPoints ?? 0}
               </div>
               <a className="boost-link" href="#">Como funciona?</a>
             </div>
@@ -83,7 +95,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
               <div className="booster-icon">🖐️</div>
               <div>
                 <div className="booster-title">Nivel de usuario</div>
-                <div className="booster-sub"> <span className="coin">🪙</span> • 0 lvl</div>
+                <div className="booster-sub"> <span className="coin">🪙</span> • {nivel} lvl</div>
               </div>
             </div>
           </div>

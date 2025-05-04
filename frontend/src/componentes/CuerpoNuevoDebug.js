@@ -73,6 +73,7 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
 
   return (
     <div className="cuerpo-nuevo-bg">
+      <div style={{background:'#ff5252',color:'#fff',fontSize:32,fontWeight:'bold',padding:24,textAlign:'center',zIndex:9999,position:'fixed',top:0,left:0,width:'100vw'}}>ESTÁS VIENDO CuerpoNuevoDebug.js</div>
       <div className="cuerpo-nuevo-container">
         <div className="cuerpo-nuevo-inner">
           <div className="balance-section">

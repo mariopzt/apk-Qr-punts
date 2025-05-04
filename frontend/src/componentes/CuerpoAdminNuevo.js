@@ -12,8 +12,31 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [error, setError] = useState("");
   const qrRef = useRef(null);
   const scannerRef = useRef(null);
-  const beepRef = useRef(null);
   const [qrFeedbackMsg, setQrFeedbackMsg] = useState('');
+
+  // Función para reproducir beep usando Web Audio API
+  const playBeep = () => {
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.value = 1000; // Frecuencia en Hz
+      gainNode.gain.value = 0.1; // Volumen
+
+      oscillator.start();
+      setTimeout(() => {
+        oscillator.stop();
+        audioContext.close();
+      }, 100); // Duración del beep en ms
+    } catch (err) {
+      console.error('Error reproduciendo beep:', err);
+    }
+  };
 
   // Limpiar resultado y error al abrir/cerrar modal
   useEffect(() => {
@@ -68,19 +91,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                   lastScanTime = now;
                   console.log('[QR] QR leído:', decodedText);
                   setQrResult(decodedText);
-                  try {
-                    if (beepRef.current) {
-                      beepRef.current.currentTime = 0;
-                      const playPromise = beepRef.current.play();
-                      if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                          console.log('Error reproduciendo beep:', error);
-                        });
-                      }
-                    }
-                  } catch (err) {
-                    console.log('Error con el beep:', err);
-                  }
+                  playBeep(); // Reproducir beep
                   setQrFeedbackMsg(`QR leído: ${decodedText}`);
                   setTimeout(() => setQrFeedbackMsg(''), 2000);
                   // Sumar punto vía API
@@ -143,9 +154,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
 
   return (
     <div className="admin-bg">
-      <audio ref={beepRef} preload="auto" style={{ display: 'none' }}>
-        <source src="/sounds/beep.mp3" type="audio/mpeg" />
-      </audio>
+
       <div className="admin-container">
         {/* CARD DE CREDITOS */}
         <div className="admin-credit-card">

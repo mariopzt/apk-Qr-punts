@@ -31,34 +31,34 @@ function Login({ onCrearUsuario, onLogin, onForgotPassword }) {
       <div className="circle circle1"></div>
       <div className="circle circle2"></div>
       <form className="login-container dark" onSubmit={handleLogin}>
-        <h2 className="login-title">Sign in.</h2>
+        <h2 className="login-title">Iniciar.</h2>
         <button type="button" className="social-btn google">
-          <span className="icon-g">G</span> Continue with Google
+          <span className="icon-g">G</span> Continua con Google
         </button>
         <button type="button" className="social-btn facebook">
-          <span className="icon-f">f</span> Continue with Facebook
+          <span className="icon-f">f</span> Continua con Facebook
         </button>
-        <div className="divider">or</div>
+        <div className="divider">o con</div>
         <input
           type="text"
           className="login-input"
           value={username}
           onChange={e => setUsername(e.target.value)}
-          placeholder="Email"
+          placeholder="Usuario"
         />
         <input
           type="password"
           className="login-input"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          placeholder="Password"
+          placeholder="Contraseña"
         />
-        {error && <div className="login-error">{error}</div>}
+        {error && <div className="login-error">Error al iniciar sesión</div>}
         {success && <div className="login-success">{success}</div>}
-        <button className="login-btn" type="submit">Sign in</button>
+        <button className="login-btn" type="submit">Iniciar</button>
         <div className="login-links">
-          <span>Dont have an account? <a href="#" onClick={e => { e.preventDefault(); onCrearUsuario(); }}>Create Account</a></span>
-          <a href="#" className="forgot" onClick={e => { e.preventDefault(); if (onForgotPassword) onForgotPassword(); }}>Forgot Password?</a>
+          <span>¿No tienes cuenta? <a href="#" onClick={e => { e.preventDefault(); onCrearUsuario(); }}>Crear Cuenta</a></span>
+          <a href="#" className="forgot" onClick={e => { e.preventDefault(); if (onForgotPassword) onForgotPassword(); }}>¿Olvidaste tu contraseña?</a>
         </div>
       </form>
     </div>

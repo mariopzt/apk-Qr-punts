@@ -27,13 +27,11 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     return () => {
       socket.off('punto-sumado', handler);
     };
- 
-
   }, [usuario.qrCode]);
- 
-window.addEventListener('qr-punto-sumado', handler);
-return () => window.removeEventListener('qr-punto-sumado', handler);
 
+  // Eliminado el código que causaba el error
+  // window.addEventListener('qr-punto-sumado', handler);
+  // return () => window.removeEventListener('qr-punto-sumado', handler);
 
   return (
     <div className="cuerpo-nuevo-bg">

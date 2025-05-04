@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import QrCodeBox from "./QrCodeBox";
 import "../estilos/cuerpoNuevo.css";
 import { socket } from "../socket";
+import { getUsuarioByQrCode } from "./api";
 
 export default function CuerpoNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
@@ -12,16 +13,22 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
     if (!usuario?.qrCode) return;
     if (!socket.connected) socket.connect();
     socket.emit('join', usuario.qrCode);
-    const handler = () => {
+    const handler = async () => {
       setShowQr(false);
       setMensaje("¡Punto sumado!");
       setTimeout(() => setMensaje(""), 2000);
+      try {
+        const res = await getUsuarioByQrCode(usuario.qrCode);
+        if (res && res.user) setUsuario({ ...usuario, ...res.user });
+      } catch (e) {
+        console.error("Error actualizando usuario:", e);
+      }
     };
     socket.on('punto-sumado', handler);
     return () => {
       socket.off('punto-sumado', handler);
     };
-  }, [usuario.qrCode]);
+  }, [usuario.qrCode, setUsuario]);
 
   return (
     <div className="cuerpo-nuevo-bg">
@@ -39,7 +46,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
           <div className="boosters-row">
             <div className="booster-card">
               <div className="booster-title">Descuentos</div>
-              <div className="booster-sub">0/3 disponisssssssssssssssssssles</div>
+              <div className="booster-sub">0/3 disponibles</div>
               <span className="booster-icon">🚀</span>
             </div>
             <div className="booster-card">

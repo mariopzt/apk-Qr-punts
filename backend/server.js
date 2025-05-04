@@ -9,6 +9,10 @@ const app = express();
 import http from 'http';
 import { initSocket, notifyPuntoSumado } from './socket.js';
 
+// INICIALIZACIÓN CORRECTA DEL SERVIDOR HTTP Y SOCKET
+const server = http.createServer(app);
+initSocket(server);
+
 // Conexión a MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   console.log("Conectado a MongoDB Atlas correctamente");
@@ -18,11 +22,16 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 const API_BASE = process.env.MONGODB_URI; // Usamos el nombre de variable original para compatibilidad
 
 // Registro local en MongoDB Atlas
 import User from "./models/User.js";
+
+// INICIA EL SERVIDOR HTTP (NO USAR app.listen)
+server.listen(PORT, () => {
+  console.log("Servidor escuchando en puerto", PORT);
+});
 
 app.post("/api/auth/register", async (req, res) => {
   console.log("[REGISTRO] Body recibido:", req.body);

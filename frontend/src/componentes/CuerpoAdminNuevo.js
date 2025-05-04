@@ -88,7 +88,8 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                       setUsuario(res.user);
                       setQrResult(''); // Limpia el resultado
                       setShowQr(false); // Cierra el modal
-                    }
+                      setQrFeedbackMsg('');
+                   }
                     // Feedback visual
                     const frame = document.querySelector('.qrscan-frame');
                     if (frame) {

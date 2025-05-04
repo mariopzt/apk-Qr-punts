@@ -11,14 +11,22 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
 
   useEffect(() => {
     if (!usuario?.qrCode) return;
+    console.log('[SOCKET] Intentando conectar...');
     if (!socket.connected) socket.connect();
+    socket.on('connect', () => {
+      console.log('[SOCKET] Conectado con id:', socket.id);
+    });
+    console.log('[SOCKET] Emitiendo join a sala:', usuario.qrCode);
     socket.emit('join', usuario.qrCode);
     const handler = async () => {
+      console.log('[SOCKET] Recibido evento punto-sumado');
       setShowQr(false);
       setMensaje("¡Punto sumado!");
       setTimeout(() => setMensaje(""), 2000);
       try {
+        console.log('[SOCKET] Llamando a getUsuarioByQrCode:', usuario.qrCode);
         const res = await getUsuarioByQrCode(usuario.qrCode);
+        console.log('[SOCKET] Respuesta getUsuarioByQrCode:', res);
         if (res && res.user) setUsuario({ ...usuario, ...res.user });
       } catch (e) {
         console.error("Error actualizando usuario:", e);
@@ -27,6 +35,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
     socket.on('punto-sumado', handler);
     return () => {
       socket.off('punto-sumado', handler);
+      socket.off('connect');
     };
   }, [usuario.qrCode, setUsuario]);
 

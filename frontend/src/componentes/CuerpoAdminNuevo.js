@@ -208,7 +208,6 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
     <div className="qrscan-overlay">
       <button className="qrscan-close" onClick={() => setShowQr(false)}>✕</button>
       <div className="qrscan-title">Scan QR Code</div>
-      <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
       <div className="qrscan-reader-container">
         <div className="qrscan-square" />
         <div id="qr-reader" ref={qrRef} className="qrscan-reader" />

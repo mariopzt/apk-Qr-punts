@@ -40,9 +40,9 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
         if (res && res.user) {
           setUsuario({ ...usuario, ...res.user });
           setMensaje("¡Punto sumado!");
-          setShowQr(false);
-          setTimeout(() => setMensaje(""), 2000);
         }
+        setShowQr(false);
+        setTimeout(() => setMensaje(""), 2000);
       } catch (e) {
         setDebug(d => d + `\n[SOCKET] error: ${e}`);
       }

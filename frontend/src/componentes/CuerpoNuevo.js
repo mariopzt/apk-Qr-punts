@@ -27,12 +27,12 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     return () => {
       socket.off('punto-sumado', handler);
     };
- window.addEventListener('qr-punto-sumado', handler);
-  return () => window.removeEventListener('qr-punto-sumado', handler);
+ 
 
   }, [usuario.qrCode]);
  
-
+window.addEventListener('qr-punto-sumado', handler);
+return () => window.removeEventListener('qr-punto-sumado', handler);
 
 
   return (

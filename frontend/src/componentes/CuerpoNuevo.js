@@ -39,7 +39,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
           <div className="boosters-row">
             <div className="booster-card">
               <div className="booster-title">Descuentos</div>
-              <div className="booster-sub">0/3 disponibles</div>
+              <div className="booster-sub">0/3 disponisssssssssssssssssssles</div>
               <span className="booster-icon">🚀</span>
             </div>
             <div className="booster-card">

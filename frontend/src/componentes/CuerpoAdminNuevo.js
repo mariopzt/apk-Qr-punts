@@ -23,9 +23,12 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
 
 
   // Nuevo useEffect: inicializa el scanner solo cuando showQr y qrRef.current están listos
+  // --- FEEDBACK STATE ---
+  const [qrFeedbackMsg, setQrFeedbackMsg] = useState('');
+  const beepRef = useRef(null);
+
   useEffect(() => {
     if (!showQr) return;
-    // Espera un tick para asegurar que el div está en el DOM
     const timer = setTimeout(() => {
       if (!qrRef.current) {
         setError('No se encontró el contenedor del lector QR.');
@@ -66,6 +69,12 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                   lastScanTime = now;
                   console.log('[QR] QR leído:', decodedText);
                   setQrResult(decodedText);
+                  if (beepRef.current) {
+                    beepRef.current.currentTime = 0;
+                    beepRef.current.play();
+                  }
+                  setQrFeedbackMsg(`QR leído: ${decodedText}`);
+                  setTimeout(() => setQrFeedbackMsg(''), 2000);
                   // Sumar punto vía API
                   try {
                     // Sumar punto vía API y obtener usuario actualizado

@@ -12,6 +12,8 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [error, setError] = useState("");
   const qrRef = useRef(null);
   const scannerRef = useRef(null);
+  const beepRef = useRef(null);
+  const [qrFeedbackMsg, setQrFeedbackMsg] = useState('');
 
   // Limpiar resultado y error al abrir/cerrar modal
   useEffect(() => {
@@ -23,9 +25,6 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
 
 
   // Nuevo useEffect: inicializa el scanner solo cuando showQr y qrRef.current están listos
-  // --- FEEDBACK STATE ---
-  const [qrFeedbackMsg, setQrFeedbackMsg] = useState('');
-  const beepRef = useRef(null);
 
   useEffect(() => {
     if (!showQr) return;
@@ -135,6 +134,9 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
 
   return (
     <div className="admin-bg">
+      <audio ref={beepRef} style={{ display: 'none' }}>
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg" />
+      </audio>
       <div className="admin-container">
         {/* CARD DE CREDITOS */}
         <div className="admin-credit-card">
@@ -192,7 +194,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                 <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
               </div>
               <div style={{ color: error ? '#ff5252' : (qrResult ? '#4caf50' : '#fff'), fontSize: 18, marginTop: 18, textAlign: 'center', fontWeight: error ? 700 : 400 }}>
-                {error ? <>Error: {error}</> : (qrResult ? <>QR leído: <b>{qrResult}</b></> : "Escanea un código QR")}
+                {error ? <>Error: {error}</> : (qrFeedbackMsg ? <>{qrFeedbackMsg}</> : "Escanea un código QR")}
               </div>
               <div className="qrscan-actions-bar">
                 <button className="qrscan-bar-btn qrscan-bar-btn-main" onClick={() => setShowQr(false)}>Cerrar</button>

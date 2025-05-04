@@ -207,8 +207,9 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   <div className="qrscan-bg">
     <div className="qrscan-overlay">
       <button className="qrscan-close" onClick={() => setShowQr(false)}>✕</button>
-      <div className="qrscan-title">Scan QR Code</div>
+   
       <div className="qrscan-reader-container">
+           <div className="qrscan-title">Scan QR Code</div>
         <div className="qrscan-square" />
         <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
       </div>

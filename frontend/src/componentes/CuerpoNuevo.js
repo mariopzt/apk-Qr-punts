@@ -5,21 +5,35 @@ import { socket } from "../socket";
 import { getUsuarioByQrCode } from "./api";
 
 export default function CuerpoNuevo({ usuario, setUsuario }) {
+  console.log('[RENDER] usuario recibido por props:', usuario);
   const [showQr, setShowQr] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const lastPoints = useRef(usuario.points ?? 0);
 
   useEffect(() => {
     if (!usuario?.qrCode) return;
-    console.log('[SOCKET] Intentando conectar...');
-    if (!socket.connected) socket.connect();
-    socket.on('connect', () => {
-      console.log('[SOCKET] Conectado con id:', socket.id);
-    });
-    console.log('[SOCKET] Emitiendo join a sala:', usuario.qrCode);
-    socket.emit('join', usuario.qrCode);
+    let joined = false;
+    const doJoin = () => {
+      if (!joined) {
+        console.log('[SOCKET] Emitiendo join a sala:', usuario.qrCode);
+        socket.emit('join', usuario.qrCode);
+        joined = true;
+      }
+    };
+    if (!socket.connected) {
+      console.log('[SOCKET] Intentando conectar...');
+      socket.connect();
+      socket.once('connect', () => {
+        console.log('[SOCKET] Conectado con id:', socket.id);
+        doJoin();
+      });
+    } else {
+      console.log('[SOCKET] Ya conectado con id:', socket.id);
+      doJoin();
+    }
     const handler = async () => {
       console.log('[SOCKET] Recibido evento punto-sumado');
+      console.log('[SOCKET] Puntos ANTES de actualizar:', usuario.points);
       setShowQr(false);
       setMensaje("¡Punto sumado!");
       setTimeout(() => setMensaje(""), 2000);
@@ -27,7 +41,10 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
         console.log('[SOCKET] Llamando a getUsuarioByQrCode:', usuario.qrCode);
         const res = await getUsuarioByQrCode(usuario.qrCode);
         console.log('[SOCKET] Respuesta getUsuarioByQrCode:', res);
-        if (res && res.user) setUsuario({ ...usuario, ...res.user });
+        if (res && res.user) {
+          setUsuario({ ...usuario, ...res.user });
+          console.log('[SOCKET] Puntos DESPUÉS de actualizar:', res.user.points);
+        }
       } catch (e) {
         console.error("Error actualizando usuario:", e);
       }

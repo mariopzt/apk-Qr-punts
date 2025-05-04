@@ -7,6 +7,15 @@ import { getUsuarioByQrCode } from "./api";
 export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
   console.log('[DEBUG usuario]', usuario);
   const [showQr, setShowQr] = useState(false);
+
+  useEffect(() => {
+    console.log('[DEBUG showQr]', showQr);
+    if (showQr) {
+      window.__qr_modal_status = 'ABIERTO';
+    } else {
+      window.__qr_modal_status = 'CERRADO';
+    }
+  }, [showQr]);
   const [mensaje, setMensaje] = useState("");
   const [debug, setDebug] = useState("");
   const lastPoints = useRef(usuario.points ?? 0);

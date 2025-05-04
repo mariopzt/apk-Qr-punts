@@ -2,27 +2,36 @@ import React, { useState, useEffect, useRef } from "react";
 import QrCodeBox from "./QrCodeBox";
 import "../estilos/cuerpoNuevo.css";
 import { socket } from "../socket";
+import { getUsuarioByQrCode } from "./api";
 
 export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const lastPoints = useRef(usuario.points ?? 0);
 
-  useEffect(() => {
+  
+
+useEffect(() => {
     if (!usuario?.qrCode) return;
     if (!socket.connected) socket.connect();
     socket.emit('join', usuario.qrCode);
-    const handler = () => {
+    const handler = async () => {
       console.log('[SOCKET] Recibido punto-sumado, cerrando modal QR');
       setShowQr(false);
       setMensaje("¡Punto sumado!");
       setTimeout(() => setMensaje(""), 2000);
+      try {
+        const res = await getUsuarioByQrCode(usuario.qrCode);
+        if (res && res.user) setUsuario({ ...usuario, ...res.user });
+      } catch (e) {
+        console.error("Error actualizando usuario:", e);
+      }
     };
     socket.on('punto-sumado', handler);
     return () => {
       socket.off('punto-sumado', handler);
     };
-  }, [usuario.qrCode]);
+  }, [usuario.qrCode, setUsuario]);
 
   return (
     <div className="cuerpo-nuevo-bg">

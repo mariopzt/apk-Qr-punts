@@ -5,6 +5,7 @@ import "../estilos/cuerpoNuevo.css";
 import { getUsuarioByQrCode } from "./api";
 
 export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
+  console.log('[DEBUG usuario]', usuario);
   const [showQr, setShowQr] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [debug, setDebug] = useState("");
@@ -59,9 +60,14 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
       // Forzar cierre del modal QR simulando click en el botón de cerrar
       setTimeout(() => {
         const btn = document.querySelector('.qr-modal-close');
-        if (btn) btn.click();
-      }, 100);
-      setShowQr(false);
+        if (btn) {
+          console.log('[FORCE CLOSE] Botón encontrado, haciendo click');
+          btn.click();
+        } else {
+          console.log('[FORCE CLOSE] Botón NO encontrado');
+        }
+        setShowQr(false);
+      }, 300);
     }
   }, [mensaje]);
 

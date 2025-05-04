@@ -205,13 +205,12 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
         {/* MODAL QR */}
         {showQr && (
   <div className="qrscan-bg">
-    <div className="qrscan-overlay">
+    <div id="qr-reader" ref={qrRef} className="qrscan-reader-bg" />
+    <div className="qrscan-overlay-content">
       <button className="qrscan-close" onClick={() => setShowQr(false)}>✕</button>
-   
+      <div className="qrscan-title">Scan QR Code</div>
       <div className="qrscan-reader-container">
-           <div className="qrscan-title">Scan QR Code</div>
         <div className="qrscan-square" />
-        <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
       </div>
       <div className="qrscan-actions-bar">
         <button className="qrscan-bar-btn qrscan-bar-btn-main" onClick={() => setShowQr(false)}>Scan code</button>

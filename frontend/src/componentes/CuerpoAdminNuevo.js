@@ -204,22 +204,22 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
         </div>
         {/* MODAL QR */}
         {showQr && (
-          <div className="qrscan-bg" style={{ zIndex: 12000 }}>
-            <div className="qrscan-overlay">
-              <button className="qrscan-close" onClick={() => setShowQr(false)}>✕</button>
-              <div className="qrscan-title">Lector QR</div>
-              <div className="qrscan-frame">
-                <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
-              </div>
-              <div style={{ color: error ? '#ff5252' : (qrResult ? '#4caf50' : '#fff'), fontSize: 18, marginTop: 18, textAlign: 'center', fontWeight: error ? 700 : 400 }}>
-                {error ? <>Error: {error}</> : (qrFeedbackMsg ? <>{qrFeedbackMsg}</> : "Escanea un código QR")}
-              </div>
-              <div className="qrscan-actions-bar">
-                <button className="qrscan-bar-btn qrscan-bar-btn-main" onClick={() => setShowQr(false)}>Cerrar</button>
-              </div>
-            </div>
-          </div>
-        )}
+  <div className="qrscan-bg">
+    <div className="qrscan-overlay">
+      <button className="qrscan-close" onClick={() => setShowQr(false)}>✕</button>
+      <div className="qrscan-title">Scan QR Code</div>
+      <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
+      <div className="qrscan-reader-container">
+        <div className="qrscan-square" />
+        <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
+      </div>
+      <div className="qrscan-actions-bar">
+        <button className="qrscan-bar-btn qrscan-bar-btn-main" onClick={() => setShowQr(false)}>Scan code</button>
+        <button className="qrscan-bar-btn qrscan-bar-btn-alt" onClick={() => {/* acción alternativa aquí */}}>Enter code</button>
+      </div>
+    </div>
+  </div>
+)}
       </div>
     </div>
   );

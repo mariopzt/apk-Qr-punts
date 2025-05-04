@@ -19,6 +19,7 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     if (!socket.connected) socket.connect();
     socket.emit('join', usuario.qrCode);
     const handler = () => {
+      console.log('[SOCKET] Recibido punto-sumado, cerrando modal QR');
       setShowQr(false);
       setMensaje("¡Punto sumado!");
       setTimeout(() => setMensaje(""), 2000);
@@ -27,14 +28,7 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     return () => {
       socket.off('punto-sumado', handler);
     };
-<<<<<<< HEAD
   }, [usuario.qrCode]);
-=======
-    window.addEventListener('qr-punto-sumado', handler);
-    return () => window.removeEventListener('qr-punto-sumado', handler);
-  }, [usuario.qrCode, showQr]);
->>>>>>> parent of b05ab88 (errrrr)
-
 
   return (
     <div className="cuerpo-nuevo-bg">

@@ -56,6 +56,11 @@ export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
   // Efecto: si el mensaje es '¡Punto sumado!', fuerza showQr a false
   useEffect(() => {
     if (mensaje === "¡Punto sumado!") {
+      // Forzar cierre del modal QR simulando click en el botón de cerrar
+      setTimeout(() => {
+        const btn = document.querySelector('.qr-modal-close');
+        if (btn) btn.click();
+      }, 100);
       setShowQr(false);
     }
   }, [mensaje]);

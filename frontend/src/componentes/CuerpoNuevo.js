@@ -27,13 +27,7 @@ function CuerpoNuevo({ usuario, setUsuario }) {
     return () => {
       socket.off('punto-sumado', handler);
     };
-<<<<<<< HEAD
   }, [usuario.qrCode]);
-=======
-    window.addEventListener('qr-punto-sumado', handler);
-    return () => window.removeEventListener('qr-punto-sumado', handler);
-  }, [usuario.qrCode]);
->>>>>>> parent of b05ab88 (errrrr)
 
 
   return (

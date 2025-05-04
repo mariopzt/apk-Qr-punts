@@ -1,6 +1,14 @@
 /* Fondo general oscuro y círculos decorativos */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 .login-bg {
+  height: 100vh;
   min-height: 100vh;
+  width: 100vw;
   background: #181824;
   display: flex;
   align-items: center;

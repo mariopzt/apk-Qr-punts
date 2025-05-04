@@ -142,9 +142,4 @@ app.get("/", (req, res) => {
   res.send("API funcionando como proxy a la API externa");
 });
 
-const server = http.createServer(app);
-initSocket(server);
-server.listen(PORT, () => {
-  console.log(`Servidor backend escuchando en puerto ${PORT}`);
-  console.log(`Conectado a Atlas (API externa)`);
-});
+

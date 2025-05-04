@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "../estilos/login.css";
+import "../estilos/login-extra.css";
 import { loginUsuario } from "./api";
 
-function Login({ onCrearUsuario, onLogin }) {
+function Login({ onCrearUsuario, onLogin, onForgotPassword }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -26,41 +27,41 @@ function Login({ onCrearUsuario, onLogin }) {
   };
 
   return (
-    <form className="login-container" onSubmit={handleLogin}>
-      <h2>Login</h2>
-      <div>
-        <label>
-          Usuario
-          <input
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            style={{ width: "100%", margin: "8px 0", padding: 6 }}
-            placeholder="Usuario"
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Contraseña
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            style={{ width: "100%", margin: "8px 0", padding: 6 }}
-            placeholder="Contraseña"
-          />
-        </label>
-      </div>
-      {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
-      {success && <div style={{ color: 'green', marginBottom: 8 }}>{success}</div>}
-      <button style={{ width: "100%", padding: 8, marginTop: 12 }}>Entrar</button>
-      <div style={{ textAlign: 'center', marginTop: 18 }}>
-        <a href="#" style={{ color: '#1e90ff', textDecoration: 'underline', fontSize: '1rem' }} onClick={e => { e.preventDefault(); onCrearUsuario(); }}>
-          Crear usuario
-        </a>
-      </div>
-    </form>
+    <div className="login-bg">
+      <div className="circle circle1"></div>
+      <div className="circle circle2"></div>
+      <form className="login-container dark" onSubmit={handleLogin}>
+        <h2 className="login-title">Sign in.</h2>
+        <button type="button" className="social-btn google">
+          <span className="icon-g">G</span> Continue with Google
+        </button>
+        <button type="button" className="social-btn facebook">
+          <span className="icon-f">f</span> Continue with Facebook
+        </button>
+        <div className="divider">or</div>
+        <input
+          type="text"
+          className="login-input"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          className="login-input"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        {error && <div className="login-error">{error}</div>}
+        {success && <div className="login-success">{success}</div>}
+        <button className="login-btn" type="submit">Sign in</button>
+        <div className="login-links">
+          <span>Dont have an account? <a href="#" onClick={e => { e.preventDefault(); onCrearUsuario(); }}>Create Account</a></span>
+          <a href="#" className="forgot" onClick={e => { e.preventDefault(); if (onForgotPassword) onForgotPassword(); }}>Forgot Password?</a>
+        </div>
+      </form>
+    </div>
   );
 }
 

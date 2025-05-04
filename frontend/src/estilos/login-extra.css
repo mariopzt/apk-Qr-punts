@@ -1,0 +1,43 @@
+/* Estilos extra para mensajes y enlaces del login */
+.login-error {
+  color: #ff6b81;
+  background: rgba(255,107,129,0.08);
+  border-radius: 6px;
+  padding: 7px 0;
+  text-align: center;
+  margin-bottom: 6px;
+  font-size: 0.97rem;
+}
+.login-success {
+  color: #4cd964;
+  background: rgba(76,217,100,0.08);
+  border-radius: 6px;
+  padding: 7px 0;
+  text-align: center;
+  margin-bottom: 6px;
+  font-size: 0.97rem;
+}
+
+.login-links {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  font-size: 1rem;
+  color: #bbb;
+}
+.login-links a {
+  color: #ffb6fc;
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 4px;
+}
+.login-links a.forgot {
+  color: #b983ff;
+  margin-left: 0;
+}
+.login-links span {
+  color: #bbb;
+}

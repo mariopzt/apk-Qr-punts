@@ -304,3 +304,21 @@ html, body, #root, .cuerpo-nuevo-bg {
   from { transform: scale(0.85); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
 }
+
+@keyframes glowPulse {
+  0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+  50% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+  100% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+}
+
+.particle-new-value {
+  animation: popIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, glowPulse 2s infinite;
+}
+
+.balance-amount-container {
+  position: relative;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

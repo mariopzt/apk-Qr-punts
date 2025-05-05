@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import QrCodeBox from "./QrCodeBox";
+import ParticleEffect from "./ParticleEffect";
 import "../estilos/cuerpoNuevo.css";
 import { socket } from "../socket";
 import { getUsuarioByQrCode } from "./api";
@@ -9,6 +10,9 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [nivel, setNivel] = useState(0);
+  const [showParticleEffect, setShowParticleEffect] = useState(false);
+  const [oldPoints, setOldPoints] = useState(usuario.totalPoints ?? 0);
+  const [newPoints, setNewPoints] = useState(usuario.totalPoints ?? 0);
   const lastPoints = useRef(usuario.points ?? 0);
   const lastLevel = useRef(0);
 
@@ -54,8 +58,18 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
         const res = await getUsuarioByQrCode(usuario.qrCode);
         console.log('[SOCKET] Respuesta getUsuarioByQrCode:', res);
         if (res && res.user) {
-          setUsuario({ ...usuario, ...res.user });
-          console.log('[SOCKET] Puntos DESPUÉS de actualizar:', res.user.points);
+          // Guardar puntos antiguos antes de actualizar
+          setOldPoints(usuario.totalPoints ?? 0);
+          setNewPoints(res.user.totalPoints ?? 0);
+          
+          // Mostrar efecto de partículas
+          setShowParticleEffect(true);
+          
+          // Actualizar usuario después de un pequeño retraso para que la animación sea visible
+          setTimeout(() => {
+            setUsuario({ ...usuario, ...res.user });
+            console.log('[SOCKET] Puntos DESPUÉS de actualizar:', res.user.points);
+          }, 100);
         }
       } catch (e) {
         console.error("Error actualizando usuario:", e);
@@ -75,8 +89,18 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
           <div className="row-balance-historial">
             <div className="balance-section">
               <div className="balance-label">Tu balance</div>
-              <div className="balance-amount">
-                <span className="coin">🪙</span> {usuario.totalPoints ?? 0}
+              <div className="balance-amount-container">
+                {showParticleEffect ? (
+                  <ParticleEffect 
+                    oldValue={oldPoints} 
+                    newValue={newPoints} 
+                    onComplete={() => setShowParticleEffect(false)} 
+                  />
+                ) : (
+                  <div className="balance-amount">
+                    <span className="coin">🪙</span> {usuario.totalPoints ?? 0}
+                  </div>
+                )}
               </div>
               <a className="boost-link" href="#">Como funciona?</a>
             </div>

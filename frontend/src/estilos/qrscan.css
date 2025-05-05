@@ -109,13 +109,14 @@
   justify-content: center;
 }
 .qrscan-actions-bar {
-  width: 100%;
+  width: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 12px;
   padding: 0 20px;
   margin-top: auto;
+  margin-bottom: 30px;
 }
 .qrscan-bar-btn {
   flex: 1;

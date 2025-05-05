@@ -139,3 +139,9 @@
   background: rgba(255,255,255,0.1);
   color: #fff;
 }
+.qrscan-title-center{
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

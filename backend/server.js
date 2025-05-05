@@ -324,17 +324,41 @@ app.post("/api/puntos/sumar", async (req, res) => {
     console.log("[PUNTOS] Usuario encontrado:", user.username);
     console.log("[PUNTOS] Puntos actuales:", user.points || 0, "Puntos totales:", user.totalPoints || 0);
     
-    // Incrementar puntos
+    // Incrementar puntos al usuario escaneado
     user.points = (user.points || 0) + 1;
     user.totalPoints = (user.totalPoints || 0) + 1;
     
     console.log("[PUNTOS] Nuevos puntos:", user.points, "Nuevos puntos totales:", user.totalPoints);
     
-    // Guardar cambios
+    // Guardar cambios del usuario escaneado
     await user.save();
     console.log("[PUNTOS] ✅ Usuario actualizado correctamente en la base de datos");
     
-    // Notificar por socket.io
+    // Verificar si quien escanea es un administrador
+    const esAdmin = user.tipo === "admin" || user.tipo === "root";
+    
+    // Si es un administrador, sumar puntos a todos los usuarios
+    if (esAdmin) {
+      console.log("[PUNTOS] El usuario es administrador. Sumando puntos a todos los usuarios...");
+      
+      // Obtener todos los usuarios excepto el admin actual
+      const todosUsuarios = await User.find({ qrCode: { $ne: qrCode } });
+      console.log(`[PUNTOS] Encontrados ${todosUsuarios.length} usuarios para sumar puntos`);
+      
+      // Sumar un punto a cada usuario
+      for (const otroUsuario of todosUsuarios) {
+        otroUsuario.points = (otroUsuario.points || 0) + 1;
+        otroUsuario.totalPoints = (otroUsuario.totalPoints || 0) + 1;
+        await otroUsuario.save();
+        
+        // Notificar a cada usuario por socket.io
+        notifyPuntoSumado(otroUsuario.qrCode);
+      }
+      
+      console.log(`[PUNTOS] ✅ Sumado 1 punto a ${todosUsuarios.length} usuarios`);
+    }
+    
+    // Notificar por socket.io al usuario original
     console.log("[PUNTOS] Notificando al usuario por socket.io, qrCode:", qrCode);
     notifyPuntoSumado(qrCode);
     

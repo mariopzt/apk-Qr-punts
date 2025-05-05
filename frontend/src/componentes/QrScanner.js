@@ -18,20 +18,18 @@ const QrScanner = ({ onScan, onError }) => {
 
   const handleScan = (result) => {
     if (result) {
-      try {
-        // Aquí puedes añadir la lógica para validar si el QR es válido
-        // Por ejemplo, verificar si tiene un formato específico o si comienza con cierto prefijo
-        
-        // Si el QR es válido, llamar a onScan
-        onScan(result?.text);
+      const qrText = result?.text || result;
+      // Solo QR válidos si contienen el dominio de tu app
+      if (qrText && qrText.includes("apk-qr-punts-43y9.vercel.app")) {
+        onScan(qrText);
         setStartScan(false);
-      } catch (error) {
-        // Si hay un error o el QR no es válido
+      } else {
         setInvalidQrMessage(true);
-        // Mantener el escáner activo
+        // El escáner sigue activo para nuevos intentos
       }
     }
   };
+
 
   return (
     <div style={{ maxWidth: '500px', margin: '0 auto', position: 'relative' }}>

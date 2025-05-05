@@ -31,7 +31,7 @@ const ParticleEffect = ({ oldValue, newValue, onComplete }) => {
     
     setParticles(newParticles);
     
-    // Iniciar animación
+    // Iniciar animación - mostrar el nuevo valor casi inmediatamente
     setTimeout(() => {
       setShowNewValue(true);
       
@@ -39,8 +39,8 @@ const ParticleEffect = ({ oldValue, newValue, onComplete }) => {
       setTimeout(() => {
         setAnimationComplete(true);
         if (onComplete) onComplete();
-      }, 1500);
-    }, 1000);
+      }, 1000); // Reducido de 1500ms a 1000ms
+    }, 300); // Reducido de 1000ms a 300ms para que aparezca más rápido
   }, [onComplete]);
   
   // Animar partículas

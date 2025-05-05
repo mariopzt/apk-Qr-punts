@@ -11,17 +11,16 @@
   justify-content: center;
 }
 .qrscan-overlay {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  max-width: 100vw;
-  max-height: 100vh;
-  padding: 0;
+  pointer-events: none;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  overflow: hidden;
 }
 .qrscan-title {
   color: #fff;
@@ -129,10 +128,11 @@
   height: 30px;
   font-size: 18px;
   cursor: pointer;
-  z-index: 2;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: auto;
 }
 .qrscan-actions-bar {
   width: 90%;
@@ -140,9 +140,8 @@
   justify-content: center;
   align-items: center;
   gap: 12px;
-  padding: 0 20px;
-  margin-top: auto;
-  margin-bottom: 30px;
+  margin: 0 auto 30px;
+  pointer-events: auto;
 }
 .qrscan-bar-btn {
   flex: 1;
@@ -166,10 +165,34 @@
   background: rgba(255,255,255,0.1);
   color: #fff;
 }
-.qrscan-title-center{
+.qrscan-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  pointer-events: none;
+}
+
+.qrscan-message {
+  font-size: 16px;
+  margin-top: 16px;
+  text-align: center;
+  font-weight: 500;
+  background: rgba(0,0,0,0.7);
+  padding: 8px 16px;
+  border-radius: 8px;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.qrscan-title-center {
   width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 20px auto 0;
 }

@@ -195,27 +195,38 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
         {/* MODAL QR */}
         {showQr && (
           <div className="qrscan-bg" style={{ zIndex: 12000 }}>
+            {/* Fondo de cámara a pantalla completa */}
+            <div className="qrscan-frame">
+              <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
+              <div className="qrscan-scan-guide"></div>
+            </div>
+            
+            {/* Overlay con el contenido (botones, textos) */}
             <div className="qrscan-overlay">
+              {/* Botón de cerrar */}
               <button className="qrscan-close" onClick={() => {
                 if (scannerRef.current) {
                   scannerRef.current.stop();
                 }
                 setShowQr(false);
               }}>✕</button>
-              <div className="qrscan-frame">
-                <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
-                <div className="qrscan-scan-guide"></div>
-              </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', padding: '20px' }}>
-                <div className="qrscan-title-center" style={{ textAlign: 'center' }}>
+              
+              {/* Contenido superior e inferior */}
+              <div className="qrscan-content">
+                {/* Área superior */}
+                <div className="qrscan-title-center">
                   <div className="qrscan-title">Scan QR Code</div>
                   <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
                 </div>
+                
+                {/* Área de mensaje de error o éxito */}
                 {(error || qrFeedbackMsg) && (
-                  <div style={{ color: error ? '#ff5252' : '#4caf50', fontSize: 16, marginTop: 16, textAlign: 'center', fontWeight: error ? 600 : 400 }}>
+                  <div className="qrscan-message" style={{ color: error ? '#ff5252' : '#4caf50' }}>
                     {error ? <>Error: {error}</> : qrFeedbackMsg}
                   </div>
                 )}
+                
+                {/* Área inferior - botones */}
                 <div className="qrscan-actions-bar">
                   <button className="qrscan-bar-btn qrscan-bar-btn-main">Scan code</button>
                   <button className="qrscan-bar-btn qrscan-bar-btn-alt">Enter code</button>

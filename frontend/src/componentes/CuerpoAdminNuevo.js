@@ -12,17 +12,21 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [error, setError] = useState("");
   const qrRef = useRef(null);
   const scannerRef = useRef(null);
+  const audioContextRef = useRef(null);
   const [qrFeedbackMsg, setQrFeedbackMsg] = useState('');
 
   // Función para reproducir beep usando Web Audio API
   const playBeep = () => {
     try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      const oscillator = audioContextRef.current.createOscillator();
+      const gainNode = audioContextRef.current.createGain();
 
       oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      gainNode.connect(audioContextRef.current.destination);
 
       oscillator.type = 'sine';
       oscillator.frequency.value = 1000; // Frecuencia en Hz
@@ -31,7 +35,6 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
       oscillator.start();
       setTimeout(() => {
         oscillator.stop();
-        audioContext.close();
       }, 100); // Duración del beep en ms
     } catch (err) {
       console.error('Error reproduciendo beep:', err);
@@ -45,6 +48,16 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
       setError("");
     }
   }, [showQr]);
+
+  // Limpiar audioContext al desmontar
+  useEffect(() => {
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+    };
+  }, []);
 
 
   // Nuevo useEffect: inicializa el scanner solo cuando showQr y qrRef.current están listos

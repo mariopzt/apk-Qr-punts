@@ -1,79 +1,12 @@
 .qrscan-bg {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.92);
   z-index: 10000;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-.qrscan-overlay {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  max-width: 100vw;
-  max-height: 100vh;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.qrscan-frame {
-  width: 100vw !important;
-  height: 100vh !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.qrscan-reader {
-  width: 100vw !important;
-  height: 100vh !important;
-}
-
-.qrscan#qr-reader {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-#qr-reader video {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover;
-}
-
-#qr-reader__scan_region {
-  position: relative;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 300px;
-}
-
-#qr-reader__dashboard {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: transparent !important;
-  padding: 0 !important;
-  border: none !important;
-}
-
-#qr-reader__dashboard button {
-  display: none !important;
-}
-
 .qrscan-overlay {
   position: relative;
   width: 100vw;
@@ -83,23 +16,20 @@
   flex-direction: column;
   align-items: center;
 }
-
 .qrscan-title {
   color: #fff;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 24px;
-  margin-bottom: 8px;
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 10px;
   text-align: center;
 }
-
 .qrscan-subtitle {
-  color: rgba(255,255,255,0.7);
-  font-size: 0.9rem;
+  color: #e6e6e6;
+  font-size: 1.08rem;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
 }
-
 .qrscan-frame {
   margin: 0 auto;
   width: 260px;
@@ -113,12 +43,10 @@
   position: relative;
   overflow: hidden;
 }
-
 .qrscan-reader {
   width: 100%;
   height: 100%;
 }
-
 .qrscan-close {
   position: absolute;
   left: 18px;
@@ -135,35 +63,40 @@
 }
 .qrscan-actions-bar {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: transparent;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  background: rgba(240,240,240,0.98);
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 16px;
-  width: 100%;
+  gap: 18px;
+  padding: 16px 36px 16px 36px;
+  border-radius: 28px;
+  max-width: 420px;
+  min-width: 270px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
   z-index: 10001;
 }
 
 .qrscan-bar-btn {
-  flex: 1;
+  min-width: 120px;
   padding: 12px 0;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 400;
-  background: rgba(255,255,255,0.9);
-  color: #000;
+  border-radius: 11px;
+  font-size: 1.13rem;
+  font-weight: 500;
+  margin: 0 3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   cursor: pointer;
-  transition: background 0.2s;
-  max-width: 180px;
+  transition: background 0.18s, color 0.18s;
 }
 
-.qrscan-bar-btn-main,
+.qrscan-bar-btn-main {
+  background: #fff;
+  color: #222;
+}
 .qrscan-bar-btn-alt {
-  background: rgba(255,255,255,0.9);
-  color: #000;
+  background: #f3f3f3;
+  color: #888;
 }

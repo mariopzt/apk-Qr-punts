@@ -6,6 +6,14 @@ const ParticleEffect = ({ oldValue, newValue, onComplete }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [showNewValue, setShowNewValue] = useState(false);
   
+  // Mostrar inmediatamente el valor nuevo
+  useEffect(() => {
+    // Mostrar el nuevo valor casi inmediatamente
+    setTimeout(() => {
+      setShowNewValue(true);
+    }, 50);
+  }, []);
+  
   // Crear partículas al iniciar
   useEffect(() => {
     if (!containerRef.current) return;
@@ -101,16 +109,7 @@ const ParticleEffect = ({ oldValue, newValue, onComplete }) => {
         alignItems: 'center'
       }}
     >
-      {/* Número antiguo que desaparece */}
-      {!showNewValue && (
-        <div className="balance-amount particle-old-value" style={{
-          position: 'absolute',
-          opacity: particles.length > 0 ? 0 : 1,
-          transition: 'opacity 0.5s ease'
-        }}>
-          <span className="coin">🪙</span> {oldValue}
-        </div>
-      )}
+      {/* No mostramos el número antiguo, solo las partículas */}
       
       {/* Partículas */}
       {particles.map(particle => (

@@ -202,21 +202,23 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                 }
                 setShowQr(false);
               }}>✕</button>
-              <div>
-                <div className="qrscan-title">Scan QR Code</div>
-                <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
-              </div>
               <div className="qrscan-frame">
                 <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
               </div>
-              {(error || qrFeedbackMsg) && (
-                <div style={{ color: error ? '#ff5252' : '#4caf50', fontSize: 16, marginTop: 16, textAlign: 'center', fontWeight: error ? 600 : 400 }}>
-                  {error ? <>Error: {error}</> : qrFeedbackMsg}
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', padding: '20px' }}>
+                <div>
+                  <div className="qrscan-title">Scan QR Code</div>
+                  <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
                 </div>
-              )}
-              <div className="qrscan-actions-bar">
-                <button className="qrscan-bar-btn qrscan-bar-btn-main">Scan code</button>
-                <button className="qrscan-bar-btn qrscan-bar-btn-alt">Enter code</button>
+                {(error || qrFeedbackMsg) && (
+                  <div style={{ color: error ? '#ff5252' : '#4caf50', fontSize: 16, marginTop: 16, textAlign: 'center', fontWeight: error ? 600 : 400 }}>
+                    {error ? <>Error: {error}</> : qrFeedbackMsg}
+                  </div>
+                )}
+                <div className="qrscan-actions-bar">
+                  <button className="qrscan-bar-btn qrscan-bar-btn-main">Scan code</button>
+                  <button className="qrscan-bar-btn qrscan-bar-btn-alt">Enter code</button>
+                </div>
               </div>
             </div>
           </div>

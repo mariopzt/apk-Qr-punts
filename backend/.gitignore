@@ -1,0 +1,6 @@
+.env
+# Evita subir archivos de entorno sensibles
+db.sqlite
+node_modules/
+.DS_Store
+.env.*

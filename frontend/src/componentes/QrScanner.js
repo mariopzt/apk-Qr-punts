@@ -1,18 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { QrReader } from 'react-qr-reader';
 
 const QrScanner = ({ onScan, onError }) => {
   const [startScan, setStartScan] = useState(false);
+  const [invalidQrMessage, setInvalidQrMessage] = useState(false);
+
+  // Limpiar el mensaje de error después de 2 segundos
+  useEffect(() => {
+    let timer;
+    if (invalidQrMessage) {
+      timer = setTimeout(() => {
+        setInvalidQrMessage(false);
+      }, 2000);
+    }
+    return () => clearTimeout(timer);
+  }, [invalidQrMessage]);
 
   const handleScan = (result) => {
     if (result) {
-      onScan(result?.text);
-      setStartScan(false);
+      try {
+        // Aquí puedes añadir la lógica para validar si el QR es válido
+        // Por ejemplo, verificar si tiene un formato específico o si comienza con cierto prefijo
+        
+        // Si el QR es válido, llamar a onScan
+        onScan(result?.text);
+        setStartScan(false);
+      } catch (error) {
+        // Si hay un error o el QR no es válido
+        setInvalidQrMessage(true);
+        // Mantener el escáner activo
+      }
     }
   };
 
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '500px', margin: '0 auto', position: 'relative' }}>
+      {invalidQrMessage && (
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 10,
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          color: 'white',
+          padding: '15px 25px',
+          borderRadius: '8px',
+          fontWeight: 'bold',
+          fontSize: '18px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          textAlign: 'center'
+        }}>
+          QR no válido
+        </div>
+      )}
       <div style={{ 
         backgroundColor: '#fff',
         borderRadius: '12px',

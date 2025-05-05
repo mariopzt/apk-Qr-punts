@@ -14,7 +14,6 @@
 
 @media (max-height: 700px) {
   .cuerpo-nuevo-container {
-    padding: 10px 3px;
     max-width: 320px;
     border-radius: 12px;
   }
@@ -53,7 +52,6 @@
 }
 
 .cuerpo-nuevo-container {
-  padding: 22px 8px;
   max-width: 340px;
   width: 100%;
   margin: 0 auto;
@@ -107,7 +105,6 @@
 }
 
 .cuerpo-nuevo-container {
-  padding: 20px 18px;
   max-width: 400px;
   width: 100%;
   margin: 0;

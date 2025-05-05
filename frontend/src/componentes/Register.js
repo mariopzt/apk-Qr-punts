@@ -15,10 +15,21 @@ function Register({ onLogin, onGoToLogin }) {
     setError("");
     setSuccess("");
     try {
+      console.log("Enviando solicitud de registro al backend...");
       const res = await registrarUsuario(username, password, email);
-      setSuccess("¡Registro exitoso! Ya puedes iniciar sesión.");
-      if (onLogin && res.user) onLogin(res.user);
+      console.log("Respuesta del servidor:", res);
+      
+      // Mostrar mensaje detallado
+      if (res.message && res.message.includes("email de confirmación")) {
+        setSuccess("Te hemos enviado un email de confirmación. Revisa tu bandeja de entrada.");
+      } else if (res.message && res.message.includes("Usuario agregado")) {
+        setSuccess("Usuario creado directamente sin confirmación por email. El backend no está usando el código actualizado.");
+      } else {
+        setSuccess(res.message || "Registro completado. Verifica los logs del servidor para más detalles.");
+      }
+      // No hacemos login automáticamente, esperamos a que confirme el email
     } catch (err) {
+      console.error("Error al registrar:", err);
       setError(err.message || "Error al registrar usuario");
     }
   };

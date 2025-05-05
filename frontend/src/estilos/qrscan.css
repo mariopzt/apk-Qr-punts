@@ -70,6 +70,14 @@
   box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
   z-index: 2;
 }
+
+/* Ocultar cualquier borde adicional del área de escaneo html5-qrcode */
+#qr-reader__scan_region,
+#qr-reader__scan_region div {
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .qrscan-reader {
   position: absolute;
   inset: 0;

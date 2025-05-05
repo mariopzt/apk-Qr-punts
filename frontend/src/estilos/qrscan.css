@@ -58,12 +58,17 @@
 .qrscan-frame::after {
   content: '';
   position: absolute;
-  width: 260px;
-  height: 260px;
+  width: 180px;        /* Más pequeño */
+  height: 180px;       /* Más pequeño */
+  top: 18%;            /* Más arriba */
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   background: transparent;
   border: 2px solid #fff;
   border-radius: 20px;
   box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
+  z-index: 2;
 }
 .qrscan-reader {
   position: absolute;
@@ -86,11 +91,7 @@
   min-height: 100% !important;
 }
 
-#qr-reader__scan_region video {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-}
+
 .qrscan-close {
   position: absolute;
   left: 15px;

@@ -303,22 +303,47 @@ app.get("/api/usuario/qr/:qrCode", async (req, res) => {
 
 // Sumar punto a usuario por QR
 app.post("/api/puntos/sumar", async (req, res) => {
+  console.log("[PUNTOS] ===== INICIO PROCESO DE SUMA DE PUNTOS =====");
+  console.log("[PUNTOS] Body recibido:", req.body);
+  
   const { qrCode } = req.body;
   if (!qrCode) {
+    console.log("[PUNTOS] ERROR: Falta el código QR");
     return res.status(400).json({ message: "Falta el código QR" });
   }
+  
   try {
+    console.log("[PUNTOS] Buscando usuario con qrCode:", qrCode);
     const user = await User.findOne({ qrCode });
+    
     if (!user) {
+      console.log("[PUNTOS] ERROR: Usuario no encontrado para el QR:", qrCode);
       return res.status(404).json({ message: "Usuario no encontrado para ese QR" });
     }
-    user.points = (user.points ?? 0) + 1;
-    user.totalPoints = (user.totalPoints ?? 0) + 1;
+    
+    console.log("[PUNTOS] Usuario encontrado:", user.username);
+    console.log("[PUNTOS] Puntos actuales:", user.points || 0, "Puntos totales:", user.totalPoints || 0);
+    
+    // Incrementar puntos
+    user.points = (user.points || 0) + 1;
+    user.totalPoints = (user.totalPoints || 0) + 1;
+    
+    console.log("[PUNTOS] Nuevos puntos:", user.points, "Nuevos puntos totales:", user.totalPoints);
+    
+    // Guardar cambios
     await user.save();
+    console.log("[PUNTOS] ✅ Usuario actualizado correctamente en la base de datos");
+    
+    // Notificar por socket.io
+    console.log("[PUNTOS] Notificando al usuario por socket.io, qrCode:", qrCode);
     notifyPuntoSumado(qrCode);
+    
+    // Enviar respuesta
     const { password, ...userSafe } = user.toObject();
+    console.log("[PUNTOS] ===== FIN PROCESO DE SUMA DE PUNTOS (EXITOSO) =====");
     res.json({ ok: true, user: userSafe });
   } catch (err) {
+    console.error("[PUNTOS] ❌ ERROR al sumar punto:", err);
     res.status(500).json({ message: "Error al sumar punto", error: err.message });
   }
 });

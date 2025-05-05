@@ -198,7 +198,6 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
             {/* Fondo de cámara a pantalla completa */}
             <div className="qrscan-frame">
               <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
-              <div className="qrscan-scan-guide"></div>
             </div>
             
             {/* Overlay con el contenido (botones, textos) */}
@@ -215,8 +214,8 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
               <div className="qrscan-content">
                 {/* Área superior */}
                 <div className="qrscan-title-center">
-                  <div className="qrscan-title">Scan QR Code</div>
-                  <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
+                  <div className="qrscan-title">Escanea QR</div>
+                  <div className="qrscan-subtitle">Escanea el QR cofigo para sumar puntos</div>
                 </div>
                 
                 {/* Área de mensaje de error o éxito */}

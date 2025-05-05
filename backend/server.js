@@ -46,20 +46,40 @@ app.post("/api/auth/register", async (req, res) => {
     return res.status(400).json({ message: "Todos los campos son obligatorios" });
   }
   try {
-    // Verifica que no exista ni en users ni en pending
+    // Verifica que no exista ni en users ni en pending (por username o email)
     console.log("[REGISTRO] Verificando si el usuario ya existe en la colección 'usuarios'...");
-    const existe = await User.findOne({ username });
-    if (existe) {
-      console.log("[REGISTRO] ERROR: El usuario ya existe en 'usuarios'");
-      return res.status(409).json({ message: "El usuario ya existe" });
+    
+    // Verificar por nombre de usuario
+    const existeUsername = await User.findOne({ username });
+    if (existeUsername) {
+      console.log("[REGISTRO] ERROR: El nombre de usuario ya existe en 'usuarios'");
+      return res.status(409).json({ message: "El nombre de usuario ya está en uso" });
     }
+    
+    // Verificar por email
+    const existeEmail = await User.findOne({ email });
+    if (existeEmail) {
+      console.log("[REGISTRO] ERROR: El email ya está registrado en 'usuarios'");
+      return res.status(409).json({ message: "El correo electrónico ya está registrado" });
+    }
+    
     console.log("[REGISTRO] Verificando si el usuario ya existe en 'pending_users'...");
-    const pending = await PendingUser.findOne({ username });
-    if (pending) {
+    
+    // Verificar por nombre de usuario en pendientes
+    const pendingUsername = await PendingUser.findOne({ username });
+    if (pendingUsername) {
       console.log("[REGISTRO] ERROR: Ya hay una confirmación pendiente para este usuario");
-      return res.status(409).json({ message: "Ya hay una confirmación pendiente para este usuario" });
+      return res.status(409).json({ message: "Ya hay una confirmación pendiente para este nombre de usuario" });
     }
-    console.log("[REGISTRO] Usuario no existe, procediendo a crear registro pendiente...");
+    
+    // Verificar por email en pendientes
+    const pendingEmail = await PendingUser.findOne({ email });
+    if (pendingEmail) {
+      console.log("[REGISTRO] ERROR: Ya hay una confirmación pendiente para este email");
+      return res.status(409).json({ message: "Ya hay una confirmación pendiente para este correo electrónico" });
+    }
+    
+    console.log("[REGISTRO] Usuario y email no existen, procediendo a crear registro pendiente...");
     // Encriptar contraseña
     console.log("[REGISTRO] Encriptando contraseña...");
     const hashedPassword = await bcrypt.hash(password, 10);

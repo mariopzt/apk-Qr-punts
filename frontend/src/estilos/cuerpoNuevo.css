@@ -1,6 +1,6 @@
-html, body {
-  margin: 0;
-  padding: 0;
+html, body, #root, .cuerpo-nuevo-bg {
+  margin: 0 !important;
+  padding: 0 !important;
   box-sizing: border-box;
   height: 100%;
   width: 100%;
@@ -14,10 +14,11 @@ html, body {
   color: #fff;
   font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  padding-top: env(safe-area-inset-top, 0);
 }
+
+
 
 
 

@@ -1,0 +1,11 @@
+/* Forzar fondo oscuro en todos los inputs del login, aunque no tengan la clase .login-input */
+.login-container.dark input,
+.login-container.dark input[type="text"],
+.login-container.dark input[type="email"],
+.login-container.dark input[type="password"],
+.login-container.dark textarea {
+  background: #19192b !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 8px;
+}

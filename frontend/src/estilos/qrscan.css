@@ -68,7 +68,7 @@
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 100%;
+  height: 80%;
   object-fit: cover;
 }
 
@@ -130,11 +130,7 @@
   background: #fff;
   color: #000;
 }
-#qr-reader__scan_region video {
-  object-fit: cover !important;
-  position: relative;
-  top: -40px; /* Ajusta este valor hasta que el área de escaneo coincida con tu marco */
-}
+
 .qrscan-bar-btn-alt {
   background: rgba(255,255,255,0.1);
   color: #fff;

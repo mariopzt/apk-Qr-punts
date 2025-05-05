@@ -247,13 +247,31 @@ app.post("/api/auth/login-local", async (req, res) => {
   }
 });
 
-// Proxy login
+// Endpoint principal de login (usa el login local)
 app.post("/api/auth/login", async (req, res) => {
+  console.log("[LOGIN] Recibida petición de login, redirigiendo a login-local");
+  // Simplemente redirigimos al endpoint de login local
+  const { username, password } = req.body;
+  if (!username || !password) {
+    console.log("[LOGIN] Faltan campos");
+    return res.status(400).json({ message: "Usuario y contraseña requeridos" });
+  }
   try {
-    const response = await axios.post(`${API_BASE}/api/auth/login`, req.body);
-    res.status(response.status).json(response.data);
+    const user = await User.findOne({ username });
+    if (!user) {
+      console.log("[LOGIN] Usuario no encontrado para:", username);
+      return res.status(404).json({ message: "No se encuentra ese usuario" });
+    }
+    const passwordOk = await bcrypt.compare(password, user.password);
+    if (!passwordOk) {
+      console.log("[LOGIN] Contraseña incorrecta para usuario:", username);
+      return res.status(401).json({ message: "Usuario o contraseña incorrectos" });
+    }
+    console.log("[LOGIN] Login correcto para usuario:", username);
+    res.json({ message: "Login correcto", user });
   } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { message: "Error en login" });
+    console.log("[LOGIN] ERROR:", err);
+    res.status(500).json({ message: "Error en login", error: err.message });
   }
 });
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Login from "./componentes/Login";
-import Registro from "./componentes/Registro";
+import Register from "./componentes/Register";
 import CuerpoNuevo from "./componentes/CuerpoNuevo";
 import CuerpoAdminNuevo from "./componentes/CuerpoAdminNuevo";
 
@@ -12,7 +12,7 @@ function App() {
     return <Login onCrearUsuario={() => setVista("registro")} onLogin={u => { setUsuario(u); setVista("cuerpo"); }} />;
   }
   if (vista === "registro") {
-    return <Registro onVolver={() => setVista("login")} />;
+    return <Register onGoToLogin={() => setVista("login")} />;
   }
   if (vista === "cuerpo" && usuario) {
     if (usuario.tipo === "root") {

@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import axios from "axios";
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 dotenv.config();
 
 const app = express();
@@ -45,7 +46,9 @@ app.post("/api/auth/register", async (req, res) => {
       return res.status(409).json({ message: "El usuario ya existe" });
     }
     const qrCode = `${username}_${Date.now()}`;
-    const nuevo = new User({ username, password, email, qrCode, totalPoints: 0 });
+    // Encriptar contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const nuevo = new User({ username, password: hashedPassword, email, qrCode, totalPoints: 0 });
     await nuevo.save();
     console.log("[REGISTRO] Usuario guardado correctamente:", username);
     res.status(201).json({ message: "Usuario agregado" });
@@ -69,7 +72,8 @@ app.post("/api/auth/login-local", async (req, res) => {
       console.log("[LOGIN] Usuario no encontrado para:", username);
       return res.status(404).json({ message: "No se encuentra ese usuario" });
     }
-    if (user.password !== password) {
+    const passwordOk = await bcrypt.compare(password, user.password);
+    if (!passwordOk) {
       console.log("[LOGIN] Contraseña incorrecta para usuario:", username);
       return res.status(401).json({ message: "Usuario o contraseña incorrectos" });
     }

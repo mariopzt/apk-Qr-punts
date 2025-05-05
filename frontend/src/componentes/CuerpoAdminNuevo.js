@@ -207,7 +207,12 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   <div className="qrscan-bg">
     <div id="qr-reader" ref={qrRef} className="qrscan-reader-bg" />
     <div className="qrscan-overlay-content">
-      <button className="qrscan-close" onClick={() => setShowQr(false)}>✕</button>
+      <button className="qrscan-close" onClick={() => {
+        if (scannerRef.current) {
+          scannerRef.current.stop();
+        }
+        setShowQr(false);
+      }}>✕</button>
       <div className="qrscan-header">
         <div className="qrscan-title">Scan QR Code</div>
         <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
@@ -216,7 +221,12 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
         <div className="qrscan-square" />
       </div>
       <div className="qrscan-actions-bar">
-        <button className="qrscan-bar-btn qrscan-bar-btn-main" onClick={() => setShowQr(false)}>Scan code</button>
+        <button className="qrscan-bar-btn qrscan-bar-btn-main" onClick={() => {
+          if (scannerRef.current) {
+            scannerRef.current.stop();
+          }
+          setShowQr(false);
+        }}>Scan code</button>
         <button className="qrscan-bar-btn qrscan-bar-btn-alt" onClick={() => {/* acción alternativa aquí */}}>Enter code</button>
       </div>
     </div>

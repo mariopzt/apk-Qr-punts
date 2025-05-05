@@ -65,7 +65,7 @@ function ConfirmacionRegistro() {
       <div className="circle circle2"></div>
       <div className="login-container dark" style={{ textAlign: "center" }}>
         <h2 className="login-title">Confirmación de Registro</h2>
-        <div style={{ margin: "40px 0", fontSize: "1.2em" }}>
+        <div style={{ margin: "40px 0", fontSize: "1.2em", color: "darkgray" }}>
           {estado === "cargando" ? "Confirmando..." : mensaje}
         </div>
         {estado === "ok" && (

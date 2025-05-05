@@ -61,8 +61,11 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
             backCam = devices[0];
           }
           if (!backCam) {
-            setError('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
-            setShowQr(false);
+            setError('No se ha encontrado cámara trasera');
+            setTimeout(() => {
+              setError("");
+              setShowQr(false);
+            }, 2000);
             return;
           }
           if (isMounted && qrRef.current) {
@@ -97,31 +100,28 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                       setUsuario(res.user);
                       setQrResult(''); // Limpia el resultado
                       setShowQr(false); // Cierra el modal
-                      setQrFeedbackMsg('');
-                   }
-                    // Feedback visual
-                    const frame = document.querySelector('.qrscan-frame');
-                    if (frame) {
-                      frame.style.boxShadow = '0 0 0 4px #4caf50, 0 2px 16px rgba(0,0,0,0.13)';
-                      setTimeout(() => {
-                        frame.style.boxShadow = '';
-                      }, 800);
-                    }
-                    // Si el usuario escaneado es el mismo, ocultar QR
-                    if (usuario.qrCode === decodedText) {
-                      setQrResult(''); // Limpia el resultado
-                      setShowQr(false); // Cierra el modal
                     }
                   } catch (err) {
-                    setError("Error al sumar punto: " + (err.message || err) + (err && err.stack ? ('\n' + err.stack) : ''));
+                    // Mostrar solo "QR no válido" en lugar del error detallado
+                    setError("QR no válido");
                     console.error("Error al sumar punto:", err);
+                    
+                    // Limpiar el mensaje de error después de 2 segundos
+                    setTimeout(() => {
+                      setError("");
+                    }, 2000);
                   }
                 }
               },
               (err) => {}
             ).catch((err) => {
-              setError("Error al iniciar cámara: " + err);
+              setError("Error al iniciar cámara");
               console.error('[QR] Error al iniciar cámara:', err);
+              
+              // Limpiar el mensaje de error después de 2 segundos
+              setTimeout(() => {
+                setError("");
+              }, 2000);
             });
           }
         } catch (err) {
@@ -220,8 +220,20 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                 
                 {/* Área de mensaje de error o éxito */}
                 {(error || qrFeedbackMsg) && (
-                  <div className="qrscan-message" style={{ color: error ? '#ff5252' : '#4caf50' }}>
-                    {error ? <>Error: {error}</> : qrFeedbackMsg}
+                  <div className="qrscan-message" style={{
+                    color: error ? '#ffffff' : '#4caf50',
+                    backgroundColor: error ? 'rgba(0, 0, 0, 0.9)' : 'transparent',
+                    padding: error ? '15px 25px' : '0',
+                    borderRadius: error ? '8px' : '0',
+                    fontWeight: error ? 'bold' : 'normal',
+                    boxShadow: error ? '0 4px 12px rgba(0,0,0,0.3)' : 'none',
+                    position: error ? 'absolute' : 'relative',
+                    top: error ? '50%' : 'auto',
+                    left: error ? '50%' : 'auto',
+                    transform: error ? 'translate(-50%, -50%)' : 'none',
+                    zIndex: error ? '20' : '1'
+                  }}>
+                    {error || qrFeedbackMsg}
                   </div>
                 )}
                 

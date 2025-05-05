@@ -4,19 +4,25 @@ import { QrReader } from 'react-qr-reader';
 const QrScanner = ({ onScan, onError }) => {
   const [startScan, setStartScan] = useState(false);
   const [invalidQrMessage, setInvalidQrMessage] = useState(false);
+  const [scanPaused, setScanPaused] = useState(false);
 
-  // Limpiar el mensaje de error después de 2 segundos
+  // Limpiar el mensaje de error después de 2 segundos y reactivar el escáner
   useEffect(() => {
     let timer;
     if (invalidQrMessage) {
+      setScanPaused(true); // Pausar el escáner mientras se muestra el mensaje
       timer = setTimeout(() => {
         setInvalidQrMessage(false);
+        setScanPaused(false); // Reactivar el escáner después de 2 segundos
       }, 2000);
     }
     return () => clearTimeout(timer);
   }, [invalidQrMessage]);
 
   const handleScan = (result) => {
+    // No procesar si el escáner está pausado (mostrando mensaje de error)
+    if (scanPaused) return;
+    
     if (result) {
       const qrText = result?.text || result;
       // Solo QR válidos si contienen el dominio de tu app
@@ -25,7 +31,7 @@ const QrScanner = ({ onScan, onError }) => {
         setStartScan(false);
       } else {
         setInvalidQrMessage(true);
-        // El escáner sigue activo para nuevos intentos
+        // El escáner se pausará automáticamente por el useEffect
       }
     }
   };
@@ -75,7 +81,19 @@ const QrScanner = ({ onScan, onError }) => {
         </p>
         
         {startScan ? (
-          <div style={{ width: '100%', height: '300px' }}>
+          <div style={{ width: '100%', height: '300px', position: 'relative' }}>
+            {/* Capa semitransparente que bloquea visualmente el escáner cuando está pausado */}
+            {scanPaused && (
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                zIndex: 5
+              }} />
+            )}
             <QrReader
               onResult={handleScan}
               onError={onError}

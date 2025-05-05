@@ -55,38 +55,6 @@
   background: rgba(0,0,0,0.5);
 }
 
-/* Eliminado el cuadro blanco central. Ahora solo esquinas */
-.qrscan-corner {
-  position: absolute;
-  width: 36px;
-  height: 36px;
-  border: 4px solid #fff;
-  border-radius: 8px;
-}
-.qrscan-corner.tl { /* top left */
-  top: 18%;
-  left: calc(50% - 90px);
-  border-right: none;
-  border-bottom: none;
-}
-.qrscan-corner.tr { /* top right */
-  top: 18%;
-  left: calc(50% + 54px);
-  border-left: none;
-  border-bottom: none;
-}
-.qrscan-corner.bl { /* bottom left */
-  top: calc(18% + 144px);
-  left: calc(50% - 90px);
-  border-right: none;
-  border-top: none;
-}
-.qrscan-corner.br { /* bottom right */
-  top: calc(18% + 144px);
-  left: calc(50% + 54px);
-  border-left: none;
-  border-top: none;
-}
 
 
 /* Ocultar cualquier borde adicional del área de escaneo html5-qrcode */

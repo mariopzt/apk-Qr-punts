@@ -204,10 +204,6 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
               }}>✕</button>
               <div className="qrscan-frame">
                 <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
-                <div className="qrscan-corner tl"></div>
-                <div className="qrscan-corner tr"></div>
-                <div className="qrscan-corner bl"></div>
-                <div className="qrscan-corner br"></div>
               </div>
               <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', padding: '20px' }}>
                 <div className="qrscan-title-center" style={{ textAlign: 'center' }}>

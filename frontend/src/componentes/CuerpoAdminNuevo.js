@@ -206,7 +206,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                 <div id="qr-reader" ref={qrRef} className="qrscan-reader" />
               </div>
               <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', padding: '20px' }}>
-                <div>
+                <div style={{ textAlign: 'center' }}>
                   <div className="qrscan-title">Scan QR Code</div>
                   <div className="qrscan-subtitle">Scan the booking QR code from your confirmation email</div>
                 </div>

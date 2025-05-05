@@ -1,21 +1,14 @@
 .qrscan-bg {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.92);
+  background: rgba(0,0,0,0.85);
   z-index: 10000;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-}
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.92);
-  z-index: 10000;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
 }
 
 .qrscan-overlay {
@@ -58,18 +51,18 @@
 }
 .qrscan-title {
   color: #fff;
-  font-size: 2.1rem;
-  font-weight: 700;
-  margin-top: 48px;
-  margin-bottom: 10px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
   text-align: center;
 }
 
 .qrscan-subtitle {
-  color: #e6e6e6;
-  font-size: 1.08rem;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9rem;
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .qrscan-frame {
@@ -105,40 +98,35 @@
 }
 .qrscan-actions-bar {
   position: fixed;
-  left: 50%;
-  bottom: 32px;
-  transform: translateX(-50%);
-  background: rgba(240,240,240,0.98);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 18px;
-  padding: 16px 36px 16px 36px;
-  border-radius: 28px;
-  max-width: 420px;
-  min-width: 270px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  gap: 10px;
+  padding: 16px;
+  width: 100%;
   z-index: 10001;
 }
 
 .qrscan-bar-btn {
-  min-width: 120px;
+  flex: 1;
   padding: 12px 0;
   border: none;
-  border-radius: 11px;
-  font-size: 1.13rem;
-  font-weight: 500;
-  margin: 0 3px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 400;
+  background: rgba(255,255,255,0.9);
+  color: #000;
   cursor: pointer;
-  transition: background 0.18s, color 0.18s;
+  transition: background 0.2s;
+  max-width: 180px;
 }
 
-.qrscan-bar-btn-main {
-  background: #fff;
-  color: #222;
-}
+.qrscan-bar-btn-main,
 .qrscan-bar-btn-alt {
-  background: #f3f3f3;
-  color: #888;
+  background: rgba(255,255,255,0.9);
+  color: #000;
 }

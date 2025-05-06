@@ -11,6 +11,9 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border: 1px solid #252532;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .historial-header {
@@ -48,13 +51,19 @@
   flex: 1;
   overflow-y: auto;
   padding: 0;
+  border-top: 1px solid #252532;
+  border-bottom: 1px solid #252532;
 }
 
 .historial-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background-color: #111116;
   color: white;
+  border: 1px solid #252532;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .historial-table th {

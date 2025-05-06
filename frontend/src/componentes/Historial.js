@@ -71,12 +71,6 @@ function Historial({ usuario, onBack }) {
             >
               Todos
             </button>
-            <button 
-              className={`historial-filter ${filtro === 'usuario' ? 'active' : ''}`}
-              onClick={() => setFiltro('usuario')}
-            >
-              Mis escaneos
-            </button>
           </div>
         ) : null}
       </div>

@@ -6,6 +6,7 @@ import "../estilos/cuerpoAdminNuevo.css";
 
 import { sumarPuntoUsuario, getUsuarioByQrCode } from "./api";
 import { socket } from "../socket";
+import Historial from "./Historial";
 
 function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
@@ -14,6 +15,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const qrRef = useRef(null);
   const scannerRef = useRef(null);
   const [qrFeedbackMsg, setQrFeedbackMsg] = useState('');
+  const [showHistorial, setShowHistorial] = useState(false);
 
   // Función para reproducir beep usando el archivo MP3
   const playBeep = () => {
@@ -182,6 +184,11 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
     // eslint-disable-next-line
   }, [showQr, qrRef]);
 
+  // Si se está mostrando el historial, renderizar el componente Historial
+  if (showHistorial) {
+    return <Historial usuario={usuario} onBack={() => setShowHistorial(false)} />;
+  }
+  
   return (
     <div className="admin-bg">
 
@@ -221,10 +228,10 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
             <div className="admin-card-title">Cobrar</div>
             <div className="admin-card-desc">Próximamente</div>
           </div>
-          <div className="admin-card disabled">
+          <div className="admin-card" onClick={() => setShowHistorial(true)}>
             <div className="admin-card-icon">📝</div>
             <div className="admin-card-title">Historial</div>
-            <div className="admin-card-desc">Próximamente</div>
+            <div className="admin-card-desc">Ver escaneos</div>
           </div>
           <div className="admin-card disabled">
             <div className="admin-card-icon">⚙️</div>

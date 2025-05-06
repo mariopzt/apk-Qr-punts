@@ -57,3 +57,33 @@ export async function sumarPuntoUsuario(qrCode, adminQrCode = null) {
   return data;
 }
 
+// Obtener historial de escaneos
+export async function getHistorial() {
+  try {
+    const res = await fetch(`${API_URL}/api/historial`);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.message || `Error HTTP ${res.status}`);
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Error al obtener historial:", error);
+    throw error;
+  }
+}
+
+// Obtener historial de un usuario específico
+export async function getHistorialUsuario(qrCode) {
+  try {
+    const res = await fetch(`${API_URL}/api/historial/${encodeURIComponent(qrCode)}`);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.message || `Error HTTP ${res.status}`);
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Error al obtener historial de usuario:", error);
+    throw error;
+  }
+}
+

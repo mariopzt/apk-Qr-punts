@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 import PendingUser from "./models/PendingUser.js";
+import ScanLog from "./models/ScanLog.js";
 dotenv.config();
 
 const app = express();
@@ -336,10 +337,12 @@ app.post("/api/puntos/sumar", async (req, res) => {
     
     // Verificar si quien escanea es un administrador
     const esAdmin = user.tipo === "admin" || user.tipo === "root";
+    let admin = null;
     
     // Si es un administrador, sumar puntos a todos los usuarios
     if (esAdmin) {
       console.log("[PUNTOS] El usuario es administrador. Sumando puntos a todos los usuarios...");
+      admin = user; // El admin es el mismo usuario escaneado
       
       // Obtener todos los usuarios excepto el admin actual
       const todosUsuarios = await User.find({ qrCode: { $ne: qrCode } });
@@ -353,6 +356,14 @@ app.post("/api/puntos/sumar", async (req, res) => {
         
         // Notificar a cada usuario por socket.io
         notifyPuntoSumado(otroUsuario.qrCode);
+        
+        // Guardar registro en el historial
+        await new ScanLog({
+          userQrCode: otroUsuario.qrCode,
+          username: otroUsuario.username,
+          adminQrCode: admin.qrCode,
+          adminUsername: admin.username
+        }).save();
       }
       
       console.log(`[PUNTOS] ✅ Sumado 1 punto a ${todosUsuarios.length} usuarios`);
@@ -361,7 +372,7 @@ app.post("/api/puntos/sumar", async (req, res) => {
     else if (adminQrCode) {
       // Verificar si quien escanea es un administrador
       console.log("[PUNTOS] Verificando si el escaneador es administrador, qrCode:", adminQrCode);
-      const admin = await User.findOne({ qrCode: adminQrCode });
+      admin = await User.findOne({ qrCode: adminQrCode });
       
       if (admin && (admin.tipo === "admin" || admin.tipo === "root")) {
         console.log(`[PUNTOS] El escaneador ${admin.username} es administrador. Sumando puntos al admin...`);
@@ -379,6 +390,14 @@ app.post("/api/puntos/sumar", async (req, res) => {
       }
     }
     
+    // Guardar registro en el historial
+    await new ScanLog({
+      userQrCode: user.qrCode,
+      username: user.username,
+      adminQrCode: admin ? admin.qrCode : null,
+      adminUsername: admin ? admin.username : null
+    }).save();
+    
     // Notificar por socket.io al usuario original
     console.log("[PUNTOS] Notificando al usuario por socket.io, qrCode:", qrCode);
     notifyPuntoSumado(qrCode);
@@ -390,6 +409,36 @@ app.post("/api/puntos/sumar", async (req, res) => {
   } catch (err) {
     console.error("[PUNTOS] ❌ ERROR al sumar punto:", err);
     res.status(500).json({ message: "Error al sumar punto", error: err.message });
+  }
+});
+
+// Endpoint para obtener el historial de escaneos
+app.get("/api/historial", async (req, res) => {
+  try {
+    // Obtener todos los registros de escaneos, ordenados por fecha descendente
+    const logs = await ScanLog.find()
+      .sort({ timestamp: -1 })
+      .limit(100); // Limitar a los últimos 100 registros para evitar sobrecarga
+    
+    res.json({ ok: true, logs });
+  } catch (err) {
+    console.error("Error al obtener historial de escaneos:", err);
+    res.status(500).json({ message: "Error al obtener historial", error: err.message });
+  }
+});
+
+// Endpoint para obtener el historial de un usuario específico
+app.get("/api/historial/:qrCode", async (req, res) => {
+  try {
+    // Obtener todos los registros de escaneos del usuario, ordenados por fecha descendente
+    const logs = await ScanLog.find({ userQrCode: req.params.qrCode })
+      .sort({ timestamp: -1 })
+      .limit(100);
+    
+    res.json({ ok: true, logs });
+  } catch (err) {
+    console.error("Error al obtener historial de usuario:", err);
+    res.status(500).json({ message: "Error al obtener historial", error: err.message });
   }
 });
 

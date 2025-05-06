@@ -27,7 +27,11 @@ function Historial({ usuario, onBack }) {
         }
         
         if (response && response.logs) {
-          setLogs(response.logs);
+          // Ordenar logs por fecha, del más reciente al más antiguo
+          const logsOrdenados = [...response.logs].sort((a, b) => {
+            return new Date(b.timestamp) - new Date(a.timestamp);
+          });
+          setLogs(logsOrdenados);
         }
       } catch (err) {
         console.error("Error cargando historial:", err);
@@ -48,6 +52,35 @@ function Historial({ usuario, onBack }) {
       month: '2-digit',
       year: 'numeric'
     });
+  };
+
+  // Función para obtener solo la fecha (sin hora) para agrupar
+  const obtenerSoloFecha = (fechaStr) => {
+    const fecha = new Date(fechaStr);
+    return fecha.toISOString().split('T')[0];
+  };
+
+  // Función para formatear el día para el separador
+  const formatearDiaSeparador = (fechaStr) => {
+    const fecha = new Date(fechaStr);
+    const hoy = new Date();
+    const ayer = new Date(hoy);
+    ayer.setDate(hoy.getDate() - 1);
+    
+    // Formatear la fecha para comparación
+    const fechaFormateada = fecha.toISOString().split('T')[0];
+    const hoyFormateada = hoy.toISOString().split('T')[0];
+    const ayerFormateada = ayer.toISOString().split('T')[0];
+    
+    if (fechaFormateada === hoyFormateada) {
+      return 'Hoy';
+    } else if (fechaFormateada === ayerFormateada) {
+      return 'Ayer';
+    } else {
+      // Formato más limpio: Mayo 5
+      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      return `${meses[fecha.getMonth()]} ${fecha.getDate()}`;
+    }
   };
 
   // Función para formatear la hora
@@ -92,20 +125,46 @@ function Historial({ usuario, onBack }) {
               </tr>
             </thead>
             <tbody>
-              {logs.map((log, index) => (
-                <tr style={{ cursor: 'pointer' }} key={index}>
-                  <td>
-                    {log.username}
-                    {log.adminUsername && (
-                      <div style={{ fontSize: '0.8rem', color: '#bcbcbc' }}>
-                        Escaneado por: {log.adminUsername}
-                      </div>
-                    )}
-                  </td>
-                  <td>{formatearHora(log.timestamp)}</td>
-                  <td>{formatearFecha(log.timestamp)}</td>
-                </tr>
-              ))}
+              {(() => {
+                // Agrupar logs por fecha
+                const logsPorFecha = {};
+                logs.forEach(log => {
+                  const fecha = obtenerSoloFecha(log.timestamp);
+                  if (!logsPorFecha[fecha]) {
+                    logsPorFecha[fecha] = [];
+                  }
+                  logsPorFecha[fecha].push(log);
+                });
+
+                // Convertir el objeto agrupado en un array para renderizar
+                const fechasOrdenadas = Object.keys(logsPorFecha).sort().reverse();
+                
+                // Renderizar los logs agrupados por fecha
+                return fechasOrdenadas.map((fecha, fechaIndex) => {
+                  const logsDelDia = logsPorFecha[fecha];
+                  return (
+                    <React.Fragment key={fecha}>
+                      <tr className="historial-date-separator">
+                        <td colSpan="3" className="fecha-separador">{formatearDiaSeparador(fecha)}</td>
+                      </tr>
+                      {logsDelDia.map((log, logIndex) => (
+                        <tr style={{ cursor: 'pointer' }} key={`${fecha}-${logIndex}`}>
+                          <td>
+                            {log.username}
+                            {log.adminUsername && (
+                              <div style={{ fontSize: '0.8rem', color: '#bcbcbc' }}>
+                                Escaneado por: {log.adminUsername}
+                              </div>
+                            )}
+                          </td>
+                          <td>{formatearHora(log.timestamp)}</td>
+                          <td>{formatearFecha(log.timestamp)}</td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  );
+                });
+              })()}
             </tbody>
           </table>
         )}

@@ -88,7 +88,6 @@
 .historial-table td {
   padding: 12px 10px;
   border-bottom: 1px solid #252532;
-  border-right: 1px solid #252532;
   font-size: 0.95rem;
 }
 
@@ -113,6 +112,21 @@
   padding: 30px;
   color: #bcbcbc;
   font-size: 1.1rem;
+}
+
+.historial-date-separator td {
+  text-align: left;
+  padding: 15px 20px 10px;
+  background-color: transparent;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.fecha-separador {
+  padding-left: 20px !important;
+  border-bottom: 1px solid #252532 !important;
 }
 
 .historial-footer {

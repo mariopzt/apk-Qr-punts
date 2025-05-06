@@ -4,6 +4,7 @@ import ParticleEffect from "./ParticleEffect";
 import "../estilos/cuerpoNuevo.css";
 import { socket } from "../socket";
 import { getUsuarioByQrCode } from "./api";
+import Historial from "./Historial";
 
 export default function CuerpoNuevo({ usuario, setUsuario }) {
   console.log('[RENDER] usuario recibido por props:', usuario);
@@ -13,6 +14,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
   const [showParticleEffect, setShowParticleEffect] = useState(false);
   const [oldPoints, setOldPoints] = useState(usuario.totalPoints ?? 0);
   const [newPoints, setNewPoints] = useState(usuario.totalPoints ?? 0);
+  const [showHistorial, setShowHistorial] = useState(false);
   const lastPoints = useRef(usuario.points ?? 0);
   const lastLevel = useRef(0);
 
@@ -82,6 +84,11 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
     };
   }, [usuario.qrCode, setUsuario]);
 
+  // Si se está mostrando el historial, renderizar el componente Historial
+  if (showHistorial) {
+    return <Historial usuario={usuario} onBack={() => setShowHistorial(false)} />;
+  }
+  
   return (
     <div className="cuerpo-nuevo-bg">
       <div className="cuerpo-nuevo-container">
@@ -98,7 +105,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                   />
                 ) : (
                   <div className="balance-amount">
-                    <span className="coin">🪙</span> {usuario.totalPoints ?? 0}
+                    <span className="coin">💰</span> {usuario.totalPoints ?? 0}
                   </div>
                 )}
               </div>
@@ -108,18 +115,18 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
           </div>
           <div className="section-title">Tu Espacio</div>
           <div className="boosters-list-row">
-            <div className="booster-item" style={{flex: 1, marginRight: 4}}>
-              <div className="booster-icon">🤖</div>
+            <div className="booster-item" onClick={() => setShowHistorial(true)} style={{flex: 1, marginRight: 4, cursor: 'pointer'}}>
+              <div className="booster-icon">📝</div>
               <div>
                 <div className="booster-title">Historial</div>
-                <div className="booster-sub silver">Pedidos y descuentos</div>
+                <div className="booster-sub silver">Ver tus escaneos</div>
               </div>
             </div>
             <div className="booster-item" style={{flex: 1, marginLeft: 4}}>
               <div className="booster-icon">🖐️</div>
               <div>
                 <div className="booster-title">Nivel de usuario</div>
-                <div className="booster-sub"> <span className="coin">🪙</span> • {nivel} lvl</div>
+                <div className="booster-sub"> <span className="coin">💰</span> • {nivel} lvl</div>
               </div>
             </div>
           </div>

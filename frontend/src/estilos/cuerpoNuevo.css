@@ -21,6 +21,7 @@
 }
 
 html, body, #root, .cuerpo-nuevo-bg {
+  background-color: #17171a !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;

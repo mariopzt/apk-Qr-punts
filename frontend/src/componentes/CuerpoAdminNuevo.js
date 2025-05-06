@@ -89,12 +89,17 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                   setTimeout(() => setQrFeedbackMsg(''), 2000);
                   // Sumar punto vía API
                   try {
+                    // Si el admin escanea un QR que no es el suyo, enviar también el QR del admin
+                    const adminQrCode = usuario.tipo === "admin" || usuario.tipo === "root" ? usuario.qrCode : null;
+                    
                     // Sumar punto vía API y obtener usuario actualizado
-                    const res = await sumarPuntoUsuario(decodedText);
+                    const res = await sumarPuntoUsuario(decodedText, adminQrCode);
+                    
                     // Dispara evento global para que CuerpoNuevo refresque balance instantáneamente
                     if (window) {
                       window.dispatchEvent(new CustomEvent('qr-punto-sumado', { detail: { qrCode: decodedText } }));
                     }
+                    
                     // Solo si el admin escanea SU PROPIO QR, actualiza su usuario y cierra el modal
                     if (usuario.qrCode === decodedText && res && res.user) {
                       setUsuario(res.user);

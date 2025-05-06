@@ -38,11 +38,11 @@ export async function getUsuarioByQrCode(qrCode) {
   return await res.json();
 }
 
-export async function sumarPuntoUsuario(qrCode) {
+export async function sumarPuntoUsuario(qrCode, adminQrCode = null) {
   const res = await fetch(`${API_URL}/api/puntos/sumar`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ qrCode })
+    body: JSON.stringify({ qrCode, adminQrCode })
   });
   let data = {};
   try {

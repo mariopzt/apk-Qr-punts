@@ -306,7 +306,7 @@ app.post("/api/puntos/sumar", async (req, res) => {
   console.log("[PUNTOS] ===== INICIO PROCESO DE SUMA DE PUNTOS =====");
   console.log("[PUNTOS] Body recibido:", req.body);
   
-  const { qrCode } = req.body;
+  const { qrCode, adminQrCode } = req.body;
   if (!qrCode) {
     console.log("[PUNTOS] ERROR: Falta el código QR");
     return res.status(400).json({ message: "Falta el código QR" });
@@ -356,6 +356,27 @@ app.post("/api/puntos/sumar", async (req, res) => {
       }
       
       console.log(`[PUNTOS] ✅ Sumado 1 punto a ${todosUsuarios.length} usuarios`);
+    } 
+    // NUEVA FUNCIONALIDAD: Si un usuario es escaneado por un admin, sumar puntos al admin también
+    else if (adminQrCode) {
+      // Verificar si quien escanea es un administrador
+      console.log("[PUNTOS] Verificando si el escaneador es administrador, qrCode:", adminQrCode);
+      const admin = await User.findOne({ qrCode: adminQrCode });
+      
+      if (admin && (admin.tipo === "admin" || admin.tipo === "root")) {
+        console.log(`[PUNTOS] El escaneador ${admin.username} es administrador. Sumando puntos al admin...`);
+        
+        // Incrementar puntos al administrador que escanea
+        admin.points = (admin.points || 0) + 1;
+        admin.totalPoints = (admin.totalPoints || 0) + 1;
+        
+        // Guardar cambios del administrador
+        await admin.save();
+        console.log(`[PUNTOS] ✅ Administrador ${admin.username} actualizado: ${admin.points} puntos`);
+        
+        // Notificar al administrador por socket.io
+        notifyPuntoSumado(admin.qrCode);
+      }
     }
     
     // Notificar por socket.io al usuario original

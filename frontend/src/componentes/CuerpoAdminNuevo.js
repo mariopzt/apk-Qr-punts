@@ -4,7 +4,8 @@ import "../estilos/cuerpoNuevo.css";
 import "../estilos/qrscan.css";
 import "../estilos/cuerpoAdminNuevo.css";
 
-import { sumarPuntoUsuario } from "./api";
+import { sumarPuntoUsuario, getUsuarioByQrCode } from "./api";
+import { socket } from "../socket";
 
 function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
@@ -35,6 +36,40 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
     }
   }, [showQr]);
 
+  // Conectar al socket y escuchar eventos de puntos sumados
+  useEffect(() => {
+    if (!usuario?.qrCode) return;
+    
+    // Conectar al socket si no está conectado
+    if (!socket.connected) socket.connect();
+    
+    // Unirse a la sala con el QR del administrador
+    socket.emit('join', usuario.qrCode);
+    
+    // Manejar evento de punto sumado
+    const handlePuntoSumado = async () => {
+      console.log('[SOCKET] Administrador recibió punto-sumado');
+      
+      try {
+        // Obtener datos actualizados del usuario
+        const response = await getUsuarioByQrCode(usuario.qrCode);
+        if (response && response.user) {
+          console.log('[SOCKET] Actualizando datos del administrador:', response.user);
+          setUsuario(response.user);
+        }
+      } catch (error) {
+        console.error('[SOCKET] Error al actualizar datos del administrador:', error);
+      }
+    };
+    
+    // Registrar el manejador de eventos
+    socket.on('punto-sumado', handlePuntoSumado);
+    
+    // Limpiar al desmontar
+    return () => {
+      socket.off('punto-sumado', handlePuntoSumado);
+    };
+  }, [usuario?.qrCode, setUsuario]);
 
 
   // Nuevo useEffect: inicializa el scanner solo cuando showQr y qrRef.current están listos

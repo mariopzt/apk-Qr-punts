@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import QrCodeBox from "./QrCodeBox";
 import ParticleEffect from "./ParticleEffect";
+import LevelUpEffect from './LevelUpEffect';
 import "../estilos/cuerpoNuevo.css";
 import { socket } from "../socket";
 import { getUsuarioByQrCode } from "./api";
@@ -12,6 +13,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
   const [mensaje, setMensaje] = useState("");
   const [nivel, setNivel] = useState(0);
   const [showParticleEffect, setShowParticleEffect] = useState(false);
+  const [showLevelUpEffect, setShowLevelUpEffect] = useState(false);
   const [oldPoints, setOldPoints] = useState(usuario.totalPoints ?? 0);
   const [newPoints, setNewPoints] = useState(usuario.totalPoints ?? 0);
   const [showHistorial, setShowHistorial] = useState(false);
@@ -25,6 +27,8 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
     if (nextLevel > lastLevel.current) {
       setNivel(nextLevel);
       lastLevel.current = nextLevel;
+      // Mostrar efecto de subida de nivel
+      setShowLevelUpEffect(true);
     }
   }, [usuario.totalPoints]);
 
@@ -89,8 +93,17 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
     return <Historial usuario={usuario} onBack={() => setShowHistorial(false)} />;
   }
   
+  // Renderizar el efecto de subida de nivel si es necesario
+  const levelUpEffectComponent = showLevelUpEffect ? (
+    <LevelUpEffect 
+      level={nivel} 
+      onComplete={() => setShowLevelUpEffect(false)} 
+    />
+  ) : null;
+  
   return (
     <div className="cuerpo-nuevo-bg">
+      {levelUpEffectComponent}
       <div className="cuerpo-nuevo-container">
         <div className="cuerpo-nuevo-inner">
           <div className="row-balance-historial">

@@ -24,13 +24,19 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
   useEffect(() => {
     const puntos = usuario.totalPoints ?? 0;  
     const nextLevel = Math.floor(puntos / 15);
-    if (nextLevel > lastLevel.current) {
-      setNivel(nextLevel);
-      lastLevel.current = nextLevel;
+    const lastShownLevel = localStorage.getItem(`levelUpShown_${usuario.qrCode}`) || 0;
+    
+    setNivel(nextLevel);
+    lastLevel.current = nextLevel;
+    
+    // Solo mostrar el efecto si el nivel actual es mayor que el último nivel en el que se mostró la animación
+    if (nextLevel > parseInt(lastShownLevel) && nextLevel > 0) {
+      // Guardar en localStorage que ya se mostró la animación para este nivel
+      localStorage.setItem(`levelUpShown_${usuario.qrCode}`, nextLevel);
       // Mostrar efecto de subida de nivel
       setShowLevelUpEffect(true);
     }
-  }, [usuario.totalPoints]);
+  }, [usuario.totalPoints, usuario.qrCode]);
 
   useEffect(() => {
     if (!usuario?.qrCode) return;

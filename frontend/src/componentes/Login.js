@@ -32,13 +32,47 @@ function Login({ onCrearUsuario, onLogin, onForgotPassword }) {
       <div className="circle circle2"></div>
       <form className="login-container dark" onSubmit={handleLogin}>
         <h2 className="login-title">Iniciar Sesión</h2>
-        <button type="button" className="social-btn google">
-          <span className="icon-g">G</span> Continua con Google
-        </button>
-        <button type="button" className="social-btn facebook">
-          <span className="icon-f">f</span> Continua con Facebook
-        </button>
-        <div className="divider">o con</div>
+        <div style={{ width: '100%', margin: '5px 0 20px 0', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderRadius: '8px', transition: 'all 0.3s ease', cursor: 'pointer', background: 'linear-gradient(to right, #2a2235, #2a2a40)', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', borderLeft: '3px solid #ffb6fc' }}>
+            <span style={{ fontSize: '1.6rem', marginRight: '14px', background: 'linear-gradient(#ffb6fc, #7b2ff2)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent' }}>📱</span>
+            <span style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 500 }}>Escanea códigos QR para acumular puntos</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderRadius: '8px', transition: 'all 0.3s ease', cursor: 'pointer', background: 'linear-gradient(to right, #222245, #2a2a50)', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', borderLeft: '3px solid #7b2ff2' }}>
+            <span style={{ fontSize: '1.6rem', marginRight: '14px', background: 'linear-gradient(#ffb6fc, #7b2ff2)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent' }}>🏆</span>
+            <span style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 500 }}>Canjea tus puntos por premios exclusivos</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderRadius: '8px', transition: 'all 0.3s ease', cursor: 'pointer', background: 'linear-gradient(to right, #252235, #2f2a45)', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', borderLeft: '3px solid #b983ff' }}>
+            <span style={{ fontSize: '1.6rem', marginRight: '14px', background: 'linear-gradient(#ffb6fc, #7b2ff2)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent' }}>🔔</span>
+            <span style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 500 }}>Recibe notificaciones de nuevas promociones</span>
+          </div>
+        </div>
+        <div style={{ 
+          color: '#bbb', 
+          fontSize: '0.96rem', 
+          textAlign: 'center', 
+          margin: '20px 0 16px 0', 
+          position: 'relative', 
+          fontWeight: 500, 
+          letterSpacing: '0.5px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%'
+        }}>
+          <div style={{ 
+            height: '1px', 
+            width: '30%', 
+            background: 'linear-gradient(to right, transparent, #7b2ff2)',
+            marginRight: '10px' 
+          }}></div>
+          <span>Iniciar sesión</span>
+          <div style={{ 
+            height: '1px', 
+            width: '30%', 
+            background: 'linear-gradient(to left, transparent, #7b2ff2)',
+            marginLeft: '10px' 
+          }}></div>
+        </div>
         <input
           type="text"
           className="login-input"
@@ -56,7 +90,34 @@ function Login({ onCrearUsuario, onLogin, onForgotPassword }) {
         {error && <div className="login-error">Error al iniciar sesión</div>}
         {success && <div className="login-success">{success}</div>}
         <button className="login-btn" type="submit">Iniciar</button>
-        <div className="login-links">
+        <div style={{ 
+          color: '#bbb', 
+          fontSize: '0.96rem', 
+          textAlign: 'center', 
+          margin: '20px 0 16px 0', 
+          position: 'relative', 
+          fontWeight: 500, 
+          letterSpacing: '0.5px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%'
+        }}>
+          <div style={{ 
+            height: '1px', 
+            width: '30%', 
+            background: 'linear-gradient(to right, transparent, #b983ff)',
+            marginRight: '10px' 
+          }}></div>
+          <span>Opciones</span>
+          <div style={{ 
+            height: '1px', 
+            width: '30%', 
+            background: 'linear-gradient(to left, transparent, #b983ff)',
+            marginLeft: '10px' 
+          }}></div>
+        </div>
+        <div className="login-links" style={{ marginTop: '10px' }}>
           <span>¿No tienes cuenta? <a href="#" onClick={e => { e.preventDefault(); onCrearUsuario(); }}>Crear Cuenta</a></span>
           <a href="#" className="forgot" onClick={e => { e.preventDefault(); if (onForgotPassword) onForgotPassword(); }}>¿Olvidaste tu contraseña?</a>
         </div>

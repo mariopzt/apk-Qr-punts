@@ -62,24 +62,29 @@ function Historial({ usuario, onBack }) {
 
   // Función para formatear el día para el separador
   const formatearDiaSeparador = (fechaStr) => {
+    // Crear un objeto de fecha a partir del string
     const fecha = new Date(fechaStr);
+    
+    // Obtener la fecha actual
     const hoy = new Date();
+    
+    // Convertir ambas fechas a formato YYYY-MM-DD para comparar solo las fechas
+    const fechaHoy = hoy.toISOString().split('T')[0];
+    const fechaLog = fecha.toISOString().split('T')[0];
+    
+    // Crear fecha de ayer
     const ayer = new Date(hoy);
     ayer.setDate(hoy.getDate() - 1);
+    const fechaAyer = ayer.toISOString().split('T')[0];
     
-    // Formatear la fecha para comparación
-    const fechaFormateada = fecha.toISOString().split('T')[0];
-    const hoyFormateada = hoy.toISOString().split('T')[0];
-    const ayerFormateada = ayer.toISOString().split('T')[0];
-    
-    if (fechaFormateada === hoyFormateada) {
+    // Comparar fechas sin componente de hora
+    if (fechaLog === fechaHoy) {
       return 'Hoy';
-    } else if (fechaFormateada === ayerFormateada) {
+    } else if (fechaLog === fechaAyer) {
       return 'Ayer';
     } else {
-      // Formato más limpio: Mayo 5
-      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-      return `${meses[fecha.getMonth()]} ${fecha.getDate()}`;
+      // Para días anteriores, no mostrar separador
+      return null;
     }
   };
 
@@ -142,11 +147,15 @@ function Historial({ usuario, onBack }) {
                 // Renderizar los logs agrupados por fecha
                 return fechasOrdenadas.map((fecha, fechaIndex) => {
                   const logsDelDia = logsPorFecha[fecha];
+                  const separadorFecha = formatearDiaSeparador(fecha);
+                  
                   return (
                     <React.Fragment key={fecha}>
-                      <tr className="historial-date-separator">
-                        <td colSpan="3" className="fecha-separador">{formatearDiaSeparador(fecha)}</td>
-                      </tr>
+                      {separadorFecha && (
+                        <tr className="historial-date-separator">
+                          <td colSpan="3" className="fecha-separador">{separadorFecha}</td>
+                        </tr>
+                      )}
                       {logsDelDia.map((log, logIndex) => (
                         <tr style={{ cursor: 'pointer' }} key={`${fecha}-${logIndex}`}>
                           <td>

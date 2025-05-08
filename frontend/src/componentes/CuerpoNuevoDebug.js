@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import QrCodeBox from "./QrCodeBox";
 import "../estilos/cuerpoNuevo.css";
+import "../estilos/info-modal.css";
 import { socket } from "../socket";
 import { getUsuarioByQrCode } from "./api";
 
 export default function CuerpoNuevoDebug({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const lastPoints = useRef(usuario.points ?? 0);
 
   
@@ -42,20 +44,20 @@ useEffect(() => {
             <div className="balance-amount">
               <span className="coin">🪙</span> {usuario.points ?? 0}
             </div>
-            <a className="boost-link" href="#">Como funciona?</a>
+            <a className="boost-link" href="#" onClick={(e) => { e.preventDefault(); setShowInfoModal(true); }}>Como funciona?</a>
           </div>
 
-          <div className="section-title">Descubre fertas!</div>
+          <div className="section-title">Descubre ofertas!</div>
           <div className="boosters-row">
             <div className="booster-card">
-              <div className="booster-title">Descuentos</div>
-              <div className="booster-sub">0/3 disponibles</div>
-              <span className="booster-icon">🚀</span>
+              <div className="booster-title">Hamburguesas</div>
+              <div className="booster-sub">15% descuento</div>
+              <span className="booster-icon">🍔</span>
             </div>
             <div className="booster-card">
-              <div className="booster-title">Comida Rapida</div>
-              <div className="booster-sub">0/3 available</div>
-              <span className="booster-icon">⚡</span>
+              <div className="booster-title">Cafés y Postres</div>
+              <div className="booster-sub">2x1 en bebidas</div>
+              <span className="booster-icon">☕</span>
             </div>
           </div>
 
@@ -97,6 +99,51 @@ useEffect(() => {
               <div className="qr-modal">
                 <button className="qr-modal-close" onClick={() => setShowQr(false)}>✕</button>
                 <QrCodeBox value={usuario.qrCode} size={220} />
+              </div>
+            </div>
+          )}
+
+          {showInfoModal && (
+            <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowInfoModal(false); }}>
+              <div className="qr-modal info-modal">
+                <button className="qr-modal-close" onClick={() => setShowInfoModal(false)}>✕</button>
+                <div className="info-modal-content">
+                  <h2 className="info-modal-title">¿Cómo funciona la app?</h2>
+                  
+                  <div className="info-item">
+                    <div className="info-icon">📱</div>
+                    <div className="info-text">
+                      <h3>Escanea códigos QR</h3>
+                      <p>Busca códigos QR en establecimientos asociados y escanéalos para acumular puntos en tu cuenta.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="info-item">
+                    <div className="info-icon">🏆</div>
+                    <div className="info-text">
+                      <h3>Sube de nivel</h3>
+                      <p>Por cada 15 puntos acumulados, subirás un nivel. ¡Cuanto más alto sea tu nivel, mejores recompensas podrás obtener!</p>
+                    </div>
+                  </div>
+                  
+                  <div className="info-item">
+                    <div className="info-icon">💰</div>
+                    <div className="info-text">
+                      <h3>Canjea tus puntos</h3>
+                      <p>Utiliza tus puntos acumulados para obtener descuentos exclusivos y promociones especiales en tus tiendas favoritas.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="info-item">
+                    <div className="info-icon">🔔</div>
+                    <div className="info-text">
+                      <h3>Recibe notificaciones</h3>
+                      <p>Mantente informado sobre nuevas promociones, ofertas especiales y eventos exclusivos para usuarios de la app.</p>
+                    </div>
+                  </div>
+                  
+                  <button className="info-modal-button" onClick={() => setShowInfoModal(false)}>¡Entendido!</button>
+                </div>
               </div>
             </div>
           )}

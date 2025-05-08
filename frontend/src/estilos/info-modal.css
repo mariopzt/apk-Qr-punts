@@ -1,0 +1,178 @@
+/* Estilos para el modal informativo */
+.info-modal {
+  background: linear-gradient(to bottom, #19192b, #222235);
+  color: #fff;
+  max-width: 90%;
+  width: 380px;
+  padding: 30px 25px 25px 25px;
+  border-radius: 18px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+
+.info-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-modal-title {
+  font-size: 1.8rem;
+  text-align: center;
+  margin: 0 0 10px 0;
+  background: linear-gradient(90deg, #ffb6fc 0%, #7b2ff2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.info-modal .info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  background: rgba(25, 25, 35, 0.7);
+  border-radius: 12px;
+  padding: 15px;
+  border-left: 3px solid #7b2ff2;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.info-modal .info-item:nth-child(2) {
+  border-left-color: #ffb6fc;
+}
+
+.info-modal .info-item:nth-child(3) {
+  border-left-color: #7b2ff2;
+}
+
+.info-modal .info-item:nth-child(4) {
+  border-left-color: #b983ff;
+}
+
+.info-modal .info-item:nth-child(5) {
+  border-left-color: #4d9eff;
+}
+
+.info-modal .info-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(123,47,242,0.2);
+}
+
+.info-modal .info-icon {
+  font-size: 2rem;
+  background: linear-gradient(#ffb6fc, #7b2ff2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  display: inline-block;
+}
+
+.info-modal .info-text {
+  flex: 1;
+}
+
+.info-modal .info-text h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.info-modal .info-text p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #bcbcbc;
+}
+
+.info-modal-button {
+  background: linear-gradient(90deg, #ffb6fc 0%, #7b2ff2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+  align-self: center;
+}
+
+.info-modal-button:hover {
+  filter: brightness(1.1);
+}
+
+/* Estilos responsive */
+@media (max-height: 700px) {
+  .info-modal {
+    padding: 20px 18px 18px 18px;
+  }
+  
+  .info-modal-content {
+    gap: 12px;
+  }
+  
+  .info-modal-title {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  
+  .info-modal .info-item {
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .info-modal .info-icon {
+    font-size: 1.6rem;
+  }
+  
+  .info-modal .info-text h3 {
+    font-size: 1rem;
+  }
+  
+  .info-modal .info-text p {
+    font-size: 0.85rem;
+  }
+  
+  .info-modal-button {
+    padding: 10px 16px;
+    font-size: 1rem;
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .info-modal {
+    width: 90%;
+    padding: 15px 12px 15px 12px;
+  }
+  
+  .info-modal-content {
+    gap: 10px;
+  }
+  
+  .info-modal-title {
+    font-size: 1.3rem;
+  }
+  
+  .info-modal .info-item {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .info-modal .info-icon {
+    font-size: 1.4rem;
+  }
+  
+  .info-modal .info-text h3 {
+    font-size: 0.9rem;
+  }
+  
+  .info-modal .info-text p {
+    font-size: 0.8rem;
+  }
+}

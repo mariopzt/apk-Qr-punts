@@ -147,7 +147,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
               <div className="booster-icon">🖐️</div>
               <div>
                 <div className="booster-title">Nivel de usuario</div>
-                <div className="booster-sub"> <span className="coin">💰</span> • {nivel} lvl</div>
+                <div className="booster-sub"> <span className="coin">🏆</span> • {nivel} lvl</div>
               </div>
             </div>
           </div>

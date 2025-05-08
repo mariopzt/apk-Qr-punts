@@ -136,7 +136,7 @@ const ParticleEffect = ({ oldValue, newValue, onComplete }) => {
           position: 'absolute',
           animation: 'popIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'
         }}>
-          <span className="coin">🪙</span> {newValue}
+          <span className="coin">🏆</span> {newValue}
         </div>
       )}
     </div>

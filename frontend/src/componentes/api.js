@@ -87,3 +87,23 @@ export async function getHistorialUsuario(qrCode) {
   }
 }
 
+// Restar puntos a un usuario mediante QR
+export async function restarPuntosUsuario(qrCode, adminQrCode = null, puntos = 1) {
+  const res = await fetch(`${API_URL}/api/puntos/restar`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ qrCode, adminQrCode, puntos })
+  });
+  let data = {};
+  try {
+    data = await res.clone().json();
+  } catch (e) {
+    data = {};
+  }
+  if (!res.ok) {
+    console.error("Respuesta error restar puntos:", res.status, data);
+    throw new Error(data.message || `Error HTTP ${res.status}`);
+  }
+  return data;
+}
+

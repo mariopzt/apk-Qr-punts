@@ -362,7 +362,9 @@ app.post("/api/puntos/sumar", async (req, res) => {
           userQrCode: otroUsuario.qrCode,
           username: otroUsuario.username,
           adminQrCode: admin.qrCode,
-          adminUsername: admin.username
+          adminUsername: admin.username,
+          action: "suma",
+          points: 1
         }).save();
       }
       
@@ -395,7 +397,9 @@ app.post("/api/puntos/sumar", async (req, res) => {
       userQrCode: user.qrCode,
       username: user.username,
       adminQrCode: admin ? admin.qrCode : null,
-      adminUsername: admin ? admin.username : null
+      adminUsername: admin ? admin.username : null,
+      action: "suma",
+      points: 1
     }).save();
     
     // Notificar por socket.io al usuario original
@@ -446,4 +450,84 @@ app.get("/", (req, res) => {
   res.send("API funcionando como proxy a la API externa");
 });
 
+// Restar puntos a usuario por QR
+app.post("/api/puntos/restar", async (req, res) => {
+  console.log("[PUNTOS] ===== INICIO PROCESO DE RESTA DE PUNTOS =====");
+  console.log("[PUNTOS] Body recibido:", req.body);
+  
+  const { qrCode, adminQrCode, puntos = 1 } = req.body;
+  if (!qrCode) {
+    console.log("[PUNTOS] ERROR: Falta el código QR");
+    return res.status(400).json({ message: "Falta el código QR" });
+  }
+  
+  if (!puntos || isNaN(puntos) || puntos <= 0) {
+    console.log("[PUNTOS] ERROR: Cantidad de puntos inválida", puntos);
+    return res.status(400).json({ message: "La cantidad de puntos debe ser un número positivo" });
+  }
+  
+  try {
+    console.log("[PUNTOS] Buscando usuario con qrCode:", qrCode);
+    const user = await User.findOne({ qrCode });
+    
+    if (!user) {
+      console.log("[PUNTOS] ERROR: Usuario no encontrado para el QR:", qrCode);
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    
+    console.log("[PUNTOS] Usuario encontrado:", user.username);
+    
+    // Verificar si quien cobra es un administrador
+    let admin = null;
+    
+    if (adminQrCode) {
+      // Verificar si quien escanea es un administrador
+      console.log("[PUNTOS] Verificando si el cobrador es administrador, qrCode:", adminQrCode);
+      admin = await User.findOne({ qrCode: adminQrCode });
+      
+      if (!admin || (admin.tipo !== "admin" && admin.tipo !== "root")) {
+        console.log("[PUNTOS] ERROR: El cobrador no es un administrador");
+        return res.status(403).json({ message: "No tienes permisos para realizar esta acción" });
+      }
+      
+      console.log(`[PUNTOS] El cobrador ${admin.username} es administrador.`);
+    } else {
+      console.log("[PUNTOS] No se proporcionó un administrador para el cobro");
+      return res.status(400).json({ message: "Se requiere un administrador para cobrar puntos" });
+    }
+    
+    // Verificar que el usuario tenga suficientes puntos
+    if ((user.points || 0) < puntos) {
+      console.log(`[PUNTOS] ERROR: El usuario ${user.username} no tiene suficientes puntos. Tiene ${user.points || 0} y se intentan restar ${puntos}`);
+      return res.status(400).json({ message: `El usuario no tiene suficientes puntos. Tiene ${user.points || 0} y se intentan restar ${puntos}` });
+    }
+    
+    // Restar puntos al usuario
+    user.points = Math.max(0, (user.points || 0) - puntos);
+    await user.save();
+    console.log(`[PUNTOS] ✅ Restados ${puntos} puntos al usuario ${user.username}. Puntos actuales: ${user.points}`);
+    
+    // Guardar registro en el historial
+    await new ScanLog({
+      userQrCode: user.qrCode,
+      username: user.username,
+      adminQrCode: admin.qrCode,
+      adminUsername: admin.username,
+      action: "resta",
+      points: puntos
+    }).save();
+    
+    // Notificar por socket.io al usuario
+    console.log("[PUNTOS] Notificando al usuario por socket.io, qrCode:", qrCode);
+    notifyPuntoSumado(qrCode);
+    
+    // Enviar respuesta
+    const { password, ...userSafe } = user.toObject();
+    console.log("[PUNTOS] ===== FIN PROCESO DE RESTA DE PUNTOS (EXITOSO) =====");
+    res.json({ success: true, user: userSafe });
+  } catch (err) {
+    console.error("[PUNTOS] ❌ ERROR al restar puntos:", err);
+    res.status(500).json({ message: "Error al restar puntos", error: err.message });
+  }
+});
 

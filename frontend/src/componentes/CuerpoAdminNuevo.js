@@ -4,18 +4,22 @@ import "../estilos/cuerpoNuevo.css";
 import "../estilos/qrscan.css";
 import "../estilos/cuerpoAdminNuevo.css";
 
-import { sumarPuntoUsuario, getUsuarioByQrCode } from "./api";
+import { sumarPuntoUsuario, getUsuarioByQrCode, restarPuntosUsuario } from "./api";
 import { socket } from "../socket";
 import Historial from "./Historial";
 
 function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
+  const [showQrCobrar, setShowQrCobrar] = useState(false);
   const [qrResult, setQrResult] = useState("");
   const [error, setError] = useState("");
   const qrRef = useRef(null);
+  const qrCobrarRef = useRef(null);
   const scannerRef = useRef(null);
+  const scannerCobrarRef = useRef(null);
   const [qrFeedbackMsg, setQrFeedbackMsg] = useState('');
   const [showHistorial, setShowHistorial] = useState(false);
+  const [puntosACobrar, setPuntosACobrar] = useState(1);
 
   // Función para reproducir beep usando el archivo MP3
   const playBeep = () => {
@@ -32,11 +36,11 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
 
   // Limpiar resultado y error al abrir/cerrar modal
   useEffect(() => {
-    if (showQr) {
+    if (showQr || showQrCobrar) {
       setQrResult("");
       setError("");
     }
-  }, [showQr]);
+  }, [showQr, showQrCobrar]);
 
   // Conectar al socket y escuchar eventos de puntos sumados
   useEffect(() => {
@@ -74,8 +78,49 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   }, [usuario?.qrCode, setUsuario]);
 
 
-  // Nuevo useEffect: inicializa el scanner solo cuando showQr y qrRef.current están listos
-
+  // Buscar cámaras para el lector QR (sumar puntos)
+  const buscarCamaras = async () => {
+    try {
+      const devices = await Html5Qrcode.getCameras();
+      const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
+      
+      const backCam = devices.find(cam => {
+        if (!cam.label) return false;
+        const label = cam.label.toLowerCase();
+        return backLabels.some(word => label.includes(word));
+      });
+      if (backCam) {
+        setShowQr(true);
+      } else {
+        alert('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
+      }
+    } catch (e) {
+      alert('Error buscando cámaras: ' + e);
+    }
+  };
+  
+  // Buscar cámaras para cobrar puntos
+  const buscarCamarasCobrar = async () => {
+    try {
+      const devices = await Html5Qrcode.getCameras();
+      const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
+      
+      const backCam = devices.find(cam => {
+        if (!cam.label) return false;
+        const label = cam.label.toLowerCase();
+        return backLabels.some(word => label.includes(word));
+      });
+      if (backCam) {
+        setShowQrCobrar(true);
+      } else {
+        alert('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
+      }
+    } catch (e) {
+      alert('Error buscando cámaras: ' + e);
+    }
+  };
+  
+  // Inicializa el scanner para añadir puntos
   useEffect(() => {
     if (!showQr) return;
     const timer = setTimeout(() => {
@@ -200,33 +245,15 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
         </div>
         {/* GRID DE ACCIONES */}
         <div className="admin-grid">
-          <div className="admin-card" onClick={async () => {
-            // Buscar cámaras antes de abrir el lector
-            try {
-              const devices = await Html5Qrcode.getCameras();
-              const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
-              const backCam = devices.find(cam => {
-                if (!cam.label) return false;
-                const label = cam.label.toLowerCase();
-                return backLabels.some(word => label.includes(word));
-              });
-              if (backCam) {
-                setShowQr(true);
-              } else {
-                alert('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
-              }
-            } catch (e) {
-              alert('Error buscando cámaras: ' + e);
-            }
-          }}>
+          <div className="admin-card" onClick={buscarCamaras}>
             <div className="admin-card-icon">📷</div>
             <div className="admin-card-title">Lector QR</div>
             <div className="admin-card-desc">Escanea códigos</div>
           </div>
-          <div className="admin-card disabled">
+          <div className="admin-card" onClick={buscarCamarasCobrar}>
             <div className="admin-card-icon">💸</div>
             <div className="admin-card-title">Cobrar</div>
-            <div className="admin-card-desc">Próximamente</div>
+            <div className="admin-card-desc">Descontar puntos</div>
           </div>
           <div className="admin-card" onClick={() => setShowHistorial(true)}>
             <div className="admin-card-icon">📝</div>
@@ -239,7 +266,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
             <div className="admin-card-desc">Próximamente</div>
           </div>
         </div>
-        {/* MODAL QR */}
+        {/* MODAL QR PARA SUMAR PUNTOS */}
         {showQr && (
           <div className="qrscan-bg" style={{ zIndex: 12000 }}>
             {/* Fondo de cámara a pantalla completa */}
@@ -262,7 +289,102 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                 {/* Área superior */}
                 <div className="qrscan-title-center">
                   <div className="qrscan-title">Escanea QR</div>
-                  <div className="qrscan-subtitle">Escanea el QR cofigo para sumar puntos</div>
+                  <div className="qrscan-subtitle">Escanea el QR código para sumar puntos</div>
+                </div>
+                
+                {/* Área de mensaje de error o éxito */}
+                {(error || qrFeedbackMsg) && (
+                  <div className="qrscan-message" style={{
+                    color: error ? '#ffffff' : '#4caf50',
+                    backgroundColor: error ? 'rgba(0, 0, 0, 0.9)' : 'transparent',
+                    padding: error ? '15px 25px' : '0',
+                    borderRadius: error ? '8px' : '0',
+                    fontWeight: error ? 'bold' : 'normal',
+                    boxShadow: error ? '0 4px 12px rgba(0,0,0,0.3)' : 'none',
+                    position: error ? 'absolute' : 'relative',
+                    top: error ? '50%' : 'auto',
+                    left: error ? '50%' : 'auto',
+                    transform: error ? 'translate(-50%, -50%)' : 'none',
+                    zIndex: error ? '20' : '1'
+                  }}>
+                    {error || qrFeedbackMsg}
+                  </div>
+                )}
+                
+                {/* Área inferior - botones */}
+                <div className="qrscan-actions-bar">
+                  <button className="qrscan-bar-btn qrscan-bar-btn-main">Scan code</button>
+                  <button className="qrscan-bar-btn qrscan-bar-btn-alt">Enter code</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* MODAL QR PARA COBRAR PUNTOS */}
+        {showQrCobrar && (
+          <div className="qrscan-bg" style={{ zIndex: 12000 }}>
+            {/* Fondo de cámara a pantalla completa */}
+            <div className="qrscan-frame">
+              <div id="qr-reader-cobrar" ref={qrCobrarRef} className="qrscan-reader" />
+            </div>
+            
+            {/* Overlay con el contenido (botones, textos) */}
+            <div className="qrscan-overlay">
+              {/* Botón de cerrar */}
+              <button className="qrscan-close" onClick={() => {
+                if (scannerCobrarRef.current) {
+                  scannerCobrarRef.current.stop();
+                }
+                setShowQrCobrar(false);
+              }}>✕</button>
+              
+              {/* Contenido superior e inferior */}
+              <div className="qrscan-content">
+                {/* Área superior */}
+                <div className="qrscan-title-center">
+                  <div className="qrscan-title">Cobrar Puntos</div>
+                  <div className="qrscan-subtitle">Escanea el QR del usuario para cobrar puntos</div>
+                </div>
+                
+                {/* Campo de entrada para puntos a cobrar */}
+                <div style={{
+                  position: 'absolute',
+                  top: '25%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '80%',
+                  maxWidth: '300px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  padding: '15px',
+                  borderRadius: '8px',
+                  zIndex: 10
+                }}>
+                  <label style={{
+                    display: 'block',
+                    color: 'white',
+                    marginBottom: '5px',
+                    fontWeight: 'bold',
+                    textAlign: 'center'
+                  }}>
+                    Puntos a cobrar:
+                  </label>
+                  <input 
+                    type="number" 
+                    value={puntosACobrar}
+                    onChange={(e) => setPuntosACobrar(parseInt(e.target.value) || 0)}
+                    min="1"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      fontSize: '16px',
+                      borderRadius: '4px',
+                      border: 'none',
+                      textAlign: 'center',
+                      backgroundColor: '#fff',
+                      color: '#000'
+                    }}
+                  />
                 </div>
                 
                 {/* Área de mensaje de error o éxito */}

@@ -17,6 +17,17 @@ const scanLogSchema = new mongoose.Schema({
   adminUsername: { 
     type: String 
   },
+  // Tipo de acción: "suma" o "resta"
+  action: {
+    type: String,
+    enum: ["suma", "resta"],
+    default: "suma"
+  },
+  // Cantidad de puntos modificados
+  points: {
+    type: Number,
+    default: 1
+  },
   // Fecha y hora del escaneo
   timestamp: { 
     type: Date, 

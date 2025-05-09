@@ -229,6 +229,163 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
     // eslint-disable-next-line
   }, [showQr, qrRef]);
 
+  // Inicializa el scanner para cobrar puntos
+  useEffect(() => {
+    if (!showQrCobrar) return;
+    console.log('[QR] Inicializando escáner para cobrar puntos');
+    
+    const timer = setTimeout(() => {
+      if (!qrCobrarRef.current) {
+        setError('No se encontró el contenedor del lector QR.');
+        console.error('[QR] No se encontró el contenedor del lector QR para cobrar.');
+        return;
+      }
+      let isMounted = true;
+      (async () => {
+        try {
+          // Asegurar que el contenedor tenga un ID
+          if (!qrCobrarRef.current.id) {
+            qrCobrarRef.current.id = "qr-reader-cobrar";
+          }
+          
+          console.log('[QR] Buscando cámaras disponibles');
+          const devices = await Html5Qrcode.getCameras();
+          console.log('[QR] Cámaras disponibles:', devices);
+          
+          const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
+          let backCam = devices.find(cam => {
+            if (!cam.label) return false;
+            const label = cam.label.toLowerCase();
+            return backLabels.some(word => label.includes(word));
+          });
+          if (!backCam) {
+            setError('No se ha encontrado cámara trasera');
+            setTimeout(() => {
+              setError("");
+              setShowQrCobrar(false);
+            }, 2000);
+            return;
+          }
+          
+          console.log('[QR] Cámara seleccionada para cobrar:', backCam);
+          
+          if (isMounted && qrCobrarRef.current) {
+            console.log('[QR] Creando instancia de Html5Qrcode para ID:', qrCobrarRef.current.id);
+            try {
+              scannerCobrarRef.current = new Html5Qrcode(qrCobrarRef.current.id);
+              console.log('[QR] Instancia creada correctamente');
+              
+              let lastScan = '';
+              let lastScanTime = 0;
+              
+              console.log('[QR] Iniciando lector QR para cobrar con cámara', backCam.id);
+              await scannerCobrarRef.current.start(
+                { deviceId: { exact: backCam.id } },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                async (decodedText) => {
+                  // Evita lecturas dobles rápidas
+                  const now = Date.now();
+                  if (decodedText === lastScan && now - lastScanTime < 5000) {
+                    return;
+                  }
+                  lastScan = decodedText;
+                  lastScanTime = now;
+                  
+                  console.log('[QR] QR detectado en cobro:', decodedText);
+                  playBeep();
+                  setQrFeedbackMsg('QR detectado: ' + decodedText.substring(0, 10) + '...');
+                  
+                  try {
+                    // Si el admin escanea un QR que no es el suyo, enviar también el QR del admin
+                    const adminQrCode = usuario.tipo === "admin" || usuario.tipo === "root" ? usuario.qrCode : null;
+                    
+                    if (!puntosACobrar || puntosACobrar <= 0) {
+                      setError('Debes ingresar una cantidad válida de puntos a cobrar');
+                      setTimeout(() => setError(''), 3000);
+                      return;
+                    }
+                    
+                    console.log(`[QR] Intentando restar ${puntosACobrar} puntos al usuario con QR:`, decodedText);
+                    const res = await restarPuntosUsuario(decodedText, adminQrCode, puntosACobrar);
+                    
+                    if (res.success) {
+                      console.log('[QR] Puntos restados correctamente:', res);
+                      setQrFeedbackMsg(`✅ Se han restado ${puntosACobrar} ${puntosACobrar === 1 ? 'punto' : 'puntos'} a ${res.user.username}`);
+                      
+                      // Si el usuario escaneado es el admin, actualizar su usuario
+                      if (res.user.qrCode === usuario.qrCode) {
+                        setUsuario(res.user);
+                        setTimeout(() => {
+                          setShowQrCobrar(false);
+                          if (scannerCobrarRef.current) {
+                            scannerCobrarRef.current.stop().catch(e => console.error(e));
+                          }
+                        }, 2000);
+                      }
+                    } else {
+                      console.error('[QR] Error al restar puntos:', res);
+                      setError(`❌ ${res.message || 'Error al cobrar puntos'}`);
+                    }
+                    
+                    setTimeout(() => {
+                      setQrFeedbackMsg('');
+                      setError('');
+                    }, 3000);
+                  } catch (err) {
+                    console.error('[QR] Error al procesar el código:', err);
+                    setError(`❌ ${err.message || 'Error desconocido'}`);
+                    setTimeout(() => setError(''), 3000);
+                  }
+                },
+                (errorMessage) => {
+                  console.log('[QR] Error de escaneo (ignorable):', errorMessage);
+                }
+              );
+              console.log('[QR] Escáner iniciado correctamente');
+              
+            } catch (err) {
+              console.error('[QR] Error al crear o iniciar Html5Qrcode:', err);
+              setError('Error iniciando la cámara: ' + err.toString());
+              setTimeout(() => {
+                setError("");
+                setShowQrCobrar(false);
+              }, 2000);
+            }
+          }
+        } catch (err) {
+          console.error('[QR] Error general en inicialización:', err);
+          setError('Error: ' + err.toString());
+          setTimeout(() => {
+            setError("");
+            setShowQrCobrar(false);
+          }, 2000);
+        }
+      })();
+      
+      return () => {
+        isMounted = false;
+        if (scannerCobrarRef.current) {
+          try {
+            scannerCobrarRef.current.stop().catch(err => console.error('[QR] Error al detener escáner (ignorable):', err));
+          } catch (err) {
+            console.error('[QR] Error al detener el scanner de cobro:', err);
+          }
+        }
+      };
+    }, 500);
+    
+    return () => {
+      clearTimeout(timer);
+      if (scannerCobrarRef.current) {
+        try {
+          scannerCobrarRef.current.stop().catch(err => console.error('[QR] Error al detener escáner (ignorable):', err));
+        } catch (err) {
+          console.error('[QR] Error al limpiar el scanner de cobro:', err);
+        }
+      }
+    };
+  }, [showQrCobrar, usuario, setUsuario, puntosACobrar, playBeep]);
+
   // Si se está mostrando el historial, renderizar el componente Historial
   if (showHistorial) {
     return <Historial usuario={usuario} onBack={() => setShowHistorial(false)} />;
@@ -334,7 +491,11 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
               {/* Botón de cerrar */}
               <button className="qrscan-close" onClick={() => {
                 if (scannerCobrarRef.current) {
-                  scannerCobrarRef.current.stop();
+                  try {
+                    scannerCobrarRef.current.stop().catch(e => console.error(e));
+                  } catch (err) {
+                    console.error('[QR] Error al detener escáner:', err);
+                  }
                 }
                 setShowQrCobrar(false);
               }}>✕</button>
@@ -372,7 +533,12 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                   <input 
                     type="number" 
                     value={puntosACobrar}
-                    onChange={(e) => setPuntosACobrar(parseInt(e.target.value) || 0)}
+                    onChange={(e) => {
+                      const valor = parseInt(e.target.value) || 0;
+                      console.log('Cambiando puntos a cobrar:', valor);
+                      setPuntosACobrar(valor);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
                     min="1"
                     style={{
                       width: '100%',
@@ -382,7 +548,8 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                       border: 'none',
                       textAlign: 'center',
                       backgroundColor: '#fff',
-                      color: '#000'
+                      color: '#000',
+                      zIndex: 20
                     }}
                   />
                 </div>

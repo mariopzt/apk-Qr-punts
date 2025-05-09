@@ -454,8 +454,15 @@ app.get("/", (req, res) => {
 app.post("/api/puntos/restar", async (req, res) => {
   console.log("[PUNTOS] ===== INICIO PROCESO DE RESTA DE PUNTOS =====");
   console.log("[PUNTOS] Body recibido:", req.body);
+  console.log("[PUNTOS] Headers:", req.headers);
+  console.log("[PUNTOS] URL:", req.url);
+  console.log("[PUNTOS] Method:", req.method);
   
   const { qrCode, adminQrCode, puntos = 1 } = req.body;
+  console.log(`[PUNTOS] QR Code: ${qrCode || 'no proporcionado'}`);
+  console.log(`[PUNTOS] Admin QR: ${adminQrCode || 'no proporcionado'}`);
+  console.log(`[PUNTOS] Puntos a restar: ${puntos}`);
+  
   if (!qrCode) {
     console.log("[PUNTOS] ERROR: Falta el código QR");
     return res.status(400).json({ message: "Falta el código QR" });

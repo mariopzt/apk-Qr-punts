@@ -281,7 +281,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
               console.log('[QR] Iniciando lector QR para cobrar con cámara', backCam.id);
               await scannerCobrarRef.current.start(
                 { deviceId: { exact: backCam.id } },
-                { fps: 10, qrbox: { width: 250, height: 250 } },
+                { fps: 10, qrbox: { width: 160, height: 160 } },
                 async (decodedText) => {
                   // Evita lecturas dobles rápidas
                   const now = Date.now();
@@ -509,18 +509,21 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                 </div>
                 
                 {/* Campo de entrada para puntos a cobrar */}
-                <div style={{
-                  position: 'absolute',
-                  top: '25%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '80%',
-                  maxWidth: '300px',
-                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                  padding: '15px',
-                  borderRadius: '8px',
-                  zIndex: 10
-                }}>
+                <div 
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    position: 'absolute',
+                    top: '25%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '80%',
+                    maxWidth: '300px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    padding: '15px',
+                    borderRadius: '8px',
+                    zIndex: 500
+                  }}
+                >
                   <label style={{
                     display: 'block',
                     color: 'white',
@@ -538,18 +541,24 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                       console.log('Cambiando puntos a cobrar:', valor);
                       setPuntosACobrar(valor);
                     }}
-                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.target.select()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
                     min="1"
+                    autoFocus
                     style={{
                       width: '100%',
                       padding: '10px',
                       fontSize: '16px',
                       borderRadius: '4px',
-                      border: 'none',
+                      border: '2px solid #ffb6fc',
                       textAlign: 'center',
                       backgroundColor: '#fff',
                       color: '#000',
-                      zIndex: 20
+                      zIndex: 999,
+                      fontWeight: 'bold'
                     }}
                   />
                 </div>

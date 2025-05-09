@@ -89,21 +89,36 @@ export async function getHistorialUsuario(qrCode) {
 
 // Restar puntos a un usuario mediante QR
 export async function restarPuntosUsuario(qrCode, adminQrCode = null, puntos = 1) {
-  const res = await fetch(`${API_URL}/api/puntos/restar`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ qrCode, adminQrCode, puntos })
-  });
-  let data = {};
+  console.log(`[API] Intentando restar ${puntos} puntos al usuario con QR: ${qrCode}`);
+  console.log(`[API] Admin QR: ${adminQrCode || 'ninguno'}`);
+  
   try {
-    data = await res.clone().json();
-  } catch (e) {
-    data = {};
+    const res = await fetch(`${API_URL}/api/puntos/restar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ qrCode, adminQrCode, puntos })
+    });
+    
+    console.log(`[API] Respuesta del servidor status: ${res.status}`);
+    
+    let data = {};
+    try {
+      data = await res.clone().json();
+      console.log('[API] Datos de respuesta:', data);
+    } catch (e) {
+      console.error('[API] Error al procesar JSON:', e);
+      data = {};
+    }
+    
+    if (!res.ok) {
+      console.error("[API] Error al restar puntos:", res.status, data);
+      throw new Error(data.message || `Error HTTP ${res.status}`);
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('[API] Error en restarPuntosUsuario:', error);
+    throw error;
   }
-  if (!res.ok) {
-    console.error("Respuesta error restar puntos:", res.status, data);
-    throw new Error(data.message || `Error HTTP ${res.status}`);
-  }
-  return data;
 }
 

@@ -101,18 +101,19 @@ export async function restarPuntosUsuario(qrCode, adminQrCode = null, puntos = 1
     
     console.log(`[API] Respuesta del servidor status: ${res.status}`);
     
-    let data = {};
-    try {
-      data = await res.clone().json();
-      console.log('[API] Datos de respuesta:', data);
-    } catch (e) {
-      console.error('[API] Error al procesar JSON:', e);
-      data = {};
-    }
+    // Procesamos la respuesta JSON
+    const data = await res.json();
+    console.log('[API] Datos de respuesta:', data);
     
     if (!res.ok) {
       console.error("[API] Error al restar puntos:", res.status, data);
       throw new Error(data.message || `Error HTTP ${res.status}`);
+    }
+    
+    // Validamos que la respuesta tenga la estructura correcta
+    if (!data.success) {
+      console.error("[API] La respuesta no indica éxito:", data);
+      throw new Error(data.message || "Error desconocido al restar puntos");
     }
     
     return data;

@@ -390,7 +390,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
         }
       }
     };
-  }, [showQrCobrar, usuario, setUsuario, puntosACobrar]);
+  }, [showQrCobrar, usuario, setUsuario, puntosACobrar, playBeep]);
 
   // Si se está mostrando el historial, renderizar el componente Historial
   if (showHistorial) {
@@ -621,12 +621,12 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
           </div>
         )}
         
-        {/* MODAL QR PARA COBRAR PUNTOS */}
+        {/* MODAL QR PARA COBRAR PUNTOS - Exactamente igual al de sumar puntos */}
         {showQrCobrar && (
           <div className="qrscan-bg" style={{ zIndex: 12000 }}>
             {/* Fondo de cámara a pantalla completa */}
             <div className="qrscan-frame">
-              <div id="qr-reader-cobrar" ref={qrCobrarRef} className="qrscan-reader" />
+              <div id="qr-reader" ref={qrCobrarRef} className="qrscan-reader" />
             </div>
             
             {/* Overlay con el contenido (botones, textos) */}
@@ -647,12 +647,23 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
               <div className="qrscan-content">
                 {/* Área superior */}
                 <div className="qrscan-title-center">
-                  <div className="qrscan-title">Cobrar Puntos</div>
+                  <div className="qrscan-title">Cobrar {puntosACobrar} {puntosACobrar === 1 ? 'Punto' : 'Puntos'}</div>
                   <div className="qrscan-subtitle">Escanea el QR del usuario para cobrar puntos</div>
                 </div>
                 
-                {/* Campo de entrada para puntos a cobrar */}
-
+                {/* Recuadro guía en el centro - mismo estilo que en sumar puntos */}
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '160px',
+                  height: '160px',
+                  border: '2px dashed rgba(255, 255, 255, 0.5)',
+                  borderRadius: '8px',
+                  pointerEvents: 'none',
+                  zIndex: 5
+                }}></div>
                 
                 {/* Área de mensaje de error o éxito */}
                 {(error || qrFeedbackMsg) && (

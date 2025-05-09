@@ -229,35 +229,28 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
     // eslint-disable-next-line
   }, [showQr, qrRef]);
 
-  // Inicializa el scanner para cobrar puntos
+  // Inicializa el scanner para cobrar puntos - similar al de Lector QR pero con la funcionalidad de resta
   useEffect(() => {
     if (!showQrCobrar) return;
-    console.log('[QR] Inicializando escáner para cobrar puntos');
-    
     const timer = setTimeout(() => {
       if (!qrCobrarRef.current) {
         setError('No se encontró el contenedor del lector QR.');
-        console.error('[QR] No se encontró el contenedor del lector QR para cobrar.');
+        console.error('[QR] No se encontró el contenedor del lector QR.');
         return;
       }
       let isMounted = true;
       (async () => {
         try {
-          // Asegurar que el contenedor tenga un ID
-          if (!qrCobrarRef.current.id) {
-            qrCobrarRef.current.id = "qr-reader-cobrar";
-          }
-          
-          console.log('[QR] Buscando cámaras disponibles');
           const devices = await Html5Qrcode.getCameras();
-          console.log('[QR] Cámaras disponibles:', devices);
-          
           const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
           let backCam = devices.find(cam => {
             if (!cam.label) return false;
             const label = cam.label.toLowerCase();
             return backLabels.some(word => label.includes(word));
           });
+          if (!backCam && devices.length === 1) {
+            backCam = devices[0];
+          }
           if (!backCam) {
             setError('No se ha encontrado cámara trasera');
             setTimeout(() => {
@@ -266,99 +259,91 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
             }, 2000);
             return;
           }
-          
-          console.log('[QR] Cámara seleccionada para cobrar:', backCam);
-          
           if (isMounted && qrCobrarRef.current) {
-            console.log('[QR] Creando instancia de Html5Qrcode para ID:', qrCobrarRef.current.id);
-            try {
-              scannerCobrarRef.current = new Html5Qrcode(qrCobrarRef.current.id);
-              console.log('[QR] Instancia creada correctamente');
-              
-              let lastScan = '';
-              let lastScanTime = 0;
-              
-              console.log('[QR] Iniciando lector QR para cobrar con cámara', backCam.id);
-              await scannerCobrarRef.current.start(
-                { deviceId: { exact: backCam.id } },
-                { fps: 10, qrbox: { width: 160, height: 160 } },
-                async (decodedText) => {
-                  // Evita lecturas dobles rápidas
-                  const now = Date.now();
-                  if (decodedText === lastScan && now - lastScanTime < 5000) {
+            scannerCobrarRef.current = new Html5Qrcode(qrCobrarRef.current.id);
+            console.log('[QR] Iniciando lector QR con cámara', backCam);
+            let lastScan = '';
+            let lastScanTime = 0;
+            scannerCobrarRef.current.start(
+              { deviceId: { exact: backCam.id } },
+              { fps: 10, qrbox: 160 },
+              async (decodedText) => {
+                // Evita lecturas dobles rápidas
+                const now = Date.now();
+                if (decodedText === lastScan && now - lastScanTime < 5000) {
+                  return;
+                }
+                lastScan = decodedText;
+                lastScanTime = now;
+                
+                playBeep();
+                setQrFeedbackMsg('QR detectado: ' + decodedText.substring(0, 10) + '...');
+                
+                try {
+                  // Si el admin escanea un QR que no es el suyo, enviar también el QR del admin
+                  const adminQrCode = usuario.tipo === "admin" || usuario.tipo === "root" ? usuario.qrCode : null;
+                  
+                  // Validamos que los puntos a cobrar sean un número válido mayor que cero
+                  const puntosNum = parseInt(puntosACobrar);
+                  if (isNaN(puntosNum) || puntosNum <= 0) {
+                    setError('Debes ingresar una cantidad válida de puntos a cobrar');
+                    setTimeout(() => setError(''), 3000);
                     return;
                   }
-                  lastScan = decodedText;
-                  lastScanTime = now;
                   
-                  console.log('[QR] QR detectado en cobro:', decodedText);
-                  playBeep();
-                  setQrFeedbackMsg('QR detectado: ' + decodedText.substring(0, 10) + '...');
+                  console.log(`[QR] Cobrar: Intentando restar ${puntosNum} puntos al usuario con QR:`, decodedText);
+                  console.log('[QR] Cobrar: Admin QR:', adminQrCode);
                   
-                  try {
-                    // Si el admin escanea un QR que no es el suyo, enviar también el QR del admin
-                    const adminQrCode = usuario.tipo === "admin" || usuario.tipo === "root" ? usuario.qrCode : null;
-                    
-                    if (!puntosACobrar || puntosACobrar <= 0) {
-                      setError('Debes ingresar una cantidad válida de puntos a cobrar');
-                      setTimeout(() => setError(''), 3000);
-                      return;
+                  const res = await restarPuntosUsuario(decodedText, adminQrCode, puntosNum);
+                  console.log('[QR] Cobrar: Respuesta del servidor:', res);
+                  
+                  if (res.success) {
+                    setQrFeedbackMsg(`✅ Se han restado ${puntosNum} ${puntosNum === 1 ? 'punto' : 'puntos'} a ${res.user.username}`);
+                    // Si el usuario escaneado es el admin, actualizar su usuario
+                    if (res.user.qrCode === usuario.qrCode) {
+                      setUsuario(res.user);
+                      setTimeout(() => {
+                        setShowQrCobrar(false);
+                        scannerCobrarRef.current.stop();
+                      }, 2000);
                     }
-                    
-                    console.log(`[QR] Intentando restar ${puntosACobrar} puntos al usuario con QR:`, decodedText);
-                    const res = await restarPuntosUsuario(decodedText, adminQrCode, puntosACobrar);
-                    
-                    if (res.success) {
-                      console.log('[QR] Puntos restados correctamente:', res);
-                      setQrFeedbackMsg(`✅ Se han restado ${puntosACobrar} ${puntosACobrar === 1 ? 'punto' : 'puntos'} a ${res.user.username}`);
-                      
-                      // Si el usuario escaneado es el admin, actualizar su usuario
-                      if (res.user.qrCode === usuario.qrCode) {
-                        setUsuario(res.user);
-                        setTimeout(() => {
-                          setShowQrCobrar(false);
-                          if (scannerCobrarRef.current) {
-                            scannerCobrarRef.current.stop().catch(e => console.error(e));
-                          }
-                        }, 2000);
-                      }
-                    } else {
-                      console.error('[QR] Error al restar puntos:', res);
-                      setError(`❌ ${res.message || 'Error al cobrar puntos'}`);
-                    }
-                    
-                    setTimeout(() => {
-                      setQrFeedbackMsg('');
-                      setError('');
-                    }, 3000);
-                  } catch (err) {
-                    console.error('[QR] Error al procesar el código:', err);
-                    setError(`❌ ${err.message || 'Error desconocido'}`);
-                    setTimeout(() => setError(''), 3000);
+                  } else {
+                    setError(`❌ ${res.message || 'Error al cobrar puntos'}`);
                   }
-                },
-                (errorMessage) => {
-                  console.log('[QR] Error de escaneo (ignorable):', errorMessage);
+                  
+                  setTimeout(() => {
+                    setQrFeedbackMsg('');
+                    setError('');
+                  }, 3000);
+                } catch (err) {
+                  console.error('[QR] Error al procesar el código:', err);
+                  setError(`❌ ${err.message || 'Error desconocido'}`);
+                  setTimeout(() => setError(''), 3000);
                 }
-              );
-              console.log('[QR] Escáner iniciado correctamente');
-              
-            } catch (err) {
-              console.error('[QR] Error al crear o iniciar Html5Qrcode:', err);
-              setError('Error iniciando la cámara: ' + err.toString());
-              setTimeout(() => {
-                setError("");
-                setShowQrCobrar(false);
-              }, 2000);
-            }
+              },
+              (errorMessage) => {
+                console.log('[QR] Error de escaneo (ignorable):', errorMessage);
+              }
+            ).catch(err => {
+              if (isMounted) {
+                console.error('[QR] Error iniciando el scanner:', err);
+                setError('Error iniciando la cámara: ' + err.toString());
+                setTimeout(() => {
+                  setError("");
+                  setShowQrCobrar(false);
+                }, 2000);
+              }
+            });
           }
         } catch (err) {
-          console.error('[QR] Error general en inicialización:', err);
-          setError('Error: ' + err.toString());
-          setTimeout(() => {
-            setError("");
-            setShowQrCobrar(false);
-          }, 2000);
+          if (isMounted) {
+            console.error('[QR] Error general:', err);
+            setError('Error: ' + err.toString());
+            setTimeout(() => {
+              setError("");
+              setShowQrCobrar(false);
+            }, 2000);
+          }
         }
       })();
       
@@ -366,9 +351,9 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
         isMounted = false;
         if (scannerCobrarRef.current) {
           try {
-            scannerCobrarRef.current.stop().catch(err => console.error('[QR] Error al detener escáner (ignorable):', err));
+            scannerCobrarRef.current.stop().catch(console.error);
           } catch (err) {
-            console.error('[QR] Error al detener el scanner de cobro:', err);
+            console.error('[QR] Error al detener el scanner:', err);
           }
         }
       };
@@ -378,13 +363,13 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
       clearTimeout(timer);
       if (scannerCobrarRef.current) {
         try {
-          scannerCobrarRef.current.stop().catch(err => console.error('[QR] Error al detener escáner (ignorable):', err));
+          scannerCobrarRef.current.stop().catch(console.error);
         } catch (err) {
-          console.error('[QR] Error al limpiar el scanner de cobro:', err);
+          console.error('[QR] Error al limpiar el scanner:', err);
         }
       }
     };
-  }, [showQrCobrar, usuario, setUsuario, puntosACobrar, playBeep]);
+  }, [showQrCobrar, usuario, setUsuario, puntosACobrar]);
 
   // Si se está mostrando el historial, renderizar el componente Historial
   if (showHistorial) {
@@ -509,56 +494,85 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                 </div>
                 
                 {/* Campo de entrada para puntos a cobrar */}
+                {/* Campo de puntos a cobrar */}
                 <div 
-                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => {
+                    // Detener la propagación para evitar que cierren el modal
+                    e.stopPropagation();
+                    console.log("[QR] Click en contenedor de input");
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    console.log("[QR] Click en contenedor de input");
+                  }}
                   style={{
                     position: 'absolute',
-                    top: '25%',
+                    top: '20%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     width: '80%',
                     maxWidth: '300px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    padding: '15px',
-                    borderRadius: '8px',
-                    zIndex: 500
+                    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                    padding: '20px',
+                    borderRadius: '10px',
+                    zIndex: 9999,
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
+                    border: '2px solid #ffb6fc'
                   }}
                 >
-                  <label style={{
-                    display: 'block',
-                    color: 'white',
-                    marginBottom: '5px',
-                    fontWeight: 'bold',
-                    textAlign: 'center'
-                  }}>
+                  <label 
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      display: 'block',
+                      color: 'white',
+                      marginBottom: '10px',
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      fontSize: '18px'
+                    }}
+                  >
                     Puntos a cobrar:
                   </label>
                   <input 
                     type="number" 
                     value={puntosACobrar}
                     onChange={(e) => {
-                      const valor = parseInt(e.target.value) || 0;
-                      console.log('Cambiando puntos a cobrar:', valor);
-                      setPuntosACobrar(valor);
+                      console.log('Nuevo valor input:', e.target.value);
+                      setPuntosACobrar(parseInt(e.target.value) || 0);
                     }}
-                    onFocus={(e) => e.target.select()}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      console.log("[QR] MouseDown en input");
+                    }}
+                    onKeyDown={(e) => {
+                      e.stopPropagation();
+                      console.log("[QR] KeyDown en input:", e.key);
+                    }}
+                    onFocus={(e) => {
+                      e.target.select();
+                      console.log("[QR] Focus en input");
+                    }}
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
+                      console.log("[QR] Click en input");
                     }}
                     min="1"
                     autoFocus
                     style={{
                       width: '100%',
-                      padding: '10px',
-                      fontSize: '16px',
-                      borderRadius: '4px',
-                      border: '2px solid #ffb6fc',
+                      padding: '15px',
+                      fontSize: '22px',
+                      borderRadius: '6px',
+                      border: '3px solid #ffb6fc',
+                      outline: 'none',
                       textAlign: 'center',
                       backgroundColor: '#fff',
                       color: '#000',
-                      zIndex: 999,
-                      fontWeight: 'bold'
+                      zIndex: 10000,
+                      fontWeight: 'bold',
+                      boxShadow: '0 0 10px rgba(255,182,252,0.5)'
                     }}
                   />
                 </div>

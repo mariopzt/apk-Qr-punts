@@ -11,6 +11,7 @@ import Historial from "./Historial";
 function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [showQr, setShowQr] = useState(false);
   const [showQrCobrar, setShowQrCobrar] = useState(false);
+  const [showInputPuntos, setShowInputPuntos] = useState(false);
   const [qrResult, setQrResult] = useState("");
   const [error, setError] = useState("");
   const qrRef = useRef(null);
@@ -20,6 +21,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   const [qrFeedbackMsg, setQrFeedbackMsg] = useState('');
   const [showHistorial, setShowHistorial] = useState(false);
   const [puntosACobrar, setPuntosACobrar] = useState(1);
+  const inputRef = useRef(null);
 
   // Función para reproducir beep usando el archivo MP3
   const playBeep = () => {
@@ -99,24 +101,43 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
     }
   };
   
-  // Buscar cámaras para cobrar puntos
-  const buscarCamarasCobrar = async () => {
+  // Mostrar popup para seleccionar puntos antes de activar cámara
+  const mostrarPopupCobrar = () => {
+    setShowInputPuntos(true);
+  };
+  
+  // Iniciar cámara para cobrar puntos después de seleccionar cantidad
+  const iniciarCobroPuntos = () => {
+    setShowInputPuntos(false); // Esconder el popup
+    
+    // Verificar que los puntos sean válidos
+    if (!puntosACobrar || isNaN(puntosACobrar) || puntosACobrar <= 0) {
+      alert('Por favor, ingresa una cantidad válida de puntos a cobrar');
+      return;
+    }
+    
+    // Buscar cámaras y activar el escáner
     try {
-      const devices = await Html5Qrcode.getCameras();
-      const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
-      
-      const backCam = devices.find(cam => {
-        if (!cam.label) return false;
-        const label = cam.label.toLowerCase();
-        return backLabels.some(word => label.includes(word));
+      Html5Qrcode.getCameras().then(devices => {
+        const backLabels = ['back', 'atrás', 'trasera', 'posterior', 'rear', 'environment'];
+        
+        const backCam = devices.find(cam => {
+          if (!cam.label) return false;
+          const label = cam.label.toLowerCase();
+          return backLabels.some(word => label.includes(word));
+        }) || (devices.length > 0 ? devices[0] : null);
+        
+        if (backCam) {
+          console.log(`[QR] Iniciando cámara para cobrar ${puntosACobrar} puntos`);
+          setShowQrCobrar(true);
+        } else {
+          alert('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
+        }
+      }).catch(err => {
+        alert('Error accediendo a las cámaras: ' + err);
       });
-      if (backCam) {
-        setShowQrCobrar(true);
-      } else {
-        alert('No se ha encontrado cámara trasera. Si usas iPhone o Android, permite el acceso a la cámara en los permisos del navegador y prueba de nuevo.');
-      }
     } catch (e) {
-      alert('Error buscando cámaras: ' + e);
+      alert('Error al iniciar el proceso de cobro: ' + e);
     }
   };
   
@@ -375,10 +396,147 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   if (showHistorial) {
     return <Historial usuario={usuario} onBack={() => setShowHistorial(false)} />;
   }
-  
+
+  // Popup para seleccionar puntos a cobrar
+  if (showInputPuntos) {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          zIndex: 10000,
+        }}
+      >
+        <div
+          style={{
+            width: "85%",
+            maxWidth: "330px",
+            padding: "25px",
+            backgroundColor: "#222",
+            borderRadius: "15px",
+            boxShadow: "0 5px 20px rgba(0,0,0,0.5)",
+            border: "2px solid #ffb6fc",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <h2
+            style={{
+              color: "white",
+              textAlign: "center",
+              margin: "0 0 20px 0",
+              fontWeight: "bold",
+              fontSize: "24px",
+            }}
+          >
+            Cobrar Puntos
+          </h2>
+
+          {/* Línea decorativa con degradado como en login */}
+          <div
+            style={{
+              width: "60%",
+              height: "3px",
+              background: "linear-gradient(to right, #ffb6fc, #7b2ff2)",
+              margin: "0 0 25px 0",
+              borderRadius: "3px",
+            }}
+          ></div>
+
+          <p
+            style={{
+              color: "white",
+              textAlign: "center",
+              marginBottom: "25px",
+              fontSize: "16px",
+            }}
+          >
+            Ingresa la cantidad de puntos que deseas cobrar:
+          </p>
+
+          <input
+            type="number"
+            ref={inputRef}
+            value={puntosACobrar}
+            onChange={(e) => {
+              const valor = parseInt(e.target.value) || 0;
+              console.log("Cambiando puntos a cobrar:", valor);
+              setPuntosACobrar(valor);
+            }}
+            onFocus={(e) => e.target.select()}
+            min="1"
+            autoFocus
+            style={{
+              width: "100%",
+              padding: "15px",
+              fontSize: "28px",
+              borderRadius: "8px",
+              border: "2px solid #ffb6fc",
+              outline: "none",
+              textAlign: "center",
+              backgroundColor: "#333",
+              color: "white",
+              marginBottom: "25px",
+              fontWeight: "bold",
+            }}
+          />
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              marginTop: "10px",
+            }}
+          >
+            <button
+              onClick={() => setShowInputPuntos(false)}
+              style={{
+                padding: "12px 20px",
+                borderRadius: "8px",
+                border: "none",
+                background: "#444",
+                color: "white",
+                fontSize: "16px",
+                cursor: "pointer",
+                width: "45%",
+              }}
+            >
+              Cancelar
+            </button>
+
+            <button
+              onClick={iniciarCobroPuntos}
+              style={{
+                padding: "12px 20px",
+                borderRadius: "8px",
+                border: "none",
+                background: "linear-gradient(to right, #ffb6fc, #7b2ff2)",
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "bold",
+                cursor: "pointer",
+                width: "45%",
+              }}
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-bg">
-
       <div className="admin-container">
         {/* CARD DE CREDITOS */}
         <div className="admin-credit-card">
@@ -392,7 +550,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
             <div className="admin-card-title">Lector QR</div>
             <div className="admin-card-desc">Escanea códigos</div>
           </div>
-          <div className="admin-card" onClick={buscarCamarasCobrar}>
+          <div className="admin-card" onClick={mostrarPopupCobrar}>
             <div className="admin-card-icon">💸</div>
             <div className="admin-card-title">Cobrar</div>
             <div className="admin-card-desc">Descontar puntos</div>
@@ -494,88 +652,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
                 </div>
                 
                 {/* Campo de entrada para puntos a cobrar */}
-                {/* Campo de puntos a cobrar */}
-                <div 
-                  onMouseDown={(e) => {
-                    // Detener la propagación para evitar que cierren el modal
-                    e.stopPropagation();
-                    console.log("[QR] Click en contenedor de input");
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    console.log("[QR] Click en contenedor de input");
-                  }}
-                  style={{
-                    position: 'absolute',
-                    top: '20%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: '80%',
-                    maxWidth: '300px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                    padding: '20px',
-                    borderRadius: '10px',
-                    zIndex: 9999,
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
-                    border: '2px solid #ffb6fc'
-                  }}
-                >
-                  <label 
-                    onClick={(e) => e.stopPropagation()}
-                    style={{
-                      display: 'block',
-                      color: 'white',
-                      marginBottom: '10px',
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      fontSize: '18px'
-                    }}
-                  >
-                    Puntos a cobrar:
-                  </label>
-                  <input 
-                    type="number" 
-                    value={puntosACobrar}
-                    onChange={(e) => {
-                      console.log('Nuevo valor input:', e.target.value);
-                      setPuntosACobrar(parseInt(e.target.value) || 0);
-                    }}
-                    onMouseDown={(e) => {
-                      e.stopPropagation();
-                      console.log("[QR] MouseDown en input");
-                    }}
-                    onKeyDown={(e) => {
-                      e.stopPropagation();
-                      console.log("[QR] KeyDown en input:", e.key);
-                    }}
-                    onFocus={(e) => {
-                      e.target.select();
-                      console.log("[QR] Focus en input");
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      console.log("[QR] Click en input");
-                    }}
-                    min="1"
-                    autoFocus
-                    style={{
-                      width: '100%',
-                      padding: '15px',
-                      fontSize: '22px',
-                      borderRadius: '6px',
-                      border: '3px solid #ffb6fc',
-                      outline: 'none',
-                      textAlign: 'center',
-                      backgroundColor: '#fff',
-                      color: '#000',
-                      zIndex: 10000,
-                      fontWeight: 'bold',
-                      boxShadow: '0 0 10px rgba(255,182,252,0.5)'
-                    }}
-                  />
-                </div>
+
                 
                 {/* Área de mensaje de error o éxito */}
                 {(error || qrFeedbackMsg) && (

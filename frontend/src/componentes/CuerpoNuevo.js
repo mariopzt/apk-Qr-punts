@@ -73,8 +73,8 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
         console.log('[SOCKET] Respuesta getUsuarioByQrCode:', res);
         if (res && res.user) {
           // Guardar puntos antiguos antes de actualizar
-          setOldPoints(usuario.totalPoints ?? 0);
-          setNewPoints(res.user.totalPoints ?? 0);
+          setOldPoints(usuario.points ?? 0);
+          setNewPoints(res.user.points ?? 0);
           
           // Mostrar efecto de partículas
           setShowParticleEffect(true);

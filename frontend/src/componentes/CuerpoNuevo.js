@@ -126,7 +126,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                   />
                 ) : (
                   <div className="balance-amount">
-                    <span className="coin">💰</span> {usuario.totalPoints ?? 0}
+                    <span className="coin">💰</span> {usuario.points ?? 0}
                   </div>
                 )}
               </div>

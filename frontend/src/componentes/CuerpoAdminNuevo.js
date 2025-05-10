@@ -538,9 +538,9 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
   return (
     <div className="admin-bg">
       <div className="admin-container">
-        {/* CARD DE CREDITOS */}
+        {/* CARD DE PUNTOS */}
         <div className="admin-credit-card">
-          <div className="admin-credit-title">Créditos</div>
+          <div className="admin-credit-title">Puntos</div>
           <div className="admin-credit-amount">{usuario.points ?? 0}</div>
         </div>
         {/* GRID DE ACCIONES */}

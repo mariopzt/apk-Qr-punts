@@ -297,6 +297,122 @@ html, body, #root, .cuerpo-nuevo-bg {
   cursor: pointer;
   opacity: 0.7;
 }
+
+/* Modal Cafés y Postres */
+.cafe-modal {
+  background: #1a1a1a;
+  color: #fff;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px 25px;
+  border-radius: 20px;
+}
+
+.cafe-modal-content {
+  padding: 0 5px;
+}
+
+.cafe-modal-title {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  text-align: center;
+  background: linear-gradient(to right, #ffb6fc, #7b2ff2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+}
+
+.cafe-modal-subtitle {
+  text-align: center;
+  color: #bcbcbc;
+  margin-bottom: 25px;
+  font-size: 1rem;
+}
+
+.cafe-item {
+  display: flex;
+  margin-bottom: 25px;
+  background: #252525;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  position: relative;
+  height: 150px;
+}
+
+.cafe-image {
+  width: 130px;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.cafe-details {
+  padding: 15px;
+  flex-grow: 1;
+  margin-left: 130px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cafe-details h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cafe-details p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #bcbcbc;
+  line-height: 1.4;
+  flex-grow: 1;
+}
+
+.cafe-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(to bottom, #ffb6fc, #7b2ff2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: absolute;
+  bottom: 5px;
+  right: 20px;
+  text-shadow: 0 0 10px rgba(123, 47, 242, 0.3);
+  z-index: 2;
+}
+
+.cafe-modal-button {
+  display: block;
+  width: 80%;
+  margin: 20px auto 10px auto;
+  padding: 12px 0;
+  background: linear-gradient(to right, #ffb6fc, #7b2ff2);
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.cafe-modal-button:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
 @keyframes fadeInBg {
   from { opacity: 0; }
   to   { opacity: 1; }

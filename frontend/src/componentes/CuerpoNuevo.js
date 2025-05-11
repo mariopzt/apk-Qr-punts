@@ -19,6 +19,8 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
   const [newPoints, setNewPoints] = useState(usuario.totalPoints ?? 0);
   const [showHistorial, setShowHistorial] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showCafeModal, setShowCafeModal] = useState(false);
+  const [showBurgerModal, setShowBurgerModal] = useState(false);
   const lastPoints = useRef(usuario.points ?? 0);
   const lastLevel = useRef(0);
 
@@ -134,7 +136,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
             </div>
            
           </div>
-          <div className="section-title">Tu Espacio</div>
+          <div className="section-title"></div>
           <div className="boosters-list-row">
             <div className="booster-item" onClick={() => setShowHistorial(true)} style={{flex: 1, marginRight: 4, cursor: 'pointer'}}>
               <div className="booster-icon">📝</div>
@@ -145,7 +147,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
             </div>
             <div className="booster-item" style={{flex: 1, marginLeft: 4}}>
               <div className="booster-icon">🖐️</div>
-              <div>
+              <div >
                 <div className="booster-title">Nivel de usuario</div>
                 <div className="booster-sub"> <span className="coin">🏆</span> • {nivel} lvl</div>
               </div>
@@ -164,12 +166,12 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
 
           <div className="section-title">Descubre ofertas!</div>
           <div className="boosters-row">
-            <div className="booster-card">
+            <div className="booster-card" onClick={() => setShowBurgerModal(true)} style={{ cursor: 'pointer' }}>
               <div className="booster-title">Hamburguesas</div>
               <div className="booster-sub">15% descuento</div>
               <span className="booster-icon">🍔</span>
             </div>
-            <div className="booster-card">
+            <div className="booster-card" onClick={() => setShowCafeModal(true)} style={{ cursor: 'pointer' }}>
               <div className="booster-title">Cafés y Postres</div>
               <div className="booster-sub">2x1 en bebidas</div>
               <span className="booster-icon">☕</span>
@@ -231,6 +233,106 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                   </div>
                   
                   <button className="info-modal-button" onClick={() => setShowInfoModal(false)}>¡Entendido!</button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {showCafeModal && (
+            <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowCafeModal(false); }}>
+              <div className="qr-modal cafe-modal">
+                <button className="qr-modal-close" onClick={() => setShowCafeModal(false)}>✕</button>
+                <div className="cafe-modal-content">
+                  <h2 className="cafe-modal-title">Cafés y Postres</h2>
+                  <p className="cafe-modal-subtitle">Disfruta de nuestras especialidades con 2x1 en bebidas</p>
+                  
+                  <div className="cafe-item">
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1572442388796-11668a67e53d?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-details">
+                      <h3>CAFÉ MOCHA ESPECIAL</h3>
+                      <p>Espresso, chocolate, leche vaporizada, crema batida y canela</p>
+                      <div className="cafe-price">€4.95</div>
+                    </div>
+                  </div>
+                  
+                  <div className="cafe-item">
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1571506297088-0d912f1497a4?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-details">
+                      <h3>TARTA DE ZANAHORIA</h3>
+                      <p>Bizcocho casero con nueces, canela y frosting de queso crema</p>
+                      <div className="cafe-price">€5.50</div>
+                    </div>
+                  </div>
+                  
+                  <div className="cafe-item">
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-details">
+                      <h3>FRAPPUCCINO CARAMELO</h3>
+                      <p>Café, leche, hielo, caramelo, nata montada y topping de caramelo</p>
+                      <div className="cafe-price">€6.25</div>
+                    </div>
+                  </div>
+                  
+                  <div className="cafe-item">
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1551024506-0bccd828d307?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-details">
+                      <h3>CHEESECAKE DE FRUTOS ROJOS</h3>
+                      <p>Base de galleta, queso crema, nata y cobertura de frutos rojos</p>
+                      <div className="cafe-price">€5.95</div>
+                    </div>
+                  </div>
+                  
+                  <button className="cafe-modal-button" onClick={() => setShowCafeModal(false)}>Cerrar</button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {showBurgerModal && (
+            <div className="qr-modal-bg" onClick={e => { if (e.target.className.includes('qr-modal-bg')) setShowBurgerModal(false); }}>
+              <div className="qr-modal cafe-modal burger-modal">
+                <button className="qr-modal-close" onClick={() => setShowBurgerModal(false)}>✕</button>
+                <div className="cafe-modal-content">
+                  <h2 className="cafe-modal-title">Hamburguesas</h2>
+                  <p className="cafe-modal-subtitle">Disfruta de un 15% de descuento en todas nuestras hamburguesas</p>
+                  
+                  <div className="cafe-item">
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-details">
+                      <h3>BURGER DELUXE</h3>
+                      <p>200g de ternera, queso cheddar, bacon, lechuga, tomate y salsa especial</p>
+                      <div className="cafe-price">€9.95</div>
+                    </div>
+                  </div>
+                  
+                  <div className="cafe-item">
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-details">
+                      <h3>BURGER VEGGIE</h3>
+                      <p>Hamburguesa de legumbres, aguacate, rúcula, tomate y mayonesa vegana</p>
+                      <div className="cafe-price">€8.50</div>
+                    </div>
+                  </div>
+                  
+                  <div className="cafe-item">
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1551782450-17144efb9c50?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-details">
+                      <h3>BURGER BBQ</h3>
+                      <p>Carne de ternera, queso ahumado, cebolla caramelizada y salsa barbacoa</p>
+                      <div className="cafe-price">€10.25</div>
+                    </div>
+                  </div>
+                  
+                  <div className="cafe-item">
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-details">
+                      <h3>BURGER DOBLE QUESO</h3>
+                      <p>Doble carne, doble queso, pepinillos, cebolla y salsa secreta</p>
+                      <div className="cafe-price">€11.95</div>
+                    </div>
+                  </div>
+                  
+                  <button className="cafe-modal-button" onClick={() => setShowBurgerModal(false)}>Cerrar</button>
                 </div>
               </div>
             </div>

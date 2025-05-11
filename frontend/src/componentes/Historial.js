@@ -99,90 +99,92 @@ function Historial({ usuario, onBack }) {
 
   return (
     <div className="historial-container">
-      <div className="historial-header">
-        <div className="historial-title">Historial</div>
-        {usuario.tipo === 'admin' || usuario.tipo === 'root' ? (
-          <div className="historial-filters">
-            <button 
-              className={`historial-filter ${filtro === 'todos' ? 'active' : ''}`}
-              onClick={() => setFiltro('todos')}
-            >
-              Todos
-            </button>
-          </div>
-        ) : null}
-      </div>
+      <div className="historial-wrapper">
+        <div className="historial-header">
+          <div className="historial-title">Historial</div>
+          {usuario.tipo === 'admin' || usuario.tipo === 'root' ? (
+            <div className="historial-filters">
+              <button 
+                className={`historial-filter ${filtro === 'todos' ? 'active' : ''}`}
+                onClick={() => setFiltro('todos')}
+              >
+                Todos
+              </button>
+            </div>
+          ) : null}
+        </div>
 
-      <div className="historial-content">
-        {loading ? (
-          <div className="historial-empty">Cargando historial...</div>
-        ) : error ? (
-          <div className="historial-empty">{error}</div>
-        ) : logs.length === 0 ? (
-          <div className="historial-empty">No hay registros de escaneos</div>
-        ) : (
-          <table className="historial-table">
-            <thead>
-              <tr>
-                <th>USUARIO</th>
-                <th>HORA</th>
-                <th>DÍA</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(() => {
-                // Agrupar logs por fecha
-                const logsPorFecha = {};
-                logs.forEach(log => {
-                  const fecha = obtenerSoloFecha(log.timestamp);
-                  if (!logsPorFecha[fecha]) {
-                    logsPorFecha[fecha] = [];
-                  }
-                  logsPorFecha[fecha].push(log);
-                });
+        <div className="historial-content">
+          {loading ? (
+            <div className="historial-empty">Cargando historial...</div>
+          ) : error ? (
+            <div className="historial-empty">{error}</div>
+          ) : logs.length === 0 ? (
+            <div className="historial-empty">No hay registros de escaneos</div>
+          ) : (
+            <table className="historial-table">
+              <thead>
+                <tr>
+                  <th>USUARIO</th>
+                  <th>HORA</th>
+                  <th>DÍA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(() => {
+                  // Agrupar logs por fecha
+                  const logsPorFecha = {};
+                  logs.forEach(log => {
+                    const fecha = obtenerSoloFecha(log.timestamp);
+                    if (!logsPorFecha[fecha]) {
+                      logsPorFecha[fecha] = [];
+                    }
+                    logsPorFecha[fecha].push(log);
+                  });
 
-                // Convertir el objeto agrupado en un array para renderizar
-                const fechasOrdenadas = Object.keys(logsPorFecha).sort().reverse();
-                
-                // Renderizar los logs agrupados por fecha
-                return fechasOrdenadas.map((fecha, fechaIndex) => {
-                  const logsDelDia = logsPorFecha[fecha];
-                  const separadorFecha = formatearDiaSeparador(fecha);
+                  // Convertir el objeto agrupado en un array para renderizar
+                  const fechasOrdenadas = Object.keys(logsPorFecha).sort().reverse();
                   
-                  return (
-                    <React.Fragment key={fecha}>
-                      {separadorFecha && (
-                        <tr className="historial-date-separator">
-                          <td colSpan="3" className="fecha-separador">{separadorFecha}</td>
-                        </tr>
-                      )}
-                      {logsDelDia.map((log, logIndex) => (
-                        <tr style={{ cursor: 'pointer' }} key={`${fecha}-${logIndex}`}>
-                          <td>
-                            {log.username}
-                            {log.adminUsername && (
-                              <div style={{ fontSize: '0.8rem', color: '#bcbcbc' }}>
-                                Escaneado por: {log.adminUsername}
-                              </div>
-                            )}
-                          </td>
-                          <td>{formatearHora(log.timestamp)}</td>
-                          <td>{formatearFecha(log.timestamp)}</td>
-                        </tr>
-                      ))}
-                    </React.Fragment>
-                  );
-                });
-              })()}
-            </tbody>
-          </table>
-        )}
-      </div>
+                  // Renderizar los logs agrupados por fecha
+                  return fechasOrdenadas.map((fecha, fechaIndex) => {
+                    const logsDelDia = logsPorFecha[fecha];
+                    const separadorFecha = formatearDiaSeparador(fecha);
+                    
+                    return (
+                      <React.Fragment key={fecha}>
+                        {separadorFecha && (
+                          <tr className="historial-date-separator">
+                            <td colSpan="3" className="fecha-separador">{separadorFecha}</td>
+                          </tr>
+                        )}
+                        {logsDelDia.map((log, logIndex) => (
+                          <tr style={{ cursor: 'pointer' }} key={`${fecha}-${logIndex}`}>
+                            <td>
+                              {log.username}
+                              {log.adminUsername && (
+                                <div style={{ fontSize: '0.8rem', color: '#bcbcbc' }}>
+                                  Escaneado por: {log.adminUsername}
+                                </div>
+                              )}
+                            </td>
+                            <td>{formatearHora(log.timestamp)}</td>
+                            <td>{formatearFecha(log.timestamp)}</td>
+                          </tr>
+                        ))}
+                      </React.Fragment>
+                    );
+                  });
+                })()}
+              </tbody>
+            </table>
+          )}
+        </div>
 
-      <div className="historial-footer">
-        <button className="historial-back" onClick={onBack}>
-          Volver
-        </button>
+        <div className="historial-footer">
+          <button className="historial-back" onClick={onBack}>
+            Volver
+          </button>
+        </div>
       </div>
     </div>
   );

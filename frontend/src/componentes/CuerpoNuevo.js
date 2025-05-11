@@ -138,6 +138,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
           </div>
           <div className="section-title">Mis datos</div>
           <div className="boosters-list-row">
+            {/* Historial */}
             <div className="booster-item" onClick={() => setShowHistorial(true)} style={{flex: 1, marginRight: 4, cursor: 'pointer'}}>
               <div className="booster-icon">📝</div>
               <div>
@@ -145,15 +146,19 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                 <div className="booster-sub silver">Ver tus escaneos</div>
               </div>
             </div>
+            
+            {/* Nivel de usuario */}
             <div className="booster-item" style={{flex: 1, marginLeft: 4}}>
               <div className="booster-icon">🖐️</div>
-              <div >
+              <div>
                 <div className="booster-title">Nivel de usuario</div>
                 <div className="booster-sub"> <span className="coin">🏆</span> • {nivel} lvl</div>
               </div>
             </div>
           </div>
-              <div className="boosters-list">
+          
+          {/* Mostrar QR */}
+          <div className="boosters-list">
             <div className="booster-item qr-booster" onClick={() => setShowQr(true)} style={{ cursor: 'pointer' }}>
               <div className="booster-icon">📱</div>
               <div>

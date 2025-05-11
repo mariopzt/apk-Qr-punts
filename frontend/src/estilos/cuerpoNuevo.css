@@ -131,6 +131,145 @@ html, body, #root, .cuerpo-nuevo-bg {
   }
 }
 
+/* Media query para pantallas muy pequeñas (menores de 330px) */
+@media (max-width: 330px) {
+  .cuerpo-nuevo-container {
+    padding: 15px 12px;
+    border-radius: 16px;
+  }
+  
+  .balance-section {
+    padding: 20px 0 20px 0;
+    margin-bottom: 25px;
+  }
+  
+  .balance-label {
+    font-size: 1.4rem;
+  }
+  
+  .balance-amount {
+    font-size: 3.2rem;
+  }
+  
+  .boosters-row {
+    gap: 10px;
+  }
+  
+  .booster-card {
+    padding: 15px 0 10px 0;
+  }
+  
+  .booster-title {
+    font-size: 0.9rem;
+  }
+  
+  .booster-sub {
+    font-size: 0.8rem;
+  }
+  
+  .booster-icon {
+    font-size: 1.4rem;
+    margin-top: 0;
+  }
+  
+  .booster-item {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  
+  .section-title {
+    font-size: 1.05rem;
+    padding-left: 12px;
+  }
+  
+  .section-title::before {
+    height: 15px;
+    width: 3px;
+  }
+  
+  /* Ajustes para modales */
+  .cafe-modal {
+    width: 95%;
+    padding: 15px 12px;
+    border-radius: 16px;
+  }
+  
+  .cafe-modal-title {
+    font-size: 1.5rem;
+  }
+  
+  .cafe-modal-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  
+  .cafe-item {
+    height: 110px;
+    margin-bottom: 12px;
+  }
+  
+  .cafe-image {
+    width: 90px;
+  }
+  
+  .cafe-details {
+    margin-left: 90px;
+    padding: 8px;
+  }
+  
+  .cafe-details h3 {
+    font-size: 0.85rem;
+  }
+  
+  .cafe-description {
+    margin-top: 5px !important;
+  }
+  
+  .cafe-price {
+    font-size: 1.1rem;
+    right: 8px;
+    bottom: 3px;
+  }
+  
+  .cafe-modal-button {
+    font-size: 0.9rem;
+    padding: 8px 0;
+  }
+  
+  /* Ajustes para el historial */
+  .historial-wrapper {
+    width: 95%;
+    max-height: 95vh;
+  }
+  
+  .historial-header {
+    padding: 15px 12px;
+  }
+  
+  .historial-title {
+    font-size: 1.5rem;
+  }
+  
+  .historial-table th {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+  
+  .historial-table td {
+    padding: 8px 6px;
+    font-size: 0.85rem;
+  }
+  
+  .historial-footer {
+    padding: 12px;
+  }
+  
+  .historial-back {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
+
 .cuerpo-nuevo-container {
   padding: 20px;
   max-width: 400px;
@@ -308,6 +447,32 @@ html, body, #root, .cuerpo-nuevo-bg {
   gap: 6px;
   margin-top: 8px;
   margin-bottom: 0;
+}
+
+/* En pantallas muy pequeñas, los elementos de "Mis datos" se muestran en columna */
+@media (max-width: 330px) {
+  /* Cambiar la dirección del flex para que los elementos se muestren en columna */
+  .boosters-list-row {
+    display: flex;
+    flex-direction: column !important;
+    gap: 10px;
+  }
+  
+  /* Asegurar que cada elemento tenga un ancho del 90% */
+  .boosters-list-row .booster-item {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 90% !important;
+    flex: none !important;
+  }
+  
+  /* Asegurar que el QR también se muestre correctamente */
+  .boosters-list .booster-item {
+    width: 90% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 10px;
+  }
 }
 @media (max-height: 700px) {
   .boosters-list-row {

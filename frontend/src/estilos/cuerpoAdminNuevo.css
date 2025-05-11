@@ -130,6 +130,92 @@
   gap: 18px;
 }
 
+/* Media query para pantallas muy pequeñas (menores de 330px) */
+@media (max-width: 330px) {
+  .admin-container {
+    padding: 20px 15px;
+    margin: 0 auto;
+    border-radius: 16px;
+  }
+  
+  .admin-credit-card {
+    padding: 25px 15px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+  }
+  
+  .admin-credit-title {
+    font-size: 16px;
+  }
+  
+  .admin-credit-amount {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  
+  .admin-credit-user {
+    font-size: 15px;
+  }
+  
+  .admin-grid {
+    gap: 12px;
+  }
+  
+  .admin-card {
+    border-radius: 14px;
+    padding: 15px 10px;
+  }
+  
+  .admin-card-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  
+  .admin-card-title {
+    font-size: 15px;
+  }
+  
+  .admin-card-desc {
+    font-size: 12px;
+  }
+  
+  .admin-card.disabled {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    min-height: 110px;
+  }
+  
+  .admin-card.disabled .admin-card-title {
+    font-size: 1.1rem;
+  }
+  
+  .admin-card.disabled .admin-card-icon {
+    font-size: 32px;
+  }
+  
+  .admin-card.disabled .admin-card-desc {
+    font-size: 0.95rem;
+  }
+  
+  /* Ajustes para el popup de seleccionar puntos */
+  .qrscan-title {
+    font-size: 1.4rem;
+  }
+  
+  .qrscan-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .qrscan-actions-bar {
+    padding: 10px;
+  }
+  
+  .qrscan-bar-btn {
+    font-size: 0.9rem;
+    padding: 8px 15px;
+  }
+}
+
 .admin-card {
   background: #191923;
   border-radius: 18px;

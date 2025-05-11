@@ -256,7 +256,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                   </div>
                   
                   <div className="cafe-item">
-                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1571506297088-0d912f1497a4?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
+                    <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>TARTA DE ZANAHORIA</h3>
                       <p className="cafe-description">Bizcocho casero con nueces, canela y frosting de queso crema</p>

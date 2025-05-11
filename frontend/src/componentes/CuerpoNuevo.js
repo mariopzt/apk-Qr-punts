@@ -136,7 +136,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
             </div>
            
           </div>
-          <div className="section-title"></div>
+          <div className="section-title">Mis datos</div>
           <div className="boosters-list-row">
             <div className="booster-item" onClick={() => setShowHistorial(true)} style={{flex: 1, marginRight: 4, cursor: 'pointer'}}>
               <div className="booster-icon">📝</div>

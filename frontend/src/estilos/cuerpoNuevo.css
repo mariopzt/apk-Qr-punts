@@ -50,7 +50,8 @@ html, body, #root, .cuerpo-nuevo-bg {
   position: absolute;
   border-radius: 50%;
   filter: blur(1px);
-  z-index: 1;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .cuerpo-nuevo-bg::before {
@@ -179,6 +180,9 @@ html, body, #root, .cuerpo-nuevo-bg {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  position: relative;
+  z-index: 1;
+  background-color: #19192b;
 }
 .balance-section {
   text-align: center;

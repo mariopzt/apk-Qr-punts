@@ -250,7 +250,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                     <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1572442388796-11668a67e53d?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>CAFÉ MOCHA ESPECIAL</h3>
-                      <p>Espresso, chocolate, leche vaporizada, crema batida y canela</p>
+                      <p className="cafe-description">Espresso, chocolate, leche vaporizada, crema batida y canela</p>
                       <div className="cafe-price">€4.95</div>
                     </div>
                   </div>
@@ -259,7 +259,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                     <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1571506297088-0d912f1497a4?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>TARTA DE ZANAHORIA</h3>
-                      <p>Bizcocho casero con nueces, canela y frosting de queso crema</p>
+                      <p className="cafe-description">Bizcocho casero con nueces, canela y frosting de queso crema</p>
                       <div className="cafe-price">€5.50</div>
                     </div>
                   </div>
@@ -268,7 +268,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                     <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>FRAPPUCCINO CARAMELO</h3>
-                      <p>Café, leche, hielo, caramelo, nata montada y topping de caramelo</p>
+                      <p className="cafe-description">Café, leche, hielo, caramelo, nata montada y topping de caramelo</p>
                       <div className="cafe-price">€6.25</div>
                     </div>
                   </div>
@@ -277,7 +277,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                     <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1551024506-0bccd828d307?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>CHEESECAKE DE FRUTOS ROJOS</h3>
-                      <p>Base de galleta, queso crema, nata y cobertura de frutos rojos</p>
+                      <p className="cafe-description">Base de galleta, queso crema, nata y cobertura de frutos rojos</p>
                       <div className="cafe-price">€5.95</div>
                     </div>
                   </div>
@@ -300,7 +300,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                     <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>BURGER DELUXE</h3>
-                      <p>200g de ternera, queso cheddar, bacon, lechuga, tomate y salsa especial</p>
+                      <p className="cafe-description">200g de ternera, queso cheddar, bacon, lechuga, tomate y salsa especial</p>
                       <div className="cafe-price">€9.95</div>
                     </div>
                   </div>
@@ -309,7 +309,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                     <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>BURGER VEGGIE</h3>
-                      <p>Hamburguesa de legumbres, aguacate, rúcula, tomate y mayonesa vegana</p>
+                      <p className="cafe-description">Hamburguesa de legumbres, aguacate, rúcula, tomate y mayonesa vegana</p>
                       <div className="cafe-price">€8.50</div>
                     </div>
                   </div>
@@ -318,7 +318,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                     <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1551782450-17144efb9c50?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>BURGER BBQ</h3>
-                      <p>Carne de ternera, queso ahumado, cebolla caramelizada y salsa barbacoa</p>
+                      <p className="cafe-description">Carne de ternera, queso ahumado, cebolla caramelizada y salsa barbacoa</p>
                       <div className="cafe-price">€10.25</div>
                     </div>
                   </div>
@@ -327,7 +327,7 @@ export default function CuerpoNuevo({ usuario, setUsuario }) {
                     <div className="cafe-image" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80")' }}></div>
                     <div className="cafe-details">
                       <h3>BURGER DOBLE QUESO</h3>
-                      <p>Doble carne, doble queso, pepinillos, cebolla y salsa secreta</p>
+                      <p className="cafe-description">Doble carne, doble queso, pepinillos, cebolla y salsa secreta</p>
                       <div className="cafe-price">€11.95</div>
                     </div>
                   </div>

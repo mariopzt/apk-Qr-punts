@@ -21,24 +21,53 @@
 }
 
 html, body, #root, .cuerpo-nuevo-bg {
-  background-color: #17171a !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 .cuerpo-nuevo-bg {
   height: 100dvh;
   min-height: 100dvh;
   width: 100vw;
-  background: #111116;
+  background: #181824;
   color: #fff;
   font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Círculos decorativos como en el login */
+.cuerpo-nuevo-bg::before,
+.cuerpo-nuevo-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+  z-index: 1;
+}
+
+.cuerpo-nuevo-bg::before {
+  top: -80px;
+  left: -80px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle at 30% 30%, #ffb6fc 60%, #7b2ff2 100%);
+}
+
+.cuerpo-nuevo-bg::after {
+  top: 40px;
+  right: 60px;
+  width: 100px;
+  height: 100px;
+  background: #232337;
+  opacity: 0.7;
 }
 
 

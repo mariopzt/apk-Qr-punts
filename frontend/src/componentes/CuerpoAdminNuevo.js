@@ -237,7 +237,7 @@ function CuerpoAdminNuevo({ usuario, setUsuario }) {
           setShowQr(false);
         }
       })();
-      // Limpieza al cerrar
+      // Limpieza al cerrarr
       return () => {
         isMounted = false;
         if (scannerRef.current && scannerRef.current.getState() === 2) {
